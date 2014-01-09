@@ -14,5 +14,5 @@ kouign-amann-pi
     * Have fun
 
 Look at
-(https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vert
+(https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vertx)
 
