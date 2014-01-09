@@ -1,0 +1,9 @@
+- hosts: 10.1.1.113
+  vars:
+  user: pi
+  sudo: yes
+  tasks:
+    - name: apt update
+      apt: update_cache=yes
+    - name: apt upgrade
+      apt: upgrade=full
