@@ -4,69 +4,72 @@ import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
-import org.vertx.java.core.json.impl.Json
+import org.vertx.java.core.logging.Logger
 
 class FlashLcdPlate extends Verticle {
 
-    boolean flashing = true
-    def logger
+    static final Integer FLASH_PERIOD = 1000
+
+    Logger log
+
     def lcd
+
     int colorIdx = 0
 
+    Long flashTimerId
 
     def start() {
-        logger = container.logger
+        log = container.logger
 
-        logger.info("Initialize handler");
+        log.info('Initialize handler')
+
         [
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing": this.&stopFlashing,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing": this.&startFlashing,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.flash": this.&flash,
+                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing": this.&startFlashing
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
+
         if (container.config.mockAll) {
             lcd = LcdMock.instance
         } else {
             lcd = AdafruitLcdPlate.instance
         }
-        logger.info "Done initialize handler"
+
+        log.info('Done initialize handler')
     }
 
     void stopFlashing(Message message) {
-        logger.info "Stop flashing"
-        lcd.setBacklight(0x05)
-        flashing = false
-        message.reply([
-                status: "OK"
-        ])
+
+        log.info('Stop flashing')
+
+        if (flashTimerId) {
+            vertx.cancelTimer(flashTimerId)
+            lcd.setBacklight(0x05)
+            flashTimerId = 0
+        }
+
+        message.reply([status: 'OK'])
     }
 
     void startFlashing(Message message) {
-        logger.info "Start flashing"
-        flashing = true
-        message.reply([
-                status: "OK"
-        ])
-        flash null
 
-    }
+        log.info('Start flashing')
 
-    void flash(Message message) {
-        if (flashing) {
-            sleep 1000;
-
-            lcd.setBacklight(lcd.COLORS[colorIdx])
-            colorIdx++
-            if (colorIdx >= lcd.COLORS.length) {
-                // Reset
-                colorIdx = 0
-            }
-        } else {
-            sleep 100
+        if (!flashTimerId) {
+            flashTimerId = vertx.setPeriodic(FLASH_PERIOD, this.&flash)
         }
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.flash", null)
+        message.reply([status: 'OK'])
+    }
 
+    private void flash(Long timerId) {
+
+        lcd.setBacklight(lcd.COLORS[colorIdx++])
+
+        if (colorIdx >= lcd.COLORS.length) {
+            // Reset
+            colorIdx = 0
+        }
     }
 }
