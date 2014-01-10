@@ -1,5 +1,6 @@
 package fr.xebia.kouignamman.pi
 
+import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.hardwareTest.TestLcd
 import fr.xebia.kouignamman.pi.hardwareTest.TestLedBackPack
 import fr.xebia.kouignamman.pi.vote.FlashLcdPlate
@@ -8,8 +9,15 @@ import org.vertx.groovy.platform.Verticle
 
 
 class MainVerticle extends Verticle {
+    def logger
 
     def start() {
+        logger = container.logger
+        logger.info "Starting"
+        logger.info "Initialise singleton only if hardware is active"
+        if (!container.config.mockAll) {
+            AdafruitLcdPlate.INSTANCE = new AdafruitLcdPlate(1, 0x20)
+        }
         container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1)
         container.deployWorkerVerticle('groovy:' + FlashLcdPlate.class.name, container.config, 1)
         if (container.config.testLcd) {

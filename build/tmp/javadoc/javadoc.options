@@ -1,6 +1,0 @@
--classpath '/Users/pablolopez/xebia/dev/projects/kouign-amann-pi/build/classes/main:/Users/pablolopez/xebia/dev/projects/kouign-amann-pi/build/resources/main:/Users/pablolopez/.gradle/caches/modules-2/files-2.1/com.pi4j/pi4j-core/0.0.5/614a071e0ec9e3fc9a5a69938745cc4c8f776222/pi4j-core-0.0.5.jar:/Users/pablolopez/.gradle/caches/modules-2/files-2.1/com.sleepycat/je/5.0.73/af8a905a5266e68f9182a1c67a8533b548f57c6e/je-5.0.73.jar:/Users/pablolopez/.gradle/caches/modules-2/files-2.1/com.pi4j/pi4j-native/0.0.5/64a011abd3c97bf045fd281eeedd54a185ac34ef/pi4j-native-0.0.5-hard-float.so:/Users/pablolopez/.gradle/caches/modules-2/files-2.1/com.pi4j/pi4j-native/0.0.5/6bfbe82876a676c01ff1edb8772ef8ec3d870d04/pi4j-native-0.0.5-soft-float.so'
--d '/Users/pablolopez/xebia/dev/projects/kouign-amann-pi/build/docs/javadoc'
--doctitle 'kouign-amann-pi 0.1 API'
--quiet 
--windowtitle 'kouign-amann-pi 0.1 API'
-'/Users/pablolopez/xebia/dev/projects/kouign-amann-pi/src/main/java/com/mycompany/myproject/PingVerticle.java'

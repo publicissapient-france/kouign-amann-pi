@@ -10,7 +10,7 @@
   //"main":"JavaSourcePingVerticle.java",
 
   // Compiled Groovy verticle - note that they must be prefixed with 'groovy:' to distinguish them from compiled Java verticles
-  "main":"groovy:fr.xebia.kouignamman.pi.hardwareTest.TestLedBackPack",
+  "main":"groovy:fr.xebia.kouignamman.pi.MainVerticle",
 
   // Groovy *script* verticle
   //"main": "GroovyVerticle.groovy",

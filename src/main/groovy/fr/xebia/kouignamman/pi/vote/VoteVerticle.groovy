@@ -2,44 +2,54 @@ package fr.xebia.kouignamman.pi.vote
 
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
+import fr.xebia.kouignamman.pi.mock.RfidReaderMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 
 import javax.smartcardio.*
+import java.util.concurrent.ConcurrentMap
 
 class VoteVerticle extends Verticle {
 
-    def logger = container.logger
+    def logger
     def static lcd
     def nfcTerminal
     static final byte[] READ_UID_SEQ = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 
-
     def start() {
-        if (container.config.mockAll) {
-            logger.info("Initializing MOCK lcd plate")
-            lcd = new LcdMock()
-        } else {
-            logger.info("Initializing lcd plate")
-            lcd = new AdafruitLcdPlate(1, 0x20)
-            lcd.setBacklight(0x01 + 0x04)
-            logger.info("Done initializing lcd plate")
+        logger = container.logger
 
-            logger.info("Finding Nfc reader")
+        logger.info "Mock : ${container.config.mockAll}"
+        if (container.config.mockAll) {
+            logger.info "Initializing MOCK lcd plate"
+            lcd = LcdMock.instance
+            nfcTerminal = new RfidReaderMock()
+
+        } else {
+            logger.info "Initializing lcd plate"
+            //lcd = AdafruitLcdPlate.instance
+            lcd.setBacklight(0x01 + 0x04)
+            logger.info "Done initializing lcd plate"
+
+            logger.info "Finding Nfc reader"
             nfcTerminal = TerminalFactory.getDefault().terminals().list().get(0)
-            logger.info("Nfc reader found : ${nfcTerminal.name}")
+            logger.info "Nfc reader found : ${nfcTerminal.name}"
         }
 
-        logger.info("Initialize handler");
+        logger.info "Initialize handler";
         [
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification": this.&waitForNfcIdentification,
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote": this.&waitForVote,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
-        logger.info("Done initialize handler");
+
+        logger.info "Done initialize handler";
 
         //lcd.shutdown();
+        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", null)
+
+        waitForNfcIdentification(null)
     }
 
     void waitForNfcIdentification(Message incomingMsg) {
@@ -47,11 +57,11 @@ class VoteVerticle extends Verticle {
         lcd.write("En attente")
 
         // Mise en attente bloquante
-        nfcTerminal.waitForCardPresent(0)
+        nfcTerminal.waitForCardPresent 0
 
         // Display userName
         Card card = nfcTerminal.connect("*")
-        ResponseAPDU cardResponse = card.basicChannel.transmit(new CommandAPDU(READ_UID_SEQ))
+        ResponseAPDU cardResponse = card.getBasicChannel().transmit(new CommandAPDU(READ_UID_SEQ))
         card.disconnect(false)
 
         // Send message to next processor
@@ -60,7 +70,7 @@ class VoteVerticle extends Verticle {
                 "voteTime": new Date().getTime()
         ]
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", outgoingMessage)
+        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null)
         vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
     }
 
@@ -71,8 +81,8 @@ class VoteVerticle extends Verticle {
         int note = -1
 
         // Extract NFC id from message received
-        def nfcId = incomingMsg.nfcId
-        def voteTime = incomingMsg.voteTime
+        def nfcId = incomingMsg.body.nfcId
+        def voteTime = incomingMsg.body.voteTime
 
         def detectionTime = 10
         def maxLoops = 10000 / detectionTime
@@ -80,8 +90,8 @@ class VoteVerticle extends Verticle {
 
         // Wait for button to be pressed
         while (!buttonPressed && loopCount < maxLoops) {
-            Thread.sleep(detectionTime);
-            int[] result = lcd.readButtonsPressed();
+            sleep detectionTime;
+            int[] result = lcd.readButtonsPressed()
 
             def multiplevote = false;
             println result
