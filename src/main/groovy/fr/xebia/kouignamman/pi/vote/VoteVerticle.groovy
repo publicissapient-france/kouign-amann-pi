@@ -1,13 +1,14 @@
 package fr.xebia.kouignamman.pi.vote
 
-import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import fr.xebia.kouignamman.pi.mock.RfidReaderMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 
-import javax.smartcardio.*
-import java.util.concurrent.ConcurrentMap
+import javax.smartcardio.Card
+import javax.smartcardio.CommandAPDU
+import javax.smartcardio.ResponseAPDU
+import javax.smartcardio.TerminalFactory
 
 class VoteVerticle extends Verticle {
 
@@ -77,7 +78,7 @@ class VoteVerticle extends Verticle {
     void waitForVote(Message incomingMsg) {
         lcd.setBacklight(0x01 + 0x04)
 
-        boolean buttonPressed = false
+        boolean voteSaved = false
         int note = -1
 
         // Extract NFC id from message received
@@ -89,7 +90,7 @@ class VoteVerticle extends Verticle {
         def loopCount = 0
 
         // Wait for button to be pressed
-        while (!buttonPressed && loopCount < maxLoops) {
+        while (!voteSaved && loopCount < maxLoops) {
             sleep detectionTime;
             int[] result = lcd.readButtonsPressed()
 
@@ -107,16 +108,10 @@ class VoteVerticle extends Verticle {
                 lcd.clear()
                 lcd.write("Votre note: ${note}");
                 Thread.sleep(1500);
-                // Send vote to next processor
-                Map outgoingMessage = [
-                        "nfcId": nfcId,
-                        "voteTime": voteTime,
-                        "note": note
-                ]
+
                 // TODO proceed to agregation server
                 // Return to NFC waiting
-                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage)
-                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
+                voteSaved = true
 
             } else if (multiplevote) {
                 lcd.clear()
@@ -124,6 +119,15 @@ class VoteVerticle extends Verticle {
                 Thread.sleep(1500);
             }
             loopCount++
+        }
+        if (note > -1) {// Send vote to next processor
+            Map outgoingMessage = [
+                    "nfcId": nfcId,
+                    "voteTime": voteTime,
+                    "note": note
+            ]
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage)
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
         }
 
     }

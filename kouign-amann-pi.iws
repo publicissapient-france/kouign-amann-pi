@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidMock.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidReaderMock.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" afterPath="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf.json" afterPath="$PROJECT_DIR$/conf.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kouign-amann-pi.iws" afterPath="$PROJECT_DIR$/kouign-amann-pi.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/mod.json" afterPath="$PROJECT_DIR$/src/main/resources/mod.json" />
     </list>
     <ignored path="kouign-amann-pi.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,8 +27,8 @@
     <file path="$PROJECT_DIR$/../unibail-fid/unibail-fid-server/package.json" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389276336193" ignored="false" />
     <file path="$PROJECT_DIR$/../unibail-fid/unibail-fid-webapp/index.html" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389276998486" ignored="false" />
     <file path="/gradle.properties" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389350715271" ignored="false" />
-    <file path="/VoteVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389365771919" ignored="false" />
-    <file path="/FlashLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389364063254" ignored="false" />
+    <file path="/VoteVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389366195805" ignored="false" />
+    <file path="/FlashLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389366852070" ignored="false" />
     <file path="/conf.json" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389360556617" ignored="false" />
     <file path="/MainVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389365590305" ignored="false" />
     <file path="/LcdMock.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389365435827" ignored="false" />
@@ -92,7 +85,7 @@
       </breakpoint>
     </breakpoint_any>
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="37" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="40" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -107,7 +100,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="32" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="35" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -122,7 +115,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="77" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="78" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -137,7 +130,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="72" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="73" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -187,9 +180,9 @@
       <file leaf-file-name="VoteVerticle.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="79" column="0" selection-start="2784" selection-end="2784" vertical-scroll-proportion="0.3317647">
+            <state line="128" column="121" selection-start="4312" selection-end="4421" vertical-scroll-proportion="3.178771">
               <folding>
-                <element signature="e#38#98#0" expanded="true" />
+                <element signature="e#38#81#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -198,7 +191,7 @@
       <file leaf-file-name="FlashLcdPlate.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="0" selection-start="1128" selection-end="1128" vertical-scroll-proportion="0.0">
+            <state line="29" column="30" selection-start="1014" selection-end="1014" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#38#98#0" expanded="true" />
               </folding>
@@ -210,15 +203,6 @@
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state line="11" column="23" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DefaultPlatformManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-platform/2.1M1/7da1de018fcdfe6fbc21dcb2ec4aaf423d8a5113/vertx-platform-2.1M1-sources.jar!/org/vertx/java/platform/impl/DefaultPlatformManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1562" column="0" selection-start="61049" selection-end="61049" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -254,8 +238,8 @@
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" />
-        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" />
+        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
       </list>
     </option>
   </component>
@@ -721,7 +705,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1440" height="874" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -729,7 +713,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32936507" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39920425" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39920425" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -739,8 +723,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964131" sideWeight="0.60079575" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48806366" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964131" sideWeight="0.51193637" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.48806366" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -918,7 +902,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="0" selection-start="1128" selection-end="1128" vertical-scroll-proportion="0.0">
+        <state line="29" column="30" selection-start="1014" selection-end="1014" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#38#98#0" expanded="true" />
           </folding>
@@ -927,9 +911,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="0" selection-start="2784" selection-end="2784" vertical-scroll-proportion="0.3317647">
+        <state line="128" column="121" selection-start="4312" selection-end="4421" vertical-scroll-proportion="3.178771">
           <folding>
-            <element signature="e#38#98#0" expanded="true" />
+            <element signature="e#38#81#0" expanded="true" />
           </folding>
         </state>
       </provider>

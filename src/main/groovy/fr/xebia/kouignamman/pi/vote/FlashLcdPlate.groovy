@@ -10,6 +10,8 @@ class FlashLcdPlate extends Verticle {
     boolean flashing = true
     def logger
     def lcd
+    int colorIdx = 0
+
 
     def start() {
         logger = container.logger
@@ -18,13 +20,14 @@ class FlashLcdPlate extends Verticle {
         [
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing": this.&stopFlashing,
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing": this.&startFlashing,
+                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.flash": this.&flash,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
         if (container.config.mockAll) {
             lcd = LcdMock.instance
         } else {
-            //lcd = AdafruitLcdPlate.instance
+            lcd = AdafruitLcdPlate.instance
         }
         logger.info "Done initialize handler"
     }
@@ -37,10 +40,12 @@ class FlashLcdPlate extends Verticle {
     void startFlashing(Message message) {
         logger.info "Start flashing"
         flashing = true
-        int colorIdx = 0
+        flash null
+    }
 
-        while (flashing) {
-            sleep 1000;
+    void flash(Message message) {
+        sleep 1000;
+        if (flashing) {
             lcd.setBacklight(lcd.COLORS[colorIdx])
             colorIdx++
             if (colorIdx >= lcd.COLORS.length) {
@@ -48,5 +53,8 @@ class FlashLcdPlate extends Verticle {
                 colorIdx = 0
             }
         }
+
+        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.flash", null)
+
     }
 }
