@@ -55,7 +55,7 @@ class VoteVerticle extends Verticle {
 
     void waitForNfcIdentification(Message incomingMsg) {
         // Wait for NFC identification
-        lcd.write("En attente")
+        lcd.write("En attente NFC")
 
         // Mise en attente bloquante
         nfcTerminal.waitForCardPresent 0
@@ -71,12 +71,16 @@ class VoteVerticle extends Verticle {
                 "voteTime": new Date().getTime()
         ]
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null)
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+        logger.info "Voter ${byteArrayToNormalizedString(cardResponse)} is ready to vote"
+
+        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null){ response ->
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+        }
+
     }
 
     void waitForVote(Message incomingMsg) {
-        lcd.setBacklight(0x01 + 0x04)
+        lcd.write("En attente Vote")
 
         boolean voteSaved = false
         int note = -1
@@ -126,8 +130,10 @@ class VoteVerticle extends Verticle {
                     "voteTime": voteTime,
                     "note": note
             ]
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage)
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage){ response ->
+                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
+            }
+
         }
 
     }

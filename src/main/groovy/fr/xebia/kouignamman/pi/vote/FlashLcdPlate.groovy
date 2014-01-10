@@ -4,6 +4,7 @@ import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
+import org.vertx.java.core.json.impl.Json
 
 class FlashLcdPlate extends Verticle {
 
@@ -34,24 +35,35 @@ class FlashLcdPlate extends Verticle {
 
     void stopFlashing(Message message) {
         logger.info "Stop flashing"
+        lcd.setBacklight(0x05)
         flashing = false
+        message.reply([
+                status: "OK"
+        ])
     }
 
     void startFlashing(Message message) {
         logger.info "Start flashing"
         flashing = true
+        message.reply([
+                status: "OK"
+        ])
         flash null
+
     }
 
     void flash(Message message) {
-        sleep 1000;
         if (flashing) {
+            sleep 1000;
+
             lcd.setBacklight(lcd.COLORS[colorIdx])
             colorIdx++
             if (colorIdx >= lcd.COLORS.length) {
                 // Reset
                 colorIdx = 0
             }
+        } else {
+            sleep 100
         }
 
         vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.flash", null)
