@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.vote
+package fr.xebia.kouignamman.pi.hardwareTest
 
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import org.vertx.groovy.platform.Verticle

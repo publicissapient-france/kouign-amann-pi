@@ -6,6 +6,20 @@ import com.pi4j.io.i2c.I2CFactory
 
 
 class AdafruitLcdPlate {
+    // LED colors
+    static final int OFF = 0x00
+    static final int RED = 0x01
+    static final int GREEN = 0x02
+    static final int BLUE = 0x04
+    static final int YELLOW = RED + GREEN
+    static final int TEAL = GREEN + BLUE
+    static final int VIOLET = RED + BLUE
+    static final int WHITE = RED + GREEN + BLUE
+    static final int ON = RED + GREEN + BLUE
+
+    static final int[] COLORS = [RED, GREEN, BLUE, YELLOW, TEAL, VIOLET, WHITE]
+
+
     static final int MCP23017_IOCON_BANK0 = 0x0A  // IOCON when Bank 0 active
     static final int MCP23017_IOCON_BANK1 = 0x15  // IOCON when Bank 1 active
 
@@ -190,9 +204,9 @@ class AdafruitLcdPlate {
         bitmask |= 0x80 // Set data bit
 
         byte[] bytes = new byte[4 * sLen]
-        for (int i = 0 ; i < sLen ; i ++) {
+        for (int i = 0; i < sLen; i++) {
             byte[] data = ShiftAndMap4(bitmask, (byte) s.charAt(i))
-            for (int j = 0 ; j < 4 ; j ++) {
+            for (int j = 0; j < 4; j++) {
                 bytes[(i * 4) + j] = data[j]
             }
         }
