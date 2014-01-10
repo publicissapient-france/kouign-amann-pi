@@ -89,7 +89,7 @@
       </breakpoint>
     </breakpoint_any>
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="35" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" line="46" class="fr.xebia.kouignamman.pi.vote.FlashLcdPlate" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -211,10 +211,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PersistenceVerticle.groovy" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="PersistenceVerticle.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/PersistenceVerticle.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="42" selection-start="1846" selection-end="1846" vertical-scroll-proportion="2.3398328">
+            <state line="56" column="42" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#36#77#0" expanded="true" />
               </folding>
@@ -222,11 +222,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FlashLcdPlate.groovy" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="FlashLcdPlate.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="0" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="7" column="0" selection-start="273" selection-end="273" vertical-scroll-proportion="0.16713092">
+              <folding>
+                <element signature="e#38#98#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -259,12 +261,12 @@
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidReaderMock.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" />
-        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/Voter.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/Vote.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/PersistenceVerticle.groovy" />
+        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
       </list>
     </option>
   </component>
@@ -879,13 +881,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="0" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sleepycat/je/5.0.73/9c4ef8480a64520f688c96904f45e994bf017e16/je-5.0.73-sources.jar!/com/sleepycat/persist/EntityStore.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="314" column="26" selection-start="12688" selection-end="12688" vertical-scroll-proportion="0.29647058">
@@ -920,9 +915,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/PersistenceVerticle.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="42" selection-start="1846" selection-end="1846" vertical-scroll-proportion="2.3398328">
+        <state line="56" column="42" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#36#77#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="273" selection-end="273" vertical-scroll-proportion="0.16713092">
+          <folding>
+            <element signature="e#38#98#0" expanded="true" />
           </folding>
         </state>
       </provider>
