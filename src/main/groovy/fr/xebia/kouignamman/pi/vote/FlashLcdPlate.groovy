@@ -4,7 +4,6 @@ import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
-import org.vertx.java.core.json.impl.Json
 
 class FlashLcdPlate extends Verticle {
 

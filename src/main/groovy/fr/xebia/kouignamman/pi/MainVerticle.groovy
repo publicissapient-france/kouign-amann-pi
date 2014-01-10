@@ -1,6 +1,7 @@
 package fr.xebia.kouignamman.pi
 
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
+import fr.xebia.kouignamman.pi.db.PersistenceVerticle
 import fr.xebia.kouignamman.pi.hardwareTest.TestLcd
 import fr.xebia.kouignamman.pi.hardwareTest.TestLedBackPack
 import fr.xebia.kouignamman.pi.vote.FlashLcdPlate
@@ -26,6 +27,9 @@ class MainVerticle extends Verticle {
         if (container.config.testLedBackPack) {
             container.deployWorkerVerticle('groovy:' + TestLedBackPack.class.name, container.config, 1)
         }
+        // Local persistence
+        container.deployWorkerVerticle('groovy:' + PersistenceVerticle.class.name, container.config, 1)
+
     }
 
 

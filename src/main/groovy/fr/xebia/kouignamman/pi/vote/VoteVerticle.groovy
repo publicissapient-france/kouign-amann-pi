@@ -47,10 +47,13 @@ class VoteVerticle extends Verticle {
 
         logger.info "Done initialize handler";
 
-        //lcd.shutdown();
         vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", null)
 
         waitForNfcIdentification(null)
+    }
+
+    def stop() {
+        lcd.shutdown()
     }
 
     void waitForNfcIdentification(Message incomingMsg) {
@@ -71,10 +74,13 @@ class VoteVerticle extends Verticle {
                 "voteTime": new Date().getTime()
         ]
 
-        logger.info "Voter ${byteArrayToNormalizedString(cardResponse)} is ready to vote"
+        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
+            logger.info "Voter ${responseDb.body.name} is ready to vote"
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null){ response ->
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null) { responsePlate ->
+                // Send message to next processor
+                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+            }
         }
 
     }
@@ -130,7 +136,7 @@ class VoteVerticle extends Verticle {
                     "voteTime": voteTime,
                     "note": note
             ]
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage){ response ->
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage) { response ->
                 vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
             }
 
@@ -143,7 +149,7 @@ class VoteVerticle extends Verticle {
                 .toUpperCase()
                 .replaceAll('(..)', '$0 ')
                 .trim()
-                .substring(0, 12)
+                .substring(0, 11)
     }
 
 
