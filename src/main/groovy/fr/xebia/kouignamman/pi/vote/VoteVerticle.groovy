@@ -1,6 +1,7 @@
 package fr.xebia.kouignamman.pi.vote
 
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
+import fr.xebia.kouignamman.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 
@@ -9,19 +10,25 @@ import javax.smartcardio.*
 class VoteVerticle extends Verticle {
 
     def logger = container.logger
-    def static lcd = new AdafruitLcdPlate(1, 0x20);
-    CardTerminal nfcTerminal
+    def static lcd
+    def nfcTerminal
     static final byte[] READ_UID_SEQ = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 
 
     def start() {
-        logger.info("Initializing led plate");
-        lcd.setBacklight(0x01 + 0x04)
-        logger.info("Done initializing led plate");
+        if (container.config.mockAll) {
+            logger.info("Initializing MOCK lcd plate")
+            lcd = new LcdMock()
+        } else {
+            logger.info("Initializing lcd plate")
+            lcd = new AdafruitLcdPlate(1, 0x20)
+            lcd.setBacklight(0x01 + 0x04)
+            logger.info("Done initializing lcd plate")
 
-        logger.info("Finding Nfc reader");
-        nfcTerminal = TerminalFactory.getDefault().terminals().list().get(0);
-        logger.info("Nfc reader found : ${nfcTerminal.name}");
+            logger.info("Finding Nfc reader")
+            nfcTerminal = TerminalFactory.getDefault().terminals().list().get(0)
+            logger.info("Nfc reader found : ${nfcTerminal.name}")
+        }
 
         logger.info("Initialize handler");
         [
