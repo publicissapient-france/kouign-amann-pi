@@ -1,5 +1,6 @@
 package fr.xebia.kouignamman.pi.vote
 
+import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import fr.xebia.kouignamman.pi.mock.RfidReaderMock
 import org.vertx.groovy.core.eventbus.Message
@@ -20,40 +21,44 @@ class VoteVerticle extends Verticle {
     def start() {
         logger = container.logger
 
-        logger.info "Mock : ${container.config.mockAll}"
-        if (container.config.mockAll) {
-            logger.info "Initializing MOCK lcd plate"
-            lcd = LcdMock.instance
-            nfcTerminal = new RfidReaderMock()
-
-        } else {
+        if (!container.config.mockLcd) {
             logger.info "Initializing lcd plate"
-            //lcd = AdafruitLcdPlate.instance
+            lcd = AdafruitLcdPlate.instance
             lcd.setBacklight(0x01 + 0x04)
             logger.info "Done initializing lcd plate"
-
+        } else {
+            logger.info "Initializing MOCK lcd plate"
+            lcd = LcdMock.instance
+        }
+        if (!container.config.mockRfid) {
             logger.info "Finding Nfc reader"
             nfcTerminal = TerminalFactory.getDefault().terminals().list().get(0)
             logger.info "Nfc reader found : ${nfcTerminal.name}"
+        } else {
+            logger.info "Finding MOCK Nfc reader"
+            nfcTerminal = new RfidReaderMock()
         }
 
         logger.info "Initialize handler";
         [
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification": this.&waitForNfcIdentification,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote": this.&waitForVote,
-        ].each { eventBusAddress, handler ->
-            vertx.eventBus.registerHandler(eventBusAddress, handler)
+                "  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .waitForNfcIdentification  ": this.&waitForNfcIdentification,
+                "  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .waitForVote  ": this.&waitForVote,
+        ].each {
+            eventBusAddress, handler ->
+                vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
 
         logger.info "Done initialize handler";
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", null)
+        vertx.eventBus.send("  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .startFlashing  ", null)
 
         waitForNfcIdentification(null)
     }
 
     def stop() {
-        lcd.shutdown()
+        if (lcd) {
+            lcd.shutdown()
+        }
     }
 
     void waitForNfcIdentification(Message incomingMsg) {

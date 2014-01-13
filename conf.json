@@ -2,5 +2,6 @@
     "hardwareUid": "Salle-1",
     "testLcd": false,
     "testLedBackPack": false,
-    "mockAll": true
+    "mockLcd": true,
+    "mockRfid": true
 }

@@ -16,9 +16,6 @@ class MainVerticle extends Verticle {
         logger = container.logger
         logger.info "Starting"
         logger.info "Initialise singleton only if hardware is active"
-        if (!container.config.mockAll) {
-            AdafruitLcdPlate.INSTANCE = new AdafruitLcdPlate(1, 0x20)
-        }
         container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1)
         container.deployWorkerVerticle('groovy:' + FlashLcdPlate.class.name, container.config, 1)
         if (container.config.testLcd) {

@@ -13,7 +13,7 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389352070226" ignored="false" />
     <file path="/build.gradle" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389191539109" ignored="false" />
-    <file path="/AdafruitLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389365547035" ignored="false" />
+    <file path="/AdafruitLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389617218507" ignored="false" />
     <file path="/TestLcd.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389192322718" ignored="false" />
     <file path="/LedBackpack.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389264606359" ignored="false" />
     <file path="/EightByEight.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389265819649" ignored="false" />
@@ -28,9 +28,9 @@
     <file path="$PROJECT_DIR$/../unibail-fid/unibail-fid-server/package.json" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389276336193" ignored="false" />
     <file path="$PROJECT_DIR$/../unibail-fid/unibail-fid-webapp/index.html" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389276998486" ignored="false" />
     <file path="/gradle.properties" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389350715271" ignored="false" />
-    <file path="/VoteVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389377046362" ignored="false" />
+    <file path="/VoteVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389618445971" ignored="false" />
     <file path="/FlashLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389367370609" ignored="false" />
-    <file path="/conf.json" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389360556617" ignored="false" />
+    <file path="/conf.json" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389616904767" ignored="false" />
     <file path="/MainVerticle.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389376521999" ignored="false" />
     <file path="/LcdMock.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389365435827" ignored="false" />
     <file path="/RfidReaderMock.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389362493389" ignored="false" />
@@ -104,7 +104,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="88" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="93" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -119,7 +119,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="79" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" line="84" class="fr.xebia.kouignamman.pi.vote.VoteVerticle" package="fr.xebia.kouignamman.pi.vote">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -189,43 +189,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="VoteVerticle.groovy" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="AdafruitLcdPlate.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="98" column="26" selection-start="3248" selection-end="3248" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainVerticle.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="18" column="8" selection-start="618" selection-end="618" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VoteVerticle.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="151" column="32" selection-start="5201" selection-end="5201" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#38#81#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RfidReaderMock.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidReaderMock.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#38#76#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PersistenceVerticle.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/PersistenceVerticle.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="42" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#36#77#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FlashLcdPlate.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="273" selection-end="273" vertical-scroll-proportion="0.16713092">
+            <state line="37" column="38" selection-start="1281" selection-end="1281" vertical-scroll-proportion="0.6100982">
               <folding>
                 <element signature="e#38#98#0" expanded="true" />
               </folding>
@@ -257,16 +242,16 @@
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/gradle.properties" />
         <option value="$PROJECT_DIR$/src/main/resources/mod.json" />
-        <option value="$PROJECT_DIR$/conf.json" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidReaderMock.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/LcdMock.groovy" />
-        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/Voter.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/Vote.groovy" />
-        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" />
-        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/PersistenceVerticle.groovy" />
         <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy" />
+        <option value="$PROJECT_DIR$/conf.json" />
+        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy" />
+        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy" />
+        <option value="$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy" />
       </list>
     </option>
   </component>
@@ -419,32 +404,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="myproject" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kouign-amann-pi" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kouign-amann-pi" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="groovy" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -539,7 +498,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="hardwareTest" />
+              <option name="myItemId" value="db" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -569,7 +528,45 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="db" />
+              <option name="myItemId" value="adafruit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="led" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kouign-amann-pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kouign-amann-pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="groovy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adafruit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lcd" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -743,7 +740,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964131" sideWeight="0.51326257" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4867374" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4867374" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -818,11 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/conf.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="28" selection-start="82" selection-end="82" vertical-scroll-proportion="0.11221945" />
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/lang-groovy/2.0.0-final/8ff02d5bfc097b7416eca86ccb82de7209f342e6/lang-groovy-2.0.0-final-sources.jar!/org/vertx/groovy/platform/Verticle.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="55" column="0" selection-start="1408" selection-end="1408" vertical-scroll-proportion="0.43529412">
@@ -842,13 +834,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="10" selection-start="197" selection-end="197" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/db/Vote.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="0" selection-start="343" selection-end="343" vertical-scroll-proportion="0.0">
@@ -864,13 +849,6 @@
           <folding>
             <element signature="e#36#77#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="60" selection-start="1323" selection-end="1323" vertical-scroll-proportion="1.0027856">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -895,15 +873,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="32" selection-start="5201" selection-end="5201" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#38#81#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/mock/RfidReaderMock.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="0.0">
@@ -924,7 +893,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/FlashLcdPlate.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="273" selection-end="273" vertical-scroll-proportion="0.16713092">
+        <state line="7" column="0" selection-start="273" selection-end="273" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#38#98#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="12" selection-start="89" selection-end="96" vertical-scroll-proportion="-2.5">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/MainVerticle.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="8" selection-start="618" selection-end="618" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/adafruit/lcd/AdafruitLcdPlate.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="98" column="26" selection-start="3248" selection-end="3248" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/groovy/fr/xebia/kouignamman/pi/vote/VoteVerticle.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="38" selection-start="1281" selection-end="1281" vertical-scroll-proportion="0.6100982">
           <folding>
             <element signature="e#38#98#0" expanded="true" />
           </folding>
