@@ -3,9 +3,7 @@ package fr.xebia.kouignamman.pi.hardwareTest
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import org.vertx.groovy.platform.Verticle
 
-
 class TestLcd extends Verticle {
-
 
     def start() {
         def lcd = new AdafruitLcdPlate(1, 0x20);
