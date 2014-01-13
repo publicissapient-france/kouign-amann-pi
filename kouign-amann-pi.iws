@@ -12,7 +12,7 @@
     <ignored path="kouign-amann-pi.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389352070226" ignored="false" />
-    <file path="/build.gradle" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389621527183" ignored="false" />
+    <file path="/build.gradle" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389624922285" ignored="false" />
     <file path="/AdafruitLcdPlate.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389617218507" ignored="false" />
     <file path="/TestLcd.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389192322718" ignored="false" />
     <file path="/LedBackpack.groovy" changelist="2a9be82c-ad45-4db6-83c6-4ba92c9cd1e1" time="1389264606359" ignored="false" />
@@ -201,7 +201,7 @@
       <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="12" selection-start="2521" selection-end="2521" vertical-scroll-proportion="0.5041322">
+            <state line="64" column="35" selection-start="2583" selection-end="2583" vertical-scroll-proportion="0.5247934">
               <folding />
             </state>
           </provider>
@@ -934,7 +934,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="12" selection-start="2521" selection-end="2521" vertical-scroll-proportion="0.5041322">
+        <state line="64" column="35" selection-start="2583" selection-end="2583" vertical-scroll-proportion="0.5247934">
           <folding />
         </state>
       </provider>

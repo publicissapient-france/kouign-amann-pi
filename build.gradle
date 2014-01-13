@@ -61,7 +61,7 @@ dependencies {
     provided "org.codehaus.groovy:groovy-all:$groovyVersion"
     provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
 
-    provided 'com.pi4j:pi4j-core:0.0.5'
+    compile 'com.pi4j:pi4j-core:0.0.5'
     compile 'com.sleepycat:je:5.0.73'
     //compile 'com.sleepycat:je:5.0.97'
 
