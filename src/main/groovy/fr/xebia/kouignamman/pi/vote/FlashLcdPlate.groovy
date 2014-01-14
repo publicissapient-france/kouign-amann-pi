@@ -1,5 +1,6 @@
 package fr.xebia.kouignamman.pi.vote
 
+import fr.xebia.kouignamman.pi.MainVerticle
 import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
 import fr.xebia.kouignamman.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
@@ -33,7 +34,8 @@ class FlashLcdPlate extends Verticle {
         if (container.config.mockAll) {
             lcd = LcdMock.instance
         } else {
-            lcd = AdafruitLcdPlate.instance
+            lcd = MainVerticle.lcdPlate
+            //lcd = AdafruitLcdPlate.instance
         }
 
         log.info('Done initialize handler')

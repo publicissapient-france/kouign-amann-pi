@@ -6,15 +6,6 @@ import com.pi4j.io.i2c.I2CFactory
 
 
 class AdafruitLcdPlate {
-    // Singleton
-    public static INSTANCE
-
-    static getInstance() {
-        if (!INSTANCE) {
-            INSTANCE = new AdafruitLcdPlate(1, 0x20)
-        }
-        return INSTANCE
-    }
 
     // LED colors
     static final int OFF = 0x00

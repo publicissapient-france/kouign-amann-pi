@@ -21,9 +21,10 @@ class VoteVerticle extends Verticle {
     def start() {
         logger = container.logger
 
+        logger.info("mockLcd ${container.config.mockLcd} mockRfid ${container.config.mockRfid} ")
         if (!container.config.mockLcd) {
             logger.info "Initializing lcd plate"
-            lcd = AdafruitLcdPlate.instance
+            lcd = new AdafruitLcdPlate(1, 0x20)
             lcd.setBacklight(0x01 + 0x04)
             logger.info "Done initializing lcd plate"
         } else {
@@ -41,8 +42,8 @@ class VoteVerticle extends Verticle {
 
         logger.info "Initialize handler";
         [
-                "  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .waitForNfcIdentification  ": this.&waitForNfcIdentification,
-                "  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .waitForVote  ": this.&waitForVote,
+                "fr.xebia.kouignamman.pi.${container.config.hardwareUid }.waitForNfcIdentification": this.&waitForNfcIdentification,
+                "fr.xebia.kouignamman.pi.${container.config.hardwareUid }.waitForVote": this.&waitForVote,
         ].each {
             eventBusAddress, handler ->
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
@@ -50,8 +51,7 @@ class VoteVerticle extends Verticle {
 
         logger.info "Done initialize handler";
 
-        vertx.eventBus.send("  fr.xebia.kouignamman.pi.  ${ container.config.hardwareUid } .startFlashing  ", null)
-
+        startFlashing()
         waitForNfcIdentification(null)
     }
 
@@ -63,6 +63,7 @@ class VoteVerticle extends Verticle {
 
     void waitForNfcIdentification(Message incomingMsg) {
         // Wait for NFC identification
+        lcd.clear()
         lcd.write("En attente NFC")
 
         // Mise en attente bloquante
@@ -82,16 +83,19 @@ class VoteVerticle extends Verticle {
         vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
             logger.info "Voter ${responseDb.body.name} is ready to vote"
 
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing", null) { responsePlate ->
-                // Send message to next processor
-                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
-            }
+            stopFlashing()
+            // Send message to next processor
+            outgoingMessage.put ("name", responseDb.body.name)
+            logger.info("Send message to next processor fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote")
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
         }
 
     }
 
     void waitForVote(Message incomingMsg) {
-        lcd.write("En attente Vote")
+        logger.info("Message received by next processor fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote")
+        lcd.clear()
+        lcd.write("${incomingMsg.body.name}")
 
         boolean voteSaved = false
         int note = -1
@@ -110,7 +114,6 @@ class VoteVerticle extends Verticle {
             int[] result = lcd.readButtonsPressed()
 
             def multiplevote = false;
-            println result
             for (int i = 0; i < 5; i++) {
                 if (result[i]) {
                     if (!multiplevote)
@@ -122,16 +125,15 @@ class VoteVerticle extends Verticle {
             if (note > -1 && !multiplevote) {
                 lcd.clear()
                 lcd.write("Votre note: ${note}");
-                Thread.sleep(1500);
+                sleep 1500
 
                 // TODO proceed to agregation server
                 // Return to NFC waiting
                 voteSaved = true
-
             } else if (multiplevote) {
                 lcd.clear()
                 lcd.write("Une seule note SVP");
-                Thread.sleep(1500);
+                sleep 1500
             }
             loopCount++
         }
@@ -141,10 +143,8 @@ class VoteVerticle extends Verticle {
                     "voteTime": voteTime,
                     "note": note
             ]
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing", outgoingMessage) { response ->
-                vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
-            }
-
+            startFlashing()
+            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
         }
 
     }
@@ -155,6 +155,43 @@ class VoteVerticle extends Verticle {
                 .replaceAll('(..)', '$0 ')
                 .trim()
                 .substring(0, 11)
+    }
+
+    static final Integer FLASH_PERIOD = 1000
+    int colorIdx = 0
+    Long flashTimerId
+
+    void stopFlashing() {
+
+        logger.info('Stop flashing')
+
+        if (flashTimerId) {
+            vertx.cancelTimer(flashTimerId)
+            lcd.setBacklight(0x05)
+            flashTimerId = 0
+        }
+        logger.info('Exit stop flashing method')
+    }
+
+    void startFlashing() {
+
+        logger.info('Start flashing')
+
+        if (!flashTimerId) {
+            flashTimerId = vertx.setPeriodic(FLASH_PERIOD, this.&flash)
+        }
+        logger.info('Exit start flashing method')
+
+    }
+
+    private void flash(Long timerId) {
+
+        lcd.setBacklight(lcd.COLORS[colorIdx++])
+
+        if (colorIdx >= lcd.COLORS.length) {
+            // Reset
+            colorIdx = 0
+        }
     }
 
 
