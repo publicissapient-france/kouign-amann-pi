@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.test.integration.groovy;
+package fr.xebia.kouignamann.pi.test.integration.groovy;
 /*
  * Copyright 2013 Red Hat, Inc.
  *

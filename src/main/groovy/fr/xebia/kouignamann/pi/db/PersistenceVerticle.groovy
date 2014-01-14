@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.db
+package fr.xebia.kouignamann.pi.db
 
 import com.sleepycat.je.DatabaseException
 import com.sleepycat.je.Environment
@@ -25,8 +25,9 @@ class PersistenceVerticle extends Verticle {
         logger.info "Initializing DB"
 
         [
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.storeVote": this.&storeVote,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote": this.&storeVote,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes": this.&processStoredVotes,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
@@ -51,7 +52,11 @@ class PersistenceVerticle extends Verticle {
             voter.name = "Pablo Lopez"
             voter.nfcId = "1D A8 7E ED"
             voterIdx.put(voter)
-            logger.info "Retrieve entity ${voterIdx.get(voter.nfcId)}"
+
+            voter = new Voter()
+            voter.name = "Merle Moqueur"
+            voter.nfcId = "00 00 00 00"
+            voterIdx.put(voter)
 
         } catch (DatabaseException dbe) {
             logger.error "Error opening environment and store: ${dbe.toString()}"
@@ -79,7 +84,7 @@ class PersistenceVerticle extends Verticle {
 
     def processStoredVotes(Message message) {
         // TODO test
-        def cursor = voterIdx.entities()
+        def cursor = voteIdx.entities()
         for (Vote vote : cursor) {
             Map outgoingMessage = [
                     "nfcId": vote.nfcId,
@@ -94,6 +99,7 @@ class PersistenceVerticle extends Verticle {
                 voterIdx.delete(vote.voteUid)
                 // Failure : break
             }*/
+            logger.info "Send to central vote ${vote.voteUid}"
         }
         cursor.close()
 

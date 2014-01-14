@@ -1,6 +1,6 @@
-package fr.xebia.kouignamman.pi.hardwareTest
+package fr.xebia.kouignamann.pi.hardwareTest
 
-import fr.xebia.kouignamman.pi.adafruit.led.EightByEight
+import fr.xebia.kouignamann.pi.adafruit.led.EightByEight
 import org.vertx.groovy.platform.Verticle
 
 class TestLedBackPack extends Verticle {

@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.adafruit.led
+package fr.xebia.kouignamann.pi.adafruit.led
 
 
 class EightByEight {

@@ -1,6 +1,4 @@
-package fr.xebia.kouignamman.pi.mock
-
-import groovy.mock.interceptor.MockFor
+package fr.xebia.kouignamann.pi.mock
 
 import javax.smartcardio.Card
 import javax.smartcardio.CardChannel
@@ -9,7 +7,8 @@ import javax.smartcardio.ResponseAPDU
 
 class RfidReaderMock {
 
-    //static cardMock = new MockFor(Card.class)
+    def logger
+
     static channelMock = [ transmit: {  command -> new ResponseAPDU(new byte[0xAA]) } ] as CardChannel
     static cardMock = [ getBasicChannel: { id -> channelMock }, disconnect:{  bool -> true }  ] as Card
 
