@@ -67,6 +67,8 @@ class VoteVerticle extends Verticle {
         lcd.write("En attente NFC")
 
         // Mise en attente bloquante
+        // TODO -> cela bloque l'event loop et empeche de flasher...
+        // Ressortir le flash dans un autre event loop : il faut alors partager le lcd... et on reboucle sur le singleton :(
         nfcTerminal.waitForCardPresent 0
 
         // Display userName
