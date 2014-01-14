@@ -1,6 +1,6 @@
-package fr.xebia.kouignamman.pi.hardwareTest
+package fr.xebia.kouignamann.pi.hardwareTest
 
-import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
+import fr.xebia.kouignamann.pi.adafruit.lcd.AdafruitLcdPlate
 import org.vertx.groovy.platform.Verticle
 
 class TestLcd extends Verticle {

@@ -1,9 +1,9 @@
-package fr.xebia.kouignamman.pi
+package fr.xebia.kouignamann.pi
 
-import fr.xebia.kouignamman.pi.db.PersistenceVerticle
-import fr.xebia.kouignamman.pi.hardwareTest.TestLcd
-import fr.xebia.kouignamman.pi.hardwareTest.TestLedBackPack
-import fr.xebia.kouignamman.pi.vote.VoteVerticle
+import fr.xebia.kouignamann.pi.db.PersistenceVerticle
+import fr.xebia.kouignamann.pi.hardwareTest.TestLcd
+import fr.xebia.kouignamann.pi.hardwareTest.TestLedBackPack
+import fr.xebia.kouignamann.pi.vote.VoteVerticle
 import org.vertx.groovy.platform.Verticle
 import org.vertx.java.core.logging.Logger
 

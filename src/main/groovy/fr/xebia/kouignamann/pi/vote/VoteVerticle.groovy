@@ -1,8 +1,8 @@
-package fr.xebia.kouignamman.pi.vote
+package fr.xebia.kouignamann.pi.vote
 
-import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
-import fr.xebia.kouignamman.pi.mock.LcdMock
-import fr.xebia.kouignamman.pi.mock.RfidReaderMock
+import fr.xebia.kouignamann.pi.adafruit.lcd.AdafruitLcdPlate
+import fr.xebia.kouignamann.pi.mock.LcdMock
+import fr.xebia.kouignamann.pi.mock.RfidReaderMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 
@@ -42,8 +42,8 @@ class VoteVerticle extends Verticle {
 
         logger.info "Initialize handler";
         [
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid }.waitForNfcIdentification": this.&waitForNfcIdentification,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid }.waitForVote": this.&waitForVote,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid }.waitForNfcIdentification": this.&waitForNfcIdentification,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid }.waitForVote": this.&waitForVote,
         ].each {
             eventBusAddress, handler ->
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
@@ -82,20 +82,20 @@ class VoteVerticle extends Verticle {
                 "voteTime": new Date().getTime()
         ]
 
-        vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
+        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
             logger.info "Voter ${responseDb.body.name} is ready to vote"
 
             stopFlashing()
             // Send message to next processor
             outgoingMessage.put("name", responseDb.body.name)
-            logger.info("Send message to next processor fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote")
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+            logger.info("Send message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
         }
 
     }
 
     void waitForVote(Message incomingMsg) {
-        logger.info("Message received by next processor fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote")
+        logger.info("Message received by next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote")
         lcd.clear()
         lcd.write("${incomingMsg.body.name}")
 
@@ -146,7 +146,7 @@ class VoteVerticle extends Verticle {
                     "note": note
             ]
             startFlashing()
-            vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification", outgoingMessage)
         }
 
     }

@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.adafruit.led
+package fr.xebia.kouignamann.pi.adafruit.led
 
 import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice

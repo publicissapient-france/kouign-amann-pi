@@ -1,6 +1,6 @@
-package fr.xebia.kouignamman.pi.mock
+package fr.xebia.kouignamann.pi.mock
 
-import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
+import fr.xebia.kouignamann.pi.adafruit.lcd.AdafruitLcdPlate
 
 
 class LcdMock {

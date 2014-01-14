@@ -1,7 +1,7 @@
 {
 
   // Java verticle
-  //"main":"fr.xebia.kouignamman.pi.hardwareTest.TestLedBackPack",
+  //"main":"fr.xebia.kouignamann.pi.hardwareTest.TestLedBackPack",
 
   // In this example we also provide various other versions of the main verticle, you can uncomment this and
   // play around:
@@ -10,7 +10,7 @@
   //"main":"JavaSourcePingVerticle.java",
 
   // Compiled Groovy verticle - note that they must be prefixed with 'groovy:' to distinguish them from compiled Java verticles
-  "main":"groovy:fr.xebia.kouignamman.pi.MainVerticle",
+  "main":"groovy:fr.xebia.kouignamann.pi.MainVerticle",
 
   // Groovy *script* verticle
   //"main": "GroovyVerticle.groovy",

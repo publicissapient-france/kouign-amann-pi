@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.db
+package fr.xebia.kouignamann.pi.db
 
 import com.sleepycat.persist.model.Entity
 import com.sleepycat.persist.model.PrimaryKey

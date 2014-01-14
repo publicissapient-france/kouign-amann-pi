@@ -1,4 +1,4 @@
-package fr.xebia.kouignamman.pi.db
+package fr.xebia.kouignamann.pi.db
 
 import com.sleepycat.je.DatabaseException
 import com.sleepycat.je.Environment
@@ -26,7 +26,7 @@ class PersistenceVerticle extends Verticle {
         logger.info "Initializing DB"
 
         [
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }

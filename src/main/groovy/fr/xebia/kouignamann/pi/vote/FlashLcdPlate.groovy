@@ -1,8 +1,7 @@
-package fr.xebia.kouignamman.pi.vote
+package fr.xebia.kouignamann.pi.vote
 
-import fr.xebia.kouignamman.pi.MainVerticle
-import fr.xebia.kouignamman.pi.adafruit.lcd.AdafruitLcdPlate
-import fr.xebia.kouignamman.pi.mock.LcdMock
+import fr.xebia.kouignamann.pi.MainVerticle
+import fr.xebia.kouignamann.pi.mock.LcdMock
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 import org.vertx.java.core.logging.Logger
@@ -25,8 +24,8 @@ class FlashLcdPlate extends Verticle {
         log.info('Initialize handler')
 
         [
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.stopFlashing": this.&stopFlashing,
-                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.startFlashing": this.&startFlashing
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.stopFlashing": this.&stopFlashing,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.startFlashing": this.&startFlashing
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }

@@ -1,6 +1,4 @@
-package fr.xebia.kouignamman.pi.mock
-
-import groovy.mock.interceptor.MockFor
+package fr.xebia.kouignamann.pi.mock
 
 import javax.smartcardio.Card
 import javax.smartcardio.CardChannel
