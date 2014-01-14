@@ -5,6 +5,7 @@ import com.sleepycat.je.Environment
 import com.sleepycat.je.EnvironmentConfig
 import com.sleepycat.persist.EntityStore
 import com.sleepycat.persist.StoreConfig
+import fr.xebia.kouignamann.pi.util.WrapperEventBus
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 
@@ -81,6 +82,10 @@ class PersistenceVerticle extends Verticle {
 
         voteIdx.put(vote)
         logger.info("Storing '${vote}'")
+
+        message.reply([
+                status: "saved"
+        ])
     }
 
     def processStoredVotes(Message message) {
@@ -92,19 +97,29 @@ class PersistenceVerticle extends Verticle {
                     "note": vote.note,
                     "hardwareUid": container.config.hardwareUid
             ]
+            // End point must exists ?
+            // TODO Need further testing
             // Send to processor
-            // TODO SendTimeOut does not exist in groovy
-            // Making an event loop : fire all event. And fire delete if succeeded in central
             logger.info "Send to central vote ${vote.voteUid}"
-            vertx.eventBus.send(message.body.nextProcessor, outgoingMessage)
+            def eventBus = vertx.eventBus
+            def wrapperBus = new WrapperEventBus(eventBus.javaEventBus())
+            wrapperBus.sendWithTimeout(message.body.nextProcessor, outgoingMessage, 1000) {result ->
+                if (result.succeeded()) {
+                    logger.info("${outgoingMessage} successfully processed by central")
+                    deleteVoteFromLocal(vote.voteUid)
+                } else {
+                    logger.info("TIMEOUT from central - Do nothing")
+                }
+
+            }
         }
         cursor.close()
 
     }
 
-    def deleteVoteFromLocal(Message message) {
-        logger.info "Remove from local base vote ${message.body.voteUid}"
-        voteIdx.delete(message.body.voteUid)
+    def deleteVoteFromLocal(long voteUid) {
+        logger.info "Remove from local base vote ${voteUid}"
+        voteIdx.delete(voteUid)
     }
 
     def stop() {
