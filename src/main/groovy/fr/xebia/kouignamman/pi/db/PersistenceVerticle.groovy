@@ -5,10 +5,8 @@ import com.sleepycat.je.Environment
 import com.sleepycat.je.EnvironmentConfig
 import com.sleepycat.persist.EntityStore
 import com.sleepycat.persist.StoreConfig
-import org.vertx.groovy.platform.Verticle
 import org.vertx.groovy.core.eventbus.Message
-
-
+import org.vertx.groovy.platform.Verticle
 
 class PersistenceVerticle extends Verticle {
     static File envHome = new File("/tmp")
@@ -17,6 +15,7 @@ class PersistenceVerticle extends Verticle {
     private EntityStore store
 
     def voterIdx
+    def voteIdx
 
     def logger
 
@@ -27,6 +26,7 @@ class PersistenceVerticle extends Verticle {
 
         [
                 "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
+                "fr.xebia.kouignamman.pi.${container.config.hardwareUid}.storeVote": this.&storeVote,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
@@ -44,6 +44,8 @@ class PersistenceVerticle extends Verticle {
 
             // Create the index
             voterIdx = store.getPrimaryIndex(String.class, Voter.class);
+            voteIdx = store.getPrimaryIndex(Long.class, Vote.class);
+
             // Load Test data
             Voter voter = new Voter()
             voter.name = "Pablo Lopez"
@@ -63,6 +65,38 @@ class PersistenceVerticle extends Verticle {
         message.reply([
                 name: voter.name
         ])
+    }
+
+    def storeVote(Message message) {
+        Vote vote = new Vote()
+        vote.nfcId = message.body.nfcId
+        vote.voteTime = message.body.voteTime
+        vote.note = message.body.note
+
+        voteIdx.put(vote)
+        logger.info("Storing '${vote}'")
+    }
+
+    def processStoredVotes(Message message) {
+        // TODO test
+        def cursor = voterIdx.entities()
+        for (Vote vote : cursor) {
+            Map outgoingMessage = [
+                    "nfcId": vote.nfcId,
+                    "voteTime": vote.voteTime,
+                    "note": vote.note,
+                    "hardwareUid": container.config.hardwareUid
+            ]
+            // Send to processor
+            // TODO timeout send does not exist ?
+            /*vertx.eventBus.send(message.body.nextProcessor, outgoingMessage){response ->
+                // Success : delete entity
+                voterIdx.delete(vote.voteUid)
+                // Failure : break
+            }*/
+        }
+        cursor.close()
+
     }
 
     def stop() {

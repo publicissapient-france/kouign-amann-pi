@@ -6,7 +6,7 @@ import com.sleepycat.persist.model.PrimaryKey
 @Entity
 class Vote {
     // The primary key must be unique in the database.
-    @PrimaryKey(sequence="Sequence_Vote")
+    @PrimaryKey(sequence="Seq_Vote")
     private long voteUid;
 
     private String nfcId
