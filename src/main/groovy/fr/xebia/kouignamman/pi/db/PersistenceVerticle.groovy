@@ -47,7 +47,7 @@ class PersistenceVerticle extends Verticle {
             // Load Test data
             Voter voter = new Voter()
             voter.name = "Pablo Lopez"
-            voter.nfcId = "00 00 00 00"
+            voter.nfcId = "1D A8 7E ED"
             voterIdx.put(voter)
             logger.info "Retrieve entity ${voterIdx.get(voter.nfcId)}"
 

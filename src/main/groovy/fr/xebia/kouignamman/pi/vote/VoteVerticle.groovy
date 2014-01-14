@@ -85,7 +85,7 @@ class VoteVerticle extends Verticle {
 
             stopFlashing()
             // Send message to next processor
-            outgoingMessage.put ("name", responseDb.body.name)
+            outgoingMessage.put("name", responseDb.body.name)
             logger.info("Send message to next processor fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote")
             vertx.eventBus.send("fr.xebia.kouignamman.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
         }
@@ -159,7 +159,7 @@ class VoteVerticle extends Verticle {
 
     static final Integer FLASH_PERIOD = 1000
     int colorIdx = 0
-    Long flashTimerId
+    long flashTimerId
 
     void stopFlashing() {
 
@@ -178,21 +178,17 @@ class VoteVerticle extends Verticle {
         logger.info('Start flashing')
 
         if (!flashTimerId) {
-            flashTimerId = vertx.setPeriodic(FLASH_PERIOD, this.&flash)
+            flashTimerId = vertx.setPeriodic(FLASH_PERIOD) { flashTimerId ->
+                logger.info("Flashing ${colorIdx + 1}")
+                lcd.setBacklight(lcd.COLORS[colorIdx++])
+
+                if (colorIdx >= lcd.COLORS.length) {
+                    // Reset
+                    colorIdx = 0
+                }
+            }
         }
-        logger.info('Exit start flashing method')
+        logger.info("Exit start flashing method -> flashTimerId ${flashTimerId}")
 
     }
-
-    private void flash(Long timerId) {
-
-        lcd.setBacklight(lcd.COLORS[colorIdx++])
-
-        if (colorIdx >= lcd.COLORS.length) {
-            // Reset
-            colorIdx = 0
-        }
-    }
-
-
 }
