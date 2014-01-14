@@ -46,5 +46,7 @@ public class PingVerticle extends Verticle {
 
     logger.info("Config value foo is " + container.config().getString("foo"));
 
+      vertx.eventBus().sendWithTimeout()
+
   }
 }

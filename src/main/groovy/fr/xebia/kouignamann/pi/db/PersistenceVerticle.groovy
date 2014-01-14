@@ -28,6 +28,7 @@ class PersistenceVerticle extends Verticle {
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote": this.&storeVote,
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes": this.&processStoredVotes,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.deleteVoteFromLocal": this.&deleteVoteFromLocal,
         ].each { eventBusAddress, handler ->
             vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
@@ -83,7 +84,6 @@ class PersistenceVerticle extends Verticle {
     }
 
     def processStoredVotes(Message message) {
-        // TODO test
         def cursor = voteIdx.entities()
         for (Vote vote : cursor) {
             Map outgoingMessage = [
@@ -93,16 +93,18 @@ class PersistenceVerticle extends Verticle {
                     "hardwareUid": container.config.hardwareUid
             ]
             // Send to processor
-            // TODO timeout send does not exist ?
-            /*vertx.eventBus.send(message.body.nextProcessor, outgoingMessage){response ->
-                // Success : delete entity
-                voterIdx.delete(vote.voteUid)
-                // Failure : break
-            }*/
+            // TODO SendTimeOut does not exist in groovy
+            // Making an event loop : fire all event. And fire delete if succeeded in central
             logger.info "Send to central vote ${vote.voteUid}"
+            vertx.eventBus.send(message.body.nextProcessor, outgoingMessage)
         }
         cursor.close()
 
+    }
+
+    def deleteVoteFromLocal(Message message) {
+        logger.info "Remove from local base vote ${message.body.voteUid}"
+        voteIdx.delete(message.body.voteUid)
     }
 
     def stop() {

@@ -114,9 +114,9 @@ class VoteVerticle extends Verticle {
             // Proceed to data process
             logger.info("Sending message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote", outgoingMessage)
-            // Return to NFC waiting
-            reinitialiseLcd(null)
         }
+        // Return to NFC waiting
+        reinitialiseLcd(null)
 
     }
 
