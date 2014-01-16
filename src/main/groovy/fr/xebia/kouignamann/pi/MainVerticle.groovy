@@ -14,17 +14,37 @@ class MainVerticle extends Verticle {
 
     def start() {
         logger = container.logger
-        logger.info "Starting"
-        container.deployWorkerVerticle('groovy:' + NfcVerticle.class.name, container.config, 1) { asyncResult ->
-            if (asyncResult.succeeded) {
-                container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1)
+        logger.info "Main -> starting"
+        container.deployWorkerVerticle('groovy:' + NfcVerticle.class.name, container.config, 1) { asyncResultNfc ->
+            if (asyncResultNfc.succeeded) {
+                container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1) { asyncResultVote ->
+                    if (asyncResultVote.succeeded) {
+                        container.deployWorkerVerticle('groovy:' + DataManagementVerticle.class.name, container.config, 1) { asyncResultData ->
+                            if (asyncResultData.succeeded) {
+                                container.deployWorkerVerticle('groovy:' + PersistenceVerticle.class.name, container.config, 1) { asyncResultDB ->
+                                    if (asyncResultData.succeeded) {
+                                        Map msg = [status: "Init"]
+                                        logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.reinitialiseLcd")
+                                        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.reinitialiseLcd", msg) {
+                                            logger.info "****** Ready to process ******"
+                                        }
+                                    } else {
+                                        asyncResultData.cause.printStackTrace()
+                                    }
+                                }
+                            } else {
+                                asyncResultData.cause.printStackTrace()
+                            }
+                        }
+                    } else {
+                        asyncResultVote.cause.printStackTrace()
+                    }
+                }
             } else {
-                asyncResult.cause.printStackTrace()
+                asyncResultNfc.cause.printStackTrace()
             }
         }
-        container.deployWorkerVerticle('groovy:' + DataManagementVerticle.class.name, container.config, 1)
-        // Local persistence
-        container.deployWorkerVerticle('groovy:' + PersistenceVerticle.class.name, container.config, 1)
+
 
         if (container.config.testLcd) {
             container.deployWorkerVerticle('groovy:' + TestLcd.class.name, container.config, 1)
@@ -32,7 +52,5 @@ class MainVerticle extends Verticle {
         if (container.config.testLedBackPack) {
             container.deployWorkerVerticle('groovy:' + TestLedBackPack.class.name, container.config, 1)
         }
-
-
     }
 }

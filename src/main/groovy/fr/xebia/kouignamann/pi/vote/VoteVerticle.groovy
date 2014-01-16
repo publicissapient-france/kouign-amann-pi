@@ -14,18 +14,18 @@ class VoteVerticle extends Verticle {
         logger = container.logger
 
         if (!container.config.mockLcd) {
-            logger.info "Initializing lcd plate"
+            logger.info "Start -> Initializing lcd plate"
             lcd = new AdafruitLcdPlate(1, 0x20)
             lcd.setBacklight(0x01 + 0x04)
-            logger.info "Done initializing lcd plate"
+            logger.info "Start -> Done initializing lcd plate"
         } else {
-            logger.info "Initializing MOCK lcd plate"
+            logger.info "Start -> Initializing MOCK lcd plate"
             lcd = new LcdMock()
             lcd.logger = logger
         }
 
 
-        logger.info "Initialize handler";
+        logger.info "Start -> Initialize handler";
         [
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.reinitialiseLcd": this.&reinitialiseLcd,
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote": this.&waitForVote,
@@ -33,11 +33,7 @@ class VoteVerticle extends Verticle {
             eventBusAddress, handler ->
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
-
-        logger.info "Done initialize handler";
-
-        startFlashing()
-        reinitialiseLcd(null)
+        logger.info "Start -> Done initialize handler";
     }
 
     def stop() {
@@ -47,20 +43,28 @@ class VoteVerticle extends Verticle {
     }
 
     void reinitialiseLcd(Message incomingMsg) {
+        if (incomingMsg) {
+            incomingMsg.reply([
+                    status: "Process"
+            ])
+        }
         // Wait for NFC identification
         lcd.clear()
         lcd.write("En attente NFC")
         startFlashing()
 
         // Send message to next processor
-        logger.info("Send message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification")
-        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification", null)
+        Map msg = [status: "Next"]
+        logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification ${msg}")
+        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification", msg) {
+            logger.info "Process -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification replied"
+        }
     }
 
 
 
     void waitForVote(Message incomingMsg) {
-        logger.info("Message received by next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote")
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${incomingMsg}")
         stopFlashing()
         lcd.clear()
         lcd.write("${incomingMsg.body.name}")
@@ -112,7 +116,7 @@ class VoteVerticle extends Verticle {
                     "note": note
             ]
             // Proceed to data process
-            logger.info("Sending message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${outgoingMessage}")
+            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote", outgoingMessage)
         }
         // Return to NFC waiting
@@ -125,7 +129,7 @@ class VoteVerticle extends Verticle {
     long flashTimerId
 
     void stopFlashing() {
-        logger.info('Stop flashing')
+        logger.info('Process -> Stop flashing')
 
         if (flashTimerId) {
             vertx.cancelTimer(flashTimerId)
@@ -135,7 +139,7 @@ class VoteVerticle extends Verticle {
     }
 
     void startFlashing() {
-        logger.info('Start flashing')
+        logger.info('Process -> Start flashing')
         if (!flashTimerId) {
             flashTimerId = vertx.setPeriodic(FLASH_PERIOD) { flashTimerId ->
                 lcd.setBacklight(lcd.COLORS[colorIdx++])

@@ -12,7 +12,7 @@ class DataManagementVerticle extends Verticle {
 
     def start() {
         logger = container.logger
-        logger.info "Initialize handler";
+        logger.info "Start -> Initialize handler";
         [
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote": this.&processVote,
         ].each {
@@ -20,18 +20,20 @@ class DataManagementVerticle extends Verticle {
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
 
-        logger.info "Done initialize handler";
+        logger.info "Start -> Done initialize handler";
 
-        logger.info "Set periodic retry to central";
+        logger.info "Start -> Set periodic retry to central";
         purgeLocalTimer = vertx.setPeriodic(PURGE_PERIOD) { purgeLocalTimer ->
             Map outgoingMessage = [
-                    "nextProcessor": "fr.xebia.kouignamann.pi.central.processSingleVote"
+                    "nextProcessor": "fr.xebia.kouignamann.nuc.central.processSingleVote"
             ]
+            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes", outgoingMessage)
         }
     }
 
     def processVote(Message incomingMsg) {
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${incomingMsg}")
         Map outgoingMessage = [
                 "nfcId": incomingMsg.body.nfcId,
                 "voteTime": incomingMsg.body.voteTime,
@@ -44,14 +46,16 @@ class DataManagementVerticle extends Verticle {
 
         // End point must exists ?
         // TODO Need further testing
-        wrapperBus.sendWithTimeout("fr.xebia.kouignamann.pi.central.processSingleVote", outgoingMessage, 1000) { result ->
+        logger.info("Bus -> fr.xebia.kouignamann.nuc.central.processSingleVote ${outgoingMessage}")
+        //wrapperBus.sendWithTimeout("fr.xebia.kouignamann.nuc.central.processSingleVote", outgoingMessage, 1000) { result ->
+        wrapperBus.sendWithTimeout("fr.xebia.kouignamann.nuc.central.processSingleVote", outgoingMessage, 1000) { result ->
             if (result.succeeded) {
                 // If success do nothing
-                logger.info("${outgoingMessage} successfully processed by central")
+                logger.info("Process -> ${outgoingMessage} successfully processed by central")
             } else {
                 // If failed, store in local DB
                 logger.info (result.cause)
-                logger.info("TIMEOUT - Send message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote for local storage ${outgoingMessage}")
+                logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote ${outgoingMessage}")
                 vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote", outgoingMessage)
             }
 

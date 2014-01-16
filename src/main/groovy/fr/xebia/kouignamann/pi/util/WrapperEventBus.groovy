@@ -3,10 +3,8 @@ package fr.xebia.kouignamann.pi.util
 import groovy.transform.CompileStatic
 import org.vertx.groovy.core.AsyncResult
 import org.vertx.groovy.core.buffer.Buffer
-import org.vertx.groovy.core.eventbus.Message
 import org.vertx.java.core.Handler
 import org.vertx.java.core.eventbus.EventBus as JEventBus
-import org.vertx.java.core.eventbus.Message as JMessage
 import org.vertx.java.core.json.JsonObject
 
 @CompileStatic
@@ -18,7 +16,7 @@ class WrapperEventBus {
         this.jEventBus = jEventBus
     }
 
-    WrapperEventBus sendWithTimeout(String address, message, long timeout, Closure replyHandler = null) {
+    WrapperEventBus sendWithTimeout(String address, def message, long timeout, Closure replyHandler = null) {
         if (message != null) {
             jEventBus.sendWithTimeout(address, convertMessage(message), timeout, wrapHandler(replyHandler))
         } else {
@@ -29,7 +27,7 @@ class WrapperEventBus {
     }
 
 
-    protected static convertMessage(message) {
+    public static convertMessage(message) {
         if (message instanceof Map) {
             message = new JsonObject(message)
         } else if (message instanceof Buffer) {
@@ -38,7 +36,7 @@ class WrapperEventBus {
         message
     }
 
-    protected static Handler wrapHandler(Closure handler) {
+    public static Handler wrapHandler(Closure handler) {
         if (handler != null) {
             return { handler(new AsyncResult(it as org.vertx.java.core.AsyncResult)) } as Handler
         } else {

@@ -23,7 +23,7 @@ class PersistenceVerticle extends Verticle {
     def start() {
         boolean readOnly = false
         logger = container.logger
-        logger.info "Initializing DB"
+        logger.info "Start -> Initializing DB"
 
         [
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId": this.&getNameFromNfcId,
@@ -61,13 +61,14 @@ class PersistenceVerticle extends Verticle {
             voterIdx.put(voter)
 
         } catch (DatabaseException dbe) {
-            logger.error "Error opening environment and store: ${dbe.toString()}"
+            logger.error "Start -> Error opening environment and store: ${dbe.toString()}"
         }
-        logger.info "Done initializing DB"
+        logger.info "Start -> Done initializing DB"
     }
 
     def getNameFromNfcId(Message message) {
-        logger.info("Retrieving '${message.body.nfcId}'")
+        logger.info("Bus <- fr.xebia.kouignamann.pi.\${container.config.hardwareUid}.getNameFromNfcId ${message}")
+        logger.info("Process -> Retrieving '${message.body.nfcId}'")
         def voter = voterIdx.get(message.body.nfcId)
         message.reply([
                 name: voter.name
@@ -75,20 +76,22 @@ class PersistenceVerticle extends Verticle {
     }
 
     def storeVote(Message message) {
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote ${message}")
         Vote vote = new Vote()
         vote.nfcId = message.body.nfcId
         vote.voteTime = message.body.voteTime
         vote.note = message.body.note
 
         voteIdx.put(vote)
-        logger.info("Storing '${vote}'")
+        logger.info("Process -> Storing '${vote}'")
 
         message.reply([
-                status: "saved"
+                status: "OK"
         ])
     }
 
     def processStoredVotes(Message message) {
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes ${message}")
         def cursor = voteIdx.entities()
         for (Vote vote : cursor) {
             Map outgoingMessage = [
@@ -100,15 +103,15 @@ class PersistenceVerticle extends Verticle {
             // End point must exists ?
             // TODO Need further testing
             // Send to processor
-            logger.info "Send to central vote ${vote.voteUid}"
+            logger.info("Bus -> ${message.body.nextProcessor} ${message}")
             def eventBus = vertx.eventBus
             def wrapperBus = new WrapperEventBus(eventBus.javaEventBus())
             wrapperBus.sendWithTimeout(message.body.nextProcessor, outgoingMessage, 1000) {result ->
-                if (result.succeeded()) {
-                    logger.info("${outgoingMessage} successfully processed by central")
+                if (result.succeeded) {
+                    logger.info("Process -> ${outgoingMessage} successfully processed by central")
                     deleteVoteFromLocal(vote.voteUid)
                 } else {
-                    logger.info("TIMEOUT from central - Do nothing")
+                    logger.info("Process -> TIMEOUT from central - Do nothing")
                 }
 
             }
@@ -118,7 +121,7 @@ class PersistenceVerticle extends Verticle {
     }
 
     def deleteVoteFromLocal(long voteUid) {
-        logger.info "Remove from local base vote ${voteUid}"
+        logger.info "Process -> Remove from local base vote ${voteUid}"
         voteIdx.delete(voteUid)
     }
 
@@ -127,7 +130,7 @@ class PersistenceVerticle extends Verticle {
             try {
                 store.close();
             } catch (DatabaseException dbe) {
-                logger.error "Error closing store: ${dbe.toString()}"
+                logger.error "Stop -> Error closing store: ${dbe.toString()}"
             }
         }
 
@@ -136,7 +139,7 @@ class PersistenceVerticle extends Verticle {
                 // Finally, close environment.
                 devEnv.close();
             } catch (DatabaseException dbe) {
-                logger.error "Error closing MyDbEnv: ${dbe.toString()} "
+                logger.error "Stop -> Error closing MyDbEnv: ${dbe.toString()} "
             }
         }
     }

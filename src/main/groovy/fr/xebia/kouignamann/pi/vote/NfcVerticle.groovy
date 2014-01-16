@@ -19,16 +19,16 @@ class NfcVerticle extends Verticle {
     def start() {
         logger = container.logger
         if (!container.config.mockRfid) {
-            logger.info "Finding Nfc reader"
+            logger.info "Start -> Finding Nfc reader"
             nfcTerminal = TerminalFactory.getDefault().terminals().list().get(0)
-            logger.info "Nfc reader found : ${nfcTerminal.name}"
+            logger.info "Start -> Nfc reader found : ${nfcTerminal.name}"
         } else {
-            logger.info "Finding MOCK Nfc reader"
+            logger.info "Start -> Finding MOCK Nfc reader"
             nfcTerminal = new RfidReaderMock()
             nfcTerminal.logger = logger
         }
 
-        logger.info "Initialize handler";
+        logger.info "Start -> Initialize handler";
         [
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification": this.&waitForNfcIdentification
         ].each {
@@ -36,11 +36,16 @@ class NfcVerticle extends Verticle {
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
 
-        logger.info "Done initialize handler";
+        logger.info "Start -> Done initialize handler";
     }
 
     void waitForNfcIdentification(Message incomingMsg) {
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification")
+        if (incomingMsg) {
+            incomingMsg.reply([status: "Processing"])
+        }
         // Mise en attente bloquante
+        logger.info("Waiting -> nfcTerminal.waitForCardPresent")
         nfcTerminal.waitForCardPresent 0
 
         // Display userName
@@ -54,12 +59,13 @@ class NfcVerticle extends Verticle {
                 "voteTime": new Date().getTime()
         ]
 
+        logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId ${outgoingMessage}")
         vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
-            logger.info "Voter ${responseDb.body.name} is ready to vote"
+            logger.info "Process -> Voter ${responseDb.body.name} is ready to vote"
 
             // Send message to next processor
             outgoingMessage.put("name", responseDb.body.name)
-            logger.info("Send message to next processor fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote")
+            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
         }
 
