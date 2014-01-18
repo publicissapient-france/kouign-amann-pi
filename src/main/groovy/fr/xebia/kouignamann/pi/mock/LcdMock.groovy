@@ -17,7 +17,7 @@ class LcdMock {
     }
 
     def readButtonsPressed(){
-        sleep 1000
+        sleep 20000
         logger.debug "Mock lcd readButtonsPressed ${[0, 0, 1, 0, 0]}"
         return [0, 0, 1, 0, 0]
     }

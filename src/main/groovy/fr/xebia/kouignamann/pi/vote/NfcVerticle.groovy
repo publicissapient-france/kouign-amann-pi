@@ -16,6 +16,9 @@ class NfcVerticle extends Verticle {
     def nfcTerminal
     static final byte[] READ_UID_SEQ = [0xFF, 0xCA, 0x00, 0x00, 0x00]
 
+    def selfHealingTimer
+    def SELF_HEALING_PERIOD = 1000 * 60 * 2
+
     def start() {
         logger = container.logger
         if (!container.config.mockRfid) {
@@ -35,12 +38,29 @@ class NfcVerticle extends Verticle {
             eventBusAddress, handler ->
                 vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
-
         logger.info "Start -> Done initialize handler";
+    }
+
+    void selfHealing() {
+        // Self healing
+        if (selfHealingTimer) {
+            logger.info("Process -> selfHealing")
+            selfHealingTimer = vertx.setPeriodic(SELF_HEALING_PERIOD) { selfHealingTimer ->
+                waitForNfcIdentification(null)
+            }
+        }
+    }
+
+    void cancelSelfHealing() {
+        logger.info("Process -> cancelSelfHealing")
+        if (selfHealingTimer) {
+            vertx.cancelTimer(selfHealingTimer)
+        }
     }
 
     void waitForNfcIdentification(Message incomingMsg) {
         logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForNfcIdentification")
+        cancelSelfHealing()
         if (incomingMsg) {
             incomingMsg.reply([status: "Processing"])
         }
@@ -48,27 +68,34 @@ class NfcVerticle extends Verticle {
         logger.info("Waiting -> nfcTerminal.waitForCardPresent")
         nfcTerminal.waitForCardPresent 0
 
+        // Start self healing timer
+        selfHealing()
+
         // Display userName
-        Card card = nfcTerminal.connect("*")
-        ResponseAPDU cardResponse = card.getBasicChannel().transmit(new CommandAPDU(READ_UID_SEQ))
-        card.disconnect(false)
-
-        // Send message to next processor
-        Map outgoingMessage = [
-                "nfcId": byteArrayToNormalizedString(cardResponse),
-                "voteTime": new Date().getTime()
-        ]
-
-        logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId ${outgoingMessage}")
-        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
-            logger.info "Process -> Voter ${responseDb.body.name} is ready to vote"
+        try {
+            Card card = nfcTerminal.connect("*")
+            ResponseAPDU cardResponse = card.getBasicChannel().transmit(new CommandAPDU(READ_UID_SEQ))
+            card.disconnect(false)
 
             // Send message to next processor
-            outgoingMessage.put("name", responseDb.body.name)
-            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${outgoingMessage}")
-            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
-        }
+            Map outgoingMessage = [
+                    "nfcId": byteArrayToNormalizedString(cardResponse),
+                    "voteTime": new Date().getTime()
+            ]
 
+            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId ${outgoingMessage}")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId", outgoingMessage) { responseDb ->
+                logger.info "Process -> Voter ${responseDb.body.name} is ready to vote"
+
+                // Send message to next processor
+                outgoingMessage.put("name", responseDb.body.name)
+                logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${outgoingMessage}")
+                vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
+            }
+        } catch (Exception e) {
+            logger.error e
+            waitForNfcIdentification(null)
+        }
     }
 
     private String byteArrayToNormalizedString(ResponseAPDU cardReponse) {

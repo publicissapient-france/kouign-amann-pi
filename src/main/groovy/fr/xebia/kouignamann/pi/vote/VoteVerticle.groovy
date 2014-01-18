@@ -61,8 +61,6 @@ class VoteVerticle extends Verticle {
         }
     }
 
-
-
     void waitForVote(Message incomingMsg) {
         logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${incomingMsg}")
         stopFlashing()
@@ -77,8 +75,11 @@ class VoteVerticle extends Verticle {
         def voteTime = incomingMsg.body.voteTime
 
         def detectionTime = 10
-        def maxLoops = 10000 / detectionTime
+        def maxWaitTime = 1000 * 10
+        def maxLoops = maxWaitTime / detectionTime
         def loopCount = 0
+
+        logger.info("Process -> max loops ${maxLoops}")
 
         // Wait for button to be pressed
         while (!voteSaved && loopCount < maxLoops) {
@@ -94,6 +95,11 @@ class VoteVerticle extends Verticle {
                         multiplevote = true
                 }
             }
+
+            if(loopCount >= maxLoops){
+                logger.info("Process -> waited too long for vote, going back to NFC")
+            }
+
             if (note > -1 && !multiplevote) {
                 lcd.clear()
                 lcd.write("Votre note: ${note}");
@@ -106,6 +112,7 @@ class VoteVerticle extends Verticle {
                 lcd.write("Une seule note SVP");
                 sleep 1500
             }
+
             loopCount++
         }
         if (note > -1) {

@@ -70,8 +70,13 @@ class PersistenceVerticle extends Verticle {
         logger.info("Bus <- fr.xebia.kouignamann.pi.\${container.config.hardwareUid}.getNameFromNfcId ${message}")
         logger.info("Process -> Retrieving '${message.body.nfcId}'")
         def voter = voterIdx.get(message.body.nfcId)
+
+        def name = "Anonyme"
+        if (voter) {
+            name = voter.name
+        }
         message.reply([
-                name: voter.name
+                name: name
         ])
     }
 
@@ -106,7 +111,7 @@ class PersistenceVerticle extends Verticle {
             logger.info("Bus -> ${message.body.nextProcessor} ${message}")
             def eventBus = vertx.eventBus
             def wrapperBus = new WrapperEventBus(eventBus.javaEventBus())
-            wrapperBus.sendWithTimeout(message.body.nextProcessor, outgoingMessage, 1000) {result ->
+            wrapperBus.sendWithTimeout(message.body.nextProcessor, outgoingMessage, 1000) { result ->
                 if (result.succeeded) {
                     logger.info("Process -> ${outgoingMessage} successfully processed by central")
                     deleteVoteFromLocal(vote.voteUid)
