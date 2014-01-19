@@ -3,5 +3,12 @@
     "testLcd": false,
     "testLedBackPack": false,
     "mockLcd": true,
-    "mockRfid": true
+    "mockRfid": true,
+    "useMqtt": true,
+    "mqttClient": {
+        "server-uri" : "tcp://m10.cloudmqtt.com:10325",
+        "client-id": "vertx-1",
+        "user": "kouign-amann",
+        "password": "kouign-amann"
+    }
 }

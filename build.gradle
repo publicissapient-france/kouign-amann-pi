@@ -48,6 +48,14 @@ install - install any jars produced to the local Maven repository (.m2)
 
  */
 
+repositories {
+    maven {
+        url "http://repo.springsource.org/plugins-release"
+    }
+    mavenCentral()
+
+}
+
 dependencies {
     /*
     Add your module jar dependencies here
@@ -62,8 +70,8 @@ dependencies {
     provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
 
     compile 'com.pi4j:pi4j-core:0.0.5'
+    compile 'org.eclipse.paho:mqtt-client:0.4.0'
     compile 'com.sleepycat:je:5.0.73'
-    //compile 'com.sleepycat:je:5.0.97'
 
 
 }

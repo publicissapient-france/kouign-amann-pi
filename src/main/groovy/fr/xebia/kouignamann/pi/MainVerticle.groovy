@@ -3,6 +3,7 @@ package fr.xebia.kouignamann.pi
 import fr.xebia.kouignamann.pi.db.PersistenceVerticle
 import fr.xebia.kouignamann.pi.hardwareTest.TestLcd
 import fr.xebia.kouignamann.pi.hardwareTest.TestLedBackPack
+import fr.xebia.kouignamann.pi.mqtt.MqttDataManagementVerticle
 import fr.xebia.kouignamann.pi.vote.DataManagementVerticle
 import fr.xebia.kouignamann.pi.vote.NfcVerticle
 import fr.xebia.kouignamann.pi.vote.VoteVerticle
@@ -15,11 +16,17 @@ class MainVerticle extends Verticle {
     def start() {
         logger = container.logger
         logger.info "Main -> starting"
+
+        def centralCommProtocol = DataManagementVerticle.class.name
+        if (container.config.useMqtt) {
+            centralCommProtocol = MqttDataManagementVerticle.class.name
+        }
+
         container.deployWorkerVerticle('groovy:' + NfcVerticle.class.name, container.config, 1) { asyncResultNfc ->
             if (asyncResultNfc.succeeded) {
                 container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1) { asyncResultVote ->
                     if (asyncResultVote.succeeded) {
-                        container.deployWorkerVerticle('groovy:' + DataManagementVerticle.class.name, container.config, 1) { asyncResultData ->
+                        container.deployWorkerVerticle('groovy:' + centralCommProtocol, container.config, 1) { asyncResultData ->
                             if (asyncResultData.succeeded) {
                                 container.deployWorkerVerticle('groovy:' + PersistenceVerticle.class.name, container.config, 1) { asyncResultDB ->
                                     if (asyncResultData.succeeded) {
@@ -29,19 +36,19 @@ class MainVerticle extends Verticle {
                                             logger.info "****** Ready to process ******"
                                         }
                                     } else {
-                                        asyncResultData.cause.printStackTrace()
+                                        logger.error asyncResultDB.throwable
                                     }
                                 }
                             } else {
-                                asyncResultData.cause.printStackTrace()
+                                logger.error asyncResultData.throwable
                             }
                         }
                     } else {
-                        asyncResultVote.cause.printStackTrace()
+                        logger.error asyncResultVote.throwable
                     }
                 }
             } else {
-                asyncResultNfc.cause.printStackTrace()
+                logger.error asyncResultNfc.throwable
             }
         }
 

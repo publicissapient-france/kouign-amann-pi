@@ -67,7 +67,7 @@ class PersistenceVerticle extends Verticle {
     }
 
     def getNameFromNfcId(Message message) {
-        logger.info("Bus <- fr.xebia.kouignamann.pi.\${container.config.hardwareUid}.getNameFromNfcId ${message}")
+        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.getNameFromNfcId ${message}")
         logger.info("Process -> Retrieving '${message.body.nfcId}'")
         def voter = voterIdx.get(message.body.nfcId)
 
