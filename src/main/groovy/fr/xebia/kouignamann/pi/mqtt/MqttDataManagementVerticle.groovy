@@ -9,10 +9,25 @@ import org.vertx.java.core.json.impl.Json
 class MqttDataManagementVerticle extends Verticle implements MqttCallback {
     def logger
 
-    MqttClient client
+    MqttAsyncClient client
     MqttConnectOptions options
 
-    int retryConnectionCounter = 0
+    /*Object waiter = new Object();
+    boolean donext = false;
+    Throwable ex = null;
+
+
+    public int state = BEGIN;
+
+    static final int BEGIN = 0;
+    public static final int CONNECTED = 1;
+    static final int PUBLISHED = 2;
+    static final int SUBSCRIBED = 3;
+    static final int DISCONNECTED = 4;
+    static final int FINISH = 5;
+    static final int ERROR = 6;
+    static final int DISCONNECT = 7;
+    */
 
     def start() {
         logger = container.logger
@@ -36,18 +51,22 @@ class MqttDataManagementVerticle extends Verticle implements MqttCallback {
 
         String persistenceDir = config['persistence-dir'] ?: System.getProperty('java.io.tmpdir')
         def persistence = new MqttDefaultFilePersistence(persistenceDir)
-        client = new MqttClient(uri, clientId, persistence)
+        client = new MqttAsyncClient(uri, clientId, persistence)
 
         client.setCallback(this)
 
         options = new MqttConnectOptions()
-        options.setPassword(config.password as char[])
-        options.setUserName(config.user)
+        if (config.password) {
+            options.setPassword(config.password as char[])
+            options.setUserName(config.user)
+        }
+        options.setCleanSession(true)
+
+        //options.setKeepAliveInterval(30)
+        //options.setConnectionTimeout(0)
 
         client.connect(options)
-        if (client.connected) {
-            this.retryConnectionCounter = 0
-        }
+
         client.disconnect()
     }
 
@@ -60,29 +79,80 @@ class MqttDataManagementVerticle extends Verticle implements MqttCallback {
                 "hardwareUid": container.config.hardwareUid
         ]
 
-        client?.connect(options)
-
-        def topic = client.getTopic('fr.xebia.kouignamann.nuc.central.processSingleVote')
         def message = new MqttMessage(Json.encode(outgoingMessage).getBytes())
         message.setQos(2)
-        def token = topic.publish(message)
-        // token.waitForCompletion()
 
-        client.disconnect()
+        if (!client.isConnected()) {
+            client?.connect(options)
+        }
+
+        def topic = client.getTopic('fr.xebia.kouignamann.nuc.central.processSingleVote')
+        //def token = topic.publish(message)
+        client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote',message)
+        // token.waitForCompletion()
+        //client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
+
+        //if (client) {
+        // client.disconnect()
+        //}
     }
 
     @Override
     void connectionLost(Throwable throwable) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        logger.info "connectionLost"
+        while (!client.isConnected()) {
+            try {
+                client?.connect(options)
+                sleep 1000
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
+        }
     }
 
     @Override
     void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        logger.info "messageArrived"
     }
 
     @Override
     void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        logger.info "deliveryComplete"
     }
+
+    /*public void publish(String topicName, int qos, byte[] payload) throws Throwable {
+        client.connect(options, "Connect sample context", conListener)
+        client.publish(topicName, message, "Pub sample context", pubListener)
+        client.disconnect("Disconnect sample context", discListener)
+    }*/
+
+    /*
+    IMqttActionListener conListener = new IMqttActionListener() {
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    try{
+                    //logger.info ("Connected");
+                    println "Connected"
+                    state = CONNECTED;
+                    carryOn();
+                    } catch (Exception e){
+                        e.printStackTrace()
+                    }
+                }
+
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    ex = exception;
+                    state = ERROR;
+                    logger.error ("connect failed" + exception);
+                    carryOn();
+                }
+
+                public void carryOn() {
+                    synchronized (waiter) {
+                        donext = true;
+                        waiter.notifyAll();
+                    }
+                }
+            };
+     */
+
 }

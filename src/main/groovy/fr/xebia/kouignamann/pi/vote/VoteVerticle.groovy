@@ -90,13 +90,13 @@ class VoteVerticle extends Verticle {
             for (int i = 0; i < 5; i++) {
                 if (result[i]) {
                     if (!multiplevote)
-                        note = i;
+                        note = i + 1;
                     else
                         multiplevote = true
                 }
             }
 
-            if(loopCount >= maxLoops){
+            if (loopCount >= maxLoops) {
                 logger.info("Process -> waited too long for vote, going back to NFC")
             }
 
@@ -125,6 +125,9 @@ class VoteVerticle extends Verticle {
             // Proceed to data process
             logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote", outgoingMessage)
+
+            logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne ${outgoingMessage}")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", outgoingMessage)
         }
         // Return to NFC waiting
         reinitialiseLcd(null)

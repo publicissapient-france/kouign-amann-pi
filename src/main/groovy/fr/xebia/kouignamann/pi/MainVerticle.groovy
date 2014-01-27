@@ -3,6 +3,7 @@ package fr.xebia.kouignamann.pi
 import fr.xebia.kouignamann.pi.db.PersistenceVerticle
 import fr.xebia.kouignamann.pi.hardwareTest.TestLcd
 import fr.xebia.kouignamann.pi.hardwareTest.TestLedBackPack
+import fr.xebia.kouignamann.pi.hardwareTest.TestLedButton
 import fr.xebia.kouignamann.pi.mqtt.MqttDataManagementVerticle
 import fr.xebia.kouignamann.pi.vote.DataManagementVerticle
 import fr.xebia.kouignamann.pi.vote.NfcVerticle
@@ -58,6 +59,9 @@ class MainVerticle extends Verticle {
         }
         if (container.config.testLedBackPack) {
             container.deployWorkerVerticle('groovy:' + TestLedBackPack.class.name, container.config, 1)
+        }
+        if (container.config.testLedButton) {
+            container.deployWorkerVerticle('groovy:' + TestLedButton.class.name, container.config, 1)
         }
     }
 }
