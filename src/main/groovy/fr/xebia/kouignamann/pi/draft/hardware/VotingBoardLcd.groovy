@@ -2,12 +2,13 @@ package fr.xebia.kouignamann.pi.draft.hardware
 
 import com.pi4j.io.i2c.I2CDevice
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdCommand
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdDisplayEntry
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdDisplayShift
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdOnOffFlag
 import fr.xebia.kouignamann.pi.draft.hardware.plate.MCP23017
 import groovy.transform.CompileStatic
+
+import static fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdCommand.*
 
 /**
  * Created by amaury on 23/01/2014.
@@ -98,27 +99,27 @@ class VotingBoardLcd {
     }
 
     private void initDisplayControl() {
-        writeCmd(LcdCommand.DISPLAY_CONTROL | LcdOnOffFlag.DISPLAY_ON | LcdOnOffFlag.CURSOR_OFF | LcdOnOffFlag.BLINK_OFF)
+        writeCmd(DISPLAY_CONTROL | LcdOnOffFlag.DISPLAY_ON | LcdOnOffFlag.CURSOR_OFF | LcdOnOffFlag.BLINK_OFF)
     }
 
     private void initEntryMode() {
-        writeCmd(LcdCommand.ENTRY_MODE_SET | LcdDisplayEntry.ENTRY_LEFT | LcdDisplayEntry.ENTRY_SHIFT_DECREMENT)
+        writeCmd(ENTRY_MODE_SET | LcdDisplayEntry.ENTRY_LEFT | LcdDisplayEntry.ENTRY_SHIFT_DECREMENT)
     }
 
     private void shiftCursorRight() {
-        writeCmd(LcdCommand.CURSOR_SHIFT | LcdDisplayShift.CURSOR_MOVE | LcdDisplayShift.MOVE_RIGHT)
+        writeCmd(CURSOR_SHIFT | LcdDisplayShift.CURSOR_MOVE | LcdDisplayShift.MOVE_RIGHT)
     }
 
     public void clearDisplay() {
-        writeCmd(LcdCommand.CLEAR_DISPLAY)
+        writeCmd(CLEAR_DISPLAY)
     }
 
     private void setCursorHome() {
-        writeCmd(LcdCommand.RETURN_HOME)
+        writeCmd(RETURN_HOME)
     }
 
     public void setCursorPosition(int row, int column) {
-        writeCmd(LcdCommand.SET_DDRAM_ADDR | (column + rowOffsets[row]))
+        writeCmd(SET_DDRAM_ADDR | (column + rowOffsets[row]))
     }
 
 /*
@@ -145,7 +146,7 @@ class VotingBoardLcd {
 
         // If a poll-worthy instruction was issued, reconfigure D7
         // pin as input to indicate need for polling on next call.
-        if (cmd == LcdCommand.CLEAR_DISPLAY || cmd == LcdCommand.RETURN_HOME) {
+        if (cmd == CLEAR_DISPLAY || cmd == RETURN_HOME) {
             ioDirB |= 0x10
             device.write(MCP23017.IODIRB, (byte) ioDirB)
         }
@@ -235,7 +236,7 @@ class VotingBoardLcd {
         } else {
             displayControl &= ~LcdOnOffFlag.CURSOR_ON
         }
-        writeCmd(LcdCommand.DISPLAY_CONTROL | displayControl)
+        writeCmd(DISPLAY_CONTROL | displayControl)
     }
 
     public void setDisplay(boolean on) {
@@ -244,7 +245,7 @@ class VotingBoardLcd {
         } else {
             displayControl &= ~LcdOnOffFlag.DISPLAY_ON
         }
-        writeCmd(LcdCommand.DISPLAY_CONTROL | displayControl)
+        writeCmd(DISPLAY_CONTROL | displayControl)
     }
 
     public void setBacklight(int color) {
