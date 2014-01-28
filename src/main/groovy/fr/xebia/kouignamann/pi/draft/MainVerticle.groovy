@@ -29,4 +29,9 @@ class MainVerticle extends Verticle {
             }
         }
     }
+
+    def stop() {
+        log.info('STOP: Shutting VotingBoard down')
+        votingBoard?.stop()
+    }
 }

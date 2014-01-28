@@ -17,27 +17,30 @@ import org.vertx.java.core.logging.Logger
  */
 class DataVerticle extends Verticle {
 
-    Logger log
+    static File envHome = new File("/tmp")
 
     static Boolean READ_ONLY = false
 
-    static File envHome = new File("/tmp")
+    Logger log
 
-    private Environment devEnv
+    Environment devEnv
 
-    private EntityStore store
+    EntityStore store
+
+    Long backupTimerId
 
     def voterIdx
 
     def voteIdx
 
-
     def start() {
 
         log = container.logger
 
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.findNameByNfcId", this.&findNameByNfcId)
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.store", this.&store)
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.findNameByNfcId", this.&findNameByNfcId)
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store", this.&store)
+
+        backupTimerId = vertx.setPeriodic(30000, this.&backupAndFlush)
 
         try {
             initDb()
@@ -64,19 +67,17 @@ class DataVerticle extends Verticle {
         voteIdx = store.getPrimaryIndex(Long.class, Vote.class);
 
         // Load Test data
-        Voter voter = new Voter()
-        voter.name = "Pablo Lopez"
-        voter.nfcId = "1D A8 7E ED"
-        voterIdx.put(voter)
-
-        voter = new Voter()
-        voter.name = "Merle Moqueur"
-        voter.nfcId = "00 00 00 00"
-        voterIdx.put(voter)
+        voterIdx.put(new Voter(name: 'Pablo Lopez', nfcId: '1D A8 7E ED'))
+        voterIdx.put(new Voter(name: 'Merle Moqueur', nfcId: '00 00 00 00'))
 
         log.info "START: Done initializing DB"
     }
 
+    /**
+     * EventBus Handler
+     *
+     * @param message
+     */
     def store(Message message) {
         // stores a vote
         log.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.storeVote ${message}")
@@ -88,15 +89,16 @@ class DataVerticle extends Verticle {
 
         voteIdx.put(vote)
 
-        log.info("Process -> Storing '${vote}'")
+        log.info(">> Stored '${vote}'")
 
         message.reply([status: 'OK'])
     }
 
-    def delete(Message message) {
-
-    }
-
+    /**
+     * EventBus Handler
+     *
+     * @param message
+     */
     def findNameByNfcId(Message message) {
         log.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.findNameByNfcId ${message}")
         log.info("Process -> Retrieving '${message.body.nfcId}'")
@@ -107,34 +109,37 @@ class DataVerticle extends Verticle {
     }
 
     /**
-     * Should be launched by timer
+     * Vertx Periodic
      */
-    def backupAndFlush() {
+    def backupAndFlush(Long timerId) {
 
-    }
-
-    def processStoredVotes(Message message) {
         log.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processStoredVotes ${message}")
+
         def cursor = voteIdx.entities()
         for (Vote vote : cursor) {
+
             Map outgoingMessage = [
-                    "nfcId": vote.nfcId,
-                    "voteTime": vote.voteTime,
-                    "note": vote.note,
-                    "hardwareUid": container.config.hardwareUid
+                    nfcId: vote.nfcId,
+                    voteTime: vote.voteTime,
+                    note: vote.note,
+                    hardwareUid: container.config.hardwareUid
             ]
+
             // End point must exists ?
             // TODO Need further testing
             // Send to processor
+
             log.info("Bus -> ${message.body.nextProcessor} ${message}")
+
             def eventBus = vertx.eventBus
             def wrapperBus = new WrapperEventBus(eventBus.javaEventBus())
+
             wrapperBus.sendWithTimeout(message.body.nextProcessor, outgoingMessage, 1000) { result ->
                 if (result.succeeded) {
-                    log.info("Process -> ${outgoingMessage} successfully processed by central")
-                    deleteVoteFromLocal(vote.voteUid)
+                    log.info(">> ${outgoingMessage} successfully processed by central")
+                    delete(vote.voteUid)
                 } else {
-                    log.info("Process -> TIMEOUT from central - Do nothing")
+                    log.info(">> TIMEOUT from central - Do nothing")
                 }
 
             }
@@ -143,8 +148,10 @@ class DataVerticle extends Verticle {
 
     }
 
-    def deleteVoteFromLocal(long voteUid) {
-        log.info "Process -> Remove from local base vote ${voteUid}"
+    private def delete(Long voteUid) {
+
+        log.info(">> Remove from local base vote ${voteUid}")
+
         voteIdx.delete(voteUid)
     }
 
@@ -153,7 +160,7 @@ class DataVerticle extends Verticle {
             try {
                 store.close();
             } catch (DatabaseException dbe) {
-                log.error "Stop -> Error closing store: ${dbe.toString()}"
+                log.error "STOP: Error closing store: ${dbe.toString()}"
             }
         }
 
@@ -162,7 +169,7 @@ class DataVerticle extends Verticle {
                 // Finally, close environment.
                 devEnv.close();
             } catch (DatabaseException dbe) {
-                log.error "Stop -> Error closing MyDbEnv: ${dbe.toString()} "
+                log.error "STOP: Error closing MyDbEnv: ${dbe.toString()} "
             }
         }
     }
