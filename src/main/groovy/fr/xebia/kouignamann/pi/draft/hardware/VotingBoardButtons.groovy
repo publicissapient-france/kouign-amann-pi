@@ -112,6 +112,7 @@ class VotingBoardButtons {
     }
 
     def shutdown() {
+        switchOffAllButtonButOne(null)
         gpio.shutdown();
     }
 

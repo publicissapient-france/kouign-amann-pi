@@ -54,11 +54,7 @@ class VotingBoard {
 
         initLcd()
         initNfcReader()
-
-        log.info "START: Initializing led buttons"
-        gpio = GpioFactory.getInstance()
-        buttons = new VotingBoardButtons(gpio, i2CDevice)
-        log.info "START: Done initializing led buttons"
+        initLedButtons()
     }
 
     private void initNfcReader() {
@@ -77,6 +73,15 @@ class VotingBoard {
         lcd.display(PROMPT_CARD)
 
         log.info('START: Done initializing lcd plate')
+    }
+
+    private void initLedButtons() {
+        log.info "START: Initializing led buttons"
+
+        gpio = GpioFactory.getInstance()
+        buttons = new VotingBoardButtons(gpio, i2CDevice)
+
+        log.info "START: Done initializing led buttons"
     }
 
     def stop() {
