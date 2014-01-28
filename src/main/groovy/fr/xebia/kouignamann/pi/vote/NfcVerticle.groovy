@@ -92,8 +92,8 @@ class NfcVerticle extends Verticle {
                 logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote ${outgoingMessage}")
                 vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitForVote", outgoingMessage)
 
-                logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.illuminateAllButtons ${outgoingMessage}")
-                vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.illuminateAllButtons", outgoingMessage)
+                logger.info("Bus -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.lightOnAll ${outgoingMessage}")
+                vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.lightOnAll", outgoingMessage)
             }
         } catch (Exception e) {
             logger.error e

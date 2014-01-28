@@ -7,6 +7,8 @@ import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
 import org.codehaus.groovy.control.messages.Message
+import fr.xebia.kouignamann.pi.draft.hardware.mock.MockVotingBoardButtons
+import groovy.transform.CompileStatic
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
 import org.vertx.java.core.logging.Logger
@@ -16,45 +18,66 @@ import java.util.concurrent.TimeoutException
 /**
  * This class abstracts the whole hardware part.
  *
- * should be composed of : LCD screen (color, flash, text) + button (listen, light on, light off) + NFC reader
+ * should be composed of : LCD screen (color, flash, text) + button (listen, light on, light) + NFC reader
  */
+@CompileStatic
 class VotingBoard {
 
-    static final Integer BUS_NUMBER = 1
-    static final Integer BUS_ADDRESS = 0x20
+    private static final String PROMPT_CARD = 'Badgez SVP'
+    private static final String PROMPT_VOTE = 'Votez SVP'
+    private static final Integer BUS_NUMBER = 1
+    private static final Integer BUS_ADDRESS = 0x20
+    private static final Integer BUTTON_PRESSED_DETECTION_TIME = 10
+    private static final Integer VOTE_WAIT_TIME = 1000 * 10
 
-    static final String PROMPT_CARD = 'Badgez SVP'
-    static final String PROMPT_VOTE = 'Votez SVP'
+    private final I2CBus i2CBus
+    private final I2CDevice i2CDevice
+    private final GpioController gpio
+    private final Container container
+    private final Vertx vertx
 
-    static final Integer BUTTON_PRESSED_DETECTION_TIME = 10
-    static final Integer VOTE_WAIT_TIME = 1000 * 10
+    private static Logger log
 
-    Logger log
+    private VotingBoardLcd lcd
+    private VotingBoardNfcReader nfcReader
+    private VotingBoardButtons buttons
 
-    VotingBoardLcd lcd
+    /**
+     * Constructor.
+     *
+     * @param container
+     * @param vertx
+     */
+    VotingBoard(Container container, Vertx vertx) {
+        log = container.logger
 
-    VotingBoardNfcReader nfcReader
-    VotingBoardButtons buttons
-
-
-    private I2CDevice i2CDevice
-
-    private GpioController gpio
-
-    private Container container
-
-    private Vertx vertx
-
-
-    def VotingBoard(Container container, Vertx vertx) {
         this.container = container
         this.vertx = vertx
 
-        log = container.logger
+        log.info('START: Initializing i2c bus')
+        i2CBus = I2CFactory.getInstance(BUS_NUMBER)
+        i2CDevice = i2CBus.getDevice(BUS_ADDRESS)
+        log.info('START: Done initializing i2c bus')
+
+        log.info('START: Initializing gpio factory')
+        gpio = GpioFactory.getInstance()
+        log.info('START: Done initializing gpio factory')
 
         initLcd()
         initNfcReader()
-        initLedButtons()
+        initButtons()
+        initNfcReader()
+    }
+
+    private void initButtons() {
+        log.info('START: Initializing led buttons')
+
+        if (container.config.mockButtonsLight) {
+            buttons = new MockVotingBoardButtons(log) as VotingBoardButtons
+        } else {
+            buttons = new VotingBoardButtons(gpio)
+        }
+        log.info('START: Done initializing led buttons')
     }
 
     private void initNfcReader() {
@@ -68,7 +91,6 @@ class VotingBoard {
     private void initLcd() {
         log.info('START: Initializing lcd plate')
 
-        i2CDevice = initI2CDevice(BUS_NUMBER, BUS_ADDRESS)
         lcd = new VotingBoardLcd(i2CDevice)
         lcd.display(PROMPT_CARD)
 
@@ -85,13 +107,22 @@ class VotingBoard {
     }
 
     def stop() {
+        log.info('STOP: Shutting down NfcReader')
+        nfcReader?.stop()
+
+        log.info('STOP: Shutting down buttons')
+        buttons?.stop()
+
+        log.info('STOP: Shutting down display')
         lcd?.stop()
+
+        log.info('STOP: Shutting down gpio')
+        gpio?.shutdown()
+
+        log.info('STOP: Shutting down i2c bus')
+        i2CBus?.close()
     }
 
-    private I2CDevice initI2CDevice(Integer busNo, Integer address) {
-        I2CBus i2cBus = I2CFactory.getInstance(busNo)
-        i2cBus.getDevice(address)
-    }
     /**
      * Entry point for event bus
      * @param message
@@ -131,6 +162,9 @@ class VotingBoard {
 
             if (note > -1) {
                 lcd.display("Votre note: ${note}")
+
+                // TODO switch all buttons led
+
                 return note
             }
             loopCount++

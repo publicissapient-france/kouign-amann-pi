@@ -4,6 +4,7 @@
     "testLedBackPack": false,
     "testLedButton": false,
     "mockLcd": true,
+    "mockButtonsLight": true,
     "mockRfid": true,
     "useMqtt": true,
     "mqttClient": {

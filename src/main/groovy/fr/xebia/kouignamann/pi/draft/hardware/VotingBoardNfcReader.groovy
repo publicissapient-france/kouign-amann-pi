@@ -51,4 +51,8 @@ class VotingBoardNfcReader {
                 .trim()
                 .substring(0, 11)
     }
+
+    void stop() {
+
+    }
 }
