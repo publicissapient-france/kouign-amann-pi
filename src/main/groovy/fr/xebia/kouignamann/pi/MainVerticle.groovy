@@ -6,6 +6,7 @@ import fr.xebia.kouignamann.pi.hardwareTest.TestLedBackPack
 import fr.xebia.kouignamann.pi.hardwareTest.TestLedButton
 import fr.xebia.kouignamann.pi.mqtt.MqttDataManagementVerticle
 import fr.xebia.kouignamann.pi.vote.DataManagementVerticle
+import fr.xebia.kouignamann.pi.vote.LedButtonsVerticle
 import fr.xebia.kouignamann.pi.vote.NfcVerticle
 import fr.xebia.kouignamann.pi.vote.VoteVerticle
 import org.vertx.groovy.platform.Verticle
@@ -23,6 +24,7 @@ class MainVerticle extends Verticle {
             centralCommProtocol = MqttDataManagementVerticle.class.name
         }
 
+        container.deployWorkerVerticle('groovy:' + LedButtonsVerticle.class.name, container.config, 1)
         container.deployWorkerVerticle('groovy:' + NfcVerticle.class.name, container.config, 1) { asyncResultNfc ->
             if (asyncResultNfc.succeeded) {
                 container.deployWorkerVerticle('groovy:' + VoteVerticle.class.name, container.config, 1) { asyncResultVote ->
