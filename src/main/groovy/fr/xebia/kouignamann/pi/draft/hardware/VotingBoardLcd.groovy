@@ -151,12 +151,6 @@ class VotingBoardLcd {
             device.write(MCP23017.IODIRB, (byte) ioDirB)
         }
     }
-/*
-    public void write(int row, String string) {
-        setCursorPosition(row, 0)
-        write(string)
-    }
-*/
 
     public void display(String s) {
 
@@ -248,7 +242,7 @@ class VotingBoardLcd {
         writeCmd(DISPLAY_CONTROL | displayControl)
     }
 
-    public void setBacklight(int color) {
+    void setBacklight(int color) {
         int c = ~color
         portA = (byte) ((portA & 0x3F) | ((c & 0x03) << 6))
         portB = (byte) ((portB & 0xFE) | ((c & 0x04) >> 2))
@@ -257,7 +251,7 @@ class VotingBoardLcd {
         device.write(MCP23017.GPIOB, (byte) portB)
     }
 
-    public void shutdown() {
+    void stop() {
         clearDisplay()
         setDisplay(false)
         setBacklight(LcdColor.OFF)

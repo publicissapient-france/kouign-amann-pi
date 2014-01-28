@@ -14,25 +14,22 @@ class MainVerticle extends Verticle {
 
     def start() {
         log = container.logger
-        log.info "Main -> starting"
 
-        votingBoard = new VotingBoard()
+        log.info('START--')
+
+        votingBoard = new VotingBoard(container, vertx)
 
         vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", votingBoard.&waitCard)
         vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", votingBoard.&waitVote)
         vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons", votingBoard.&switchOffLedButtons)
 
-        container.deployWorkerVerticle('groovy:' + DataVerticle.class.name, container.config, 3) { deployDataVerticleResult ->
-            if (deployDataVerticleResult.succeeded) {
-                log.info('START: DataVerticle deployed')
-            } else {
-                log.error('START: Failed to deploy DataVerticle', deployDataVerticleResult.throwable)
-            }
-        }
+        log.debug('TODO: Deploy MQTT Verticle')
     }
 
     def stop() {
+
         log.info('STOP: Shutting VotingBoard down')
+
         votingBoard?.stop()
     }
 }

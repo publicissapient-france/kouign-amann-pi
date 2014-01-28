@@ -1,7 +1,7 @@
 {
     // Compiled Groovy verticle
     // They must be prefixed with 'groovy:' to distinguish them from compiled Java verticles
-    "main": "groovy:fr.xebia.kouignamann.pi.MainVerticle",
+    "main": "groovy:fr.xebia.kouignamann.pi.draft.MainVerticle",
 
     // If your module is going to be registered in the Vert.x module registry you will also need the following
     // mandatory fields
