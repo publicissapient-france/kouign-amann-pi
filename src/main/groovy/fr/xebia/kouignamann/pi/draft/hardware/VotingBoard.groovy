@@ -53,7 +53,7 @@ class VotingBoard {
         log = container.logger
 
         initLcd()
-        //initNfcReader()
+        initNfcReader()
 
         log.info "START: Initializing led buttons"
         gpio = GpioFactory.getInstance()
@@ -152,8 +152,8 @@ class VotingBoard {
                     "note": note
             ]
 
-            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons ${outgoingMessage}")
-            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons", outgoingMessage)
+            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne ${outgoingMessage}")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", outgoingMessage)
 
             log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store ${outgoingMessage}")
             vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store", outgoingMessage)
@@ -162,19 +162,8 @@ class VotingBoard {
         }
 
         log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard")
-
         vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", [])
     }
-
-    /**
-     * Entry point for event bus
-     * @param message
-     */
-    def switchOffLedButtons(Message message) {
-        buttons.switchOffAllButtonButOne(message.body.note)
-    }
-
-
 
     String waitForNfcCard() {
         // wait NFC card forever

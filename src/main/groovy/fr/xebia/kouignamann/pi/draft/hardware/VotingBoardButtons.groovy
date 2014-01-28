@@ -6,6 +6,7 @@ import com.pi4j.io.gpio.PinState
 import com.pi4j.io.gpio.RaspiPin
 import com.pi4j.io.i2c.I2CDevice
 import fr.xebia.kouignamann.pi.draft.hardware.plate.MCP23017
+import org.vertx.groovy.core.eventbus.Message
 
 /**
  * Created by amaury on 23/01/2014.
@@ -41,13 +42,17 @@ class VotingBoardButtons {
         }
     }
 
-    def switchOffAllButtonButOne(Integer note) {
+    /**
+     * Entry point for event bus
+     * @param message
+     */
+    def switchOffAllButtonButOne(Message msg) {
         for (i in 1..5) {
-            if (note || i != note) {
+            if (msg || i != msg.body.note) {
                 buttons.note.low()
             }
         }
-        if (note) {
+        if (msg && msg.body.note) {
             sleep 1000
             buttons.note.low()
         }

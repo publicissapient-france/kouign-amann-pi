@@ -21,7 +21,7 @@ class MainVerticle extends Verticle {
 
         vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", votingBoard.&waitCard)
         vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", votingBoard.&waitVote)
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons", votingBoard.&switchOffLedButtons)
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", votingBoard.buttons.&switchOffAllButtonButOne)
 
         log.debug('TODO: Deploy MQTT Verticle')
     }
