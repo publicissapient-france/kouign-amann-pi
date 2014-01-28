@@ -21,8 +21,8 @@ class VotingBoard {
     static final Integer BUS_NUMBER = 1
     static final Integer BUS_ADDRESS = 0x20
 
-    static final String PROMPT_VOTE = 'Votez !'
-    static final String PROMPT_CARD = 'Badgez !'
+    static final String PROMPT_CARD = 'Badgez SVP'
+    static final String PROMPT_VOTE = 'Votez SVP'
 
     static final Integer BUTTON_PRESSED_DETECTION_TIME = 10
     static final Integer VOTE_WAIT_TIME = 1000 * 10
@@ -30,14 +30,17 @@ class VotingBoard {
     Logger log
 
     VotingBoardLcd lcd
+
     VotingBoardNfcReader nfcReader
     VotingBoardButtons buttons
 
 
     private I2CDevice i2CDevice
+
     private GpioController gpio
 
     private Container container
+
     private Vertx vertx
 
 
@@ -45,16 +48,10 @@ class VotingBoard {
         this.container = container
         this.vertx = vertx
 
-        log = this.container.logger
-        log.info "START: Initializing lcd plate"
-        i2CDevice = initI2CDevice(BUS_NUMBER, BUS_ADDRESS)
-        lcd = new VotingBoardLcd(i2CDevice)
-        lcd.display(PROMPT_CARD)
-        log.info "START: Done initializing lcd plate"
+        log = container.logger
 
-        log.info "START: Initializing nfc reader"
-        nfcReader = new VotingBoardNfcReader(container)
-        log.info "START: Done initializing nfc reader"
+        initLcd()
+        //initNfcReader()
 
         log.info "START: Initializing led buttons"
         gpio = GpioFactory.getInstance()
@@ -62,8 +59,26 @@ class VotingBoard {
         log.info "START: Done initializing led buttons"
     }
 
+    private void initNfcReader() {
+        log.info('START: Initializing nfc reader')
+
+        nfcReader = new VotingBoardNfcReader(container)
+
+        log.info('START: Done initializing nfc reader')
+    }
+
+    private void initLcd() {
+        log.info('START: Initializing lcd plate')
+
+        i2CDevice = initI2CDevice(BUS_NUMBER, BUS_ADDRESS)
+        lcd = new VotingBoardLcd(i2CDevice)
+        lcd.display(PROMPT_CARD)
+
+        log.info('START: Done initializing lcd plate')
+    }
+
     def stop() {
-        lcd?.shutdown()
+        lcd?.stop()
     }
 
     private I2CDevice initI2CDevice(Integer busNo, Integer address) {
@@ -139,7 +154,9 @@ class VotingBoard {
         } catch (TimeoutException e) {
             log.info("PROCESS: waited too long for vote, going back to NFC")
         }
+
         log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard")
+
         vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", [])
     }
 
