@@ -1,5 +1,7 @@
 package fr.xebia.kouignamann.pi.draft.hardware
 
+import com.pi4j.io.gpio.GpioController
+import com.pi4j.io.gpio.GpioFactory
 import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
@@ -29,8 +31,12 @@ class VotingBoard {
 
     VotingBoardLcd lcd
     VotingBoardNfcReader nfcReader
+    VotingBoardButtons buttons
+
 
     private I2CDevice i2CDevice
+    private GpioController gpio
+
     private Container container
     private Vertx vertx
 
@@ -49,6 +55,11 @@ class VotingBoard {
         log.info "START: Initializing nfc reader"
         nfcReader = new VotingBoardNfcReader(container)
         log.info "START: Done initializing nfc reader"
+
+        log.info "START: Initializing led buttons"
+        gpio = GpioFactory.getInstance()
+        buttons = new VotingBoardButtons(gpio)
+        log.info "START: Done initializing led buttons"
     }
 
     def stop() {
