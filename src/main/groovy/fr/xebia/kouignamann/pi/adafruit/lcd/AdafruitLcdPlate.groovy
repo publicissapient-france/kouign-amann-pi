@@ -295,59 +295,6 @@ class AdafruitLcdPlate {
 
     }
 
-    byte[] _button_pins = [0, 1, 2, 3, 4]
 
-    private void writa(byte b) {
-        device.write(b)
-        //System.out.println("W:" + (int)b)
-    }
-
-    private byte[] reada(int len) {
-        byte[] b = new byte[len]
-        device.read(b, 0, len)
-        //for(int i=0 i<len i++)
-        //System.out.println("R:" + (int)b[i])
-        return b
-    }
-
-    private byte reada() {
-        byte[] b = reada(1)
-        return b[0]
-    }
-
-    byte digitalRead(byte p) {
-        byte gpioaddr
-        // only 16 bits!
-        if (p > 15)
-            return 0
-        if (p < 8) {
-            gpioaddr = MCP23017_GPIOA
-        } else {
-            gpioaddr = MCP23017_GPIOB
-            p -= 8
-        }
-        // read the current GPIO
-        writa(gpioaddr)
-        byte rec = reada()
-        byte step1 = (byte) (rec >> p)
-        return (byte) (step1 & (byte) 0x1)
-    }
-
-    public byte readButtons() {
-        byte reply = 0x1F
-        for (byte i = 0; i < 5; i++) {
-            reply &= ~((digitalRead(_button_pins[i])) << i)
-        }
-        return reply
-
-    }
-
-    public int[] readButtonsPressed() {
-        int[] result = [0, 0, 0, 0, 0]
-        for (byte i = 0; i < 5; i++) {
-            result[i] = (int) digitalRead(_button_pins[i])
-        }
-        return result
-    }
 }
 

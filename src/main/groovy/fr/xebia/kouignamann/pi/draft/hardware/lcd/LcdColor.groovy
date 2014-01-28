@@ -13,7 +13,10 @@ final class LcdColor {
     static final int TEAL = GREEN + BLUE
     static final int PURPLE = RED + BLUE
     static final int WHITE = RED + GREEN + BLUE
+    static final int VIOLET = RED + BLUE
     static final int ON = RED + GREEN + BLUE
+
+    static final int[] COLORS = [RED, GREEN, BLUE, YELLOW, TEAL, VIOLET, WHITE]
 
     private LcdColor() {}
 }

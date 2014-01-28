@@ -5,6 +5,8 @@ import com.pi4j.io.gpio.GpioFactory
 import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
+import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
+import org.codehaus.groovy.control.messages.Message
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
 import org.vertx.java.core.logging.Logger
@@ -58,7 +60,7 @@ class VotingBoard {
 
         log.info "START: Initializing led buttons"
         gpio = GpioFactory.getInstance()
-        buttons = new VotingBoardButtons(gpio)
+        buttons = new VotingBoardButtons(gpio, i2CDevice)
         log.info "START: Done initializing led buttons"
     }
 
@@ -74,13 +76,13 @@ class VotingBoard {
      * Entry point for event bus
      * @param message
      */
-    def waitVote() {
+    def waitVote(Message message) {
         // expecting for vote value
         // reply => send value + nfcId to dataVerticle
         // timeout or not => send to waitCard
 
-        // TODO light button leds
-        // TODO stop flashing lcd
+        buttons.illuminateAllButtons()
+        stopFlashing()
         lcd.display(PROMPT_VOTE)
 
         boolean voteSaved = false
@@ -95,7 +97,7 @@ class VotingBoard {
         // Wait for button to be pressed
         while (!voteSaved && loopCount < maxLoops) {
             sleep BUTTON_PRESSED_DETECTION_TIME
-            int[] result = lcd.readButtonsPressed()
+            int[] result = buttons.readButtonsPressed()
 
             for (int i = 0; i < 5; i++) {
                 if (result[i]) {
@@ -109,7 +111,6 @@ class VotingBoard {
 
             if (note > -1) {
                 lcd.display("Votre note: ${note}")
-                // TODO switch off all buttons led
                 return note
             }
             loopCount++
@@ -120,22 +121,27 @@ class VotingBoard {
      * Entry point for event bus
      * @param message
      */
-    def waitCard() {
+    def waitCard(Message message) {
         // display user message to engage vote
         lcd.display(PROMPT_CARD)
-        // TODO start flashing lcd
+        startFlashing()
 
         String nfcId = waitForNfcCard()
         long voteTime = new Date().getTime()
         try {
             int note = waitVote()
+
             Map outgoingMessage = [
                     "nfcId": nfcId,
                     "voteTime": voteTime,
                     "note": note
             ]
-            // TODO send to data verticle
 
+            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons ${outgoingMessage}")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffLedButtons", outgoingMessage)
+
+            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store ${outgoingMessage}")
+            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store", outgoingMessage)
         } catch (TimeoutException e) {
             log.info("PROCESS: waited too long for vote, going back to NFC")
         }
@@ -143,9 +149,48 @@ class VotingBoard {
         vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", [])
     }
 
+    /**
+     * Entry point for event bus
+     * @param message
+     */
+    def switchOffLedButtons(Message message) {
+        buttons.switchOffAllButtonButOne(message.body.note)
+    }
+
+
+
     String waitForNfcCard() {
         // wait NFC card forever
         // when read, return as string
         return nfcReader.waitForCardId()
+    }
+
+    static final Integer FLASH_PERIOD = 1000
+    int colorIdx = 0
+    long flashTimerId
+
+    void stopFlashing() {
+        log.info('PROCESS: Stop flashing')
+
+        if (flashTimerId) {
+            vertx.cancelTimer(flashTimerId)
+            lcd.setBacklight(0x05)
+            flashTimerId = 0
+        }
+    }
+
+    void startFlashing() {
+        log.info('PROCESS: Start flashing')
+        if (!flashTimerId) {
+            flashTimerId = vertx.setPeriodic(FLASH_PERIOD) { flashTimerId ->
+                lcd.setBacklight(LcdColor.COLORS[colorIdx++])
+
+                if (colorIdx >= LcdColor.COLORS.length) {
+                    // Reset
+                    colorIdx = 0
+                }
+            }
+        }
+
     }
 }

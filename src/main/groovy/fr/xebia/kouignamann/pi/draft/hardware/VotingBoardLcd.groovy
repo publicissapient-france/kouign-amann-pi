@@ -129,7 +129,7 @@ class VotingBoardLcd {
         bitmask |= 0x80 // Set data bit
 
         byte[] bytes = ShiftAndMap4(bitmask, data)
-        device.write(MCP23017_GPIOB, bytes, 0, 4)
+        i2cDevice.write(MCP23017_GPIOB, bytes, 0, 4)
         portB = bytes[3]
     }
 */
