@@ -31,15 +31,16 @@ class VotingBoardButtons {
         buttons[4] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Button4", PinState.LOW)
         // GPIO # 25
         buttons[5] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "Button5", PinState.LOW)
-        lightOnAll()
-        sleep 1000
-        switchOffAllButtonButOne(null)
+        //lightOnAll()
+        //sleep 1000
+        //switchOffAllButtonButOne(null)
     }
 
     def lightOnAll() {
-        for (i in 1..5) {
-            buttons."button${i}".high()
-        }
+        /*for (i in 1..5) {
+            buttons["button${i}"]?.high()
+        }*/
+
     }
 
     /**
@@ -47,15 +48,16 @@ class VotingBoardButtons {
      * @param message
      */
     def switchOffAllButtonButOne(Message msg) {
+        /*
         for (i in 1..5) {
             if (msg || i != msg.body.note) {
-                buttons.note.low()
+                buttons[i].low()
             }
         }
         if (msg && msg.body.note) {
             sleep 1000
-            buttons.note.low()
-        }
+            buttons[i].low()
+        }*/
     }
 
 

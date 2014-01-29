@@ -6,8 +6,8 @@ import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
 import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
-import org.codehaus.groovy.control.messages.Message
-import fr.xebia.kouignamann.pi.draft.hardware.mock.MockVotingBoardButtons
+import fr.xebia.kouignamann.pi.util.WrapperEventBus
+import org.vertx.groovy.core.eventbus.Message
 import groovy.transform.CompileStatic
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
@@ -20,7 +20,6 @@ import java.util.concurrent.TimeoutException
  *
  * should be composed of : LCD screen (color, flash, text) + button (listen, light on, light) + NFC reader
  */
-@CompileStatic
 class VotingBoard {
 
     private static final String PROMPT_CARD = 'Badgez SVP'
@@ -71,12 +70,7 @@ class VotingBoard {
 
     private void initButtons() {
         log.info('START: Initializing led buttons')
-
-        if (container.config.mockButtonsLight) {
-            buttons = new MockVotingBoardButtons(log) as VotingBoardButtons
-        } else {
-            buttons = new VotingBoardButtons(gpio)
-        }
+        buttons = new VotingBoardButtons(gpio, i2CDevice)
         log.info('START: Done initializing led buttons')
     }
 
@@ -92,7 +86,7 @@ class VotingBoard {
         log.info('START: Initializing lcd plate')
 
         lcd = new VotingBoardLcd(i2CDevice)
-        lcd.display(PROMPT_CARD)
+        lcd.display("Starting...")
 
         log.info('START: Done initializing lcd plate')
     }
@@ -100,7 +94,7 @@ class VotingBoard {
     private void initLedButtons() {
         log.info "START: Initializing led buttons"
 
-        gpio = GpioFactory.getInstance()
+
         buttons = new VotingBoardButtons(gpio, i2CDevice)
 
         log.info "START: Done initializing led buttons"
@@ -131,8 +125,8 @@ class VotingBoard {
         // expecting for vote value
         // reply => send value + nfcId to dataVerticle
         // timeout or not => send to waitCard
-
-        buttons.illuminateAllButtons()
+        log.info('Wait vote')
+        buttons.lightOnAll()
         stopFlashing()
         lcd.display(PROMPT_VOTE)
 
@@ -164,11 +158,14 @@ class VotingBoard {
                 lcd.display("Votre note: ${note}")
 
                 // TODO switch all buttons led
+                message.reply([note: note])
 
                 return note
             }
             loopCount++
         }
+
+
     }
 
     /**
@@ -180,34 +177,32 @@ class VotingBoard {
         lcd.display(PROMPT_CARD)
         startFlashing()
 
-        String nfcId = waitForNfcCard()
+        String nfcId = nfcReader.waitForCardId()
+        log.info('Card seen => '+nfcId)
+
         long voteTime = new Date().getTime()
         try {
-            int note = waitVote()
 
-            Map outgoingMessage = [
-                    "nfcId": nfcId,
-                    "voteTime": voteTime,
-                    "note": note
-            ]
+            def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
+            wrapperBus.sendWithTimeout("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", 'go', 1000) { result ->
+                if (result.succeeded) {
+                    log.info("Process -> note : "+result.body.note)
 
-            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne ${outgoingMessage}")
-            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", outgoingMessage)
+                    Map outgoingMessage = [
+                            "nfcId": nfcId,
+                            "voteTime": voteTime,
+                            "note": result.body.note
+                    ]
+                } else {
+                    log.info("Process -> TIMEOUT - Do nothing")
+                }
 
-            log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store ${outgoingMessage}")
-            vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.data.store", outgoingMessage)
+            }
         } catch (TimeoutException e) {
             log.info("PROCESS: waited too long for vote, going back to NFC")
         }
 
-        log.info("BUS: -> fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard")
-        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", [])
-    }
-
-    String waitForNfcCard() {
-        // wait NFC card forever
-        // when read, return as string
-        return nfcReader.waitForCardId()
+        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard",'go')
     }
 
     static final Integer FLASH_PERIOD = 1000

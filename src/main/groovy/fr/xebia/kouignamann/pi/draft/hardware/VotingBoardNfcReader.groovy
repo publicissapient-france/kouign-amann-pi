@@ -19,9 +19,11 @@ class VotingBoardNfcReader {
     def VotingBoardNfcReader(Container container) {
         log = container.logger
 
-        List<CardTerminal> terminalsList = TerminalFactory.getDefault().terminals().list()
+        List<CardTerminal> terminalsList = TerminalFactory.getDefault().terminals().list(CardTerminals.State.ALL)
 
-        if (terminalsList.size() > 0) {
+        log.info('NFC :'+terminalsList)
+
+        if (terminalsList) {
             nfcTerminal = terminalsList.first()
         } else {
             log.error('Failed to hook the NFC terminal')
@@ -49,7 +51,6 @@ class VotingBoardNfcReader {
                 .toUpperCase()
                 .replaceAll('(..)', '$0 ')
                 .trim()
-                .substring(0, 11)
     }
 
     void stop() {
