@@ -15,9 +15,6 @@
 
 ##############
 
-MODULE=fr.xebia.kouignamann~pi~0.1
-MODULE_CONF=$VERTX_MODS_CONF/kouign-amann.conf
-
 # Add default JVM options here. You can also use JAVA_OPTS and VERTX_OPTS to pass JVM options to this script.
 
 VERTX_OPTS=""
@@ -41,6 +38,9 @@ export VERTX_HOME=/home/pi/vertx_home
 export VERTX_MODS=/home/pi/vertx_mods
 export VERTX_MODS_CONF=/home/pi/vertx_mods_conf
 export LANG=en_GB.UTF-8
+
+MODULE=fr.xebia.kouignamann~pi~0.1
+MODULE_CONF=$VERTX_MODS_CONF/kouign-amann.conf
 
 CLASSPATH=${CLASSPATH}:${VERTX_HOME}/conf:${VERTX_HOME}/lib/*:$VERTX_MODS
 
@@ -100,7 +100,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 do_start()
 {
     date > /tmp/beforevertx
-    START_STOP_DAEMON_OPTS="--start --quiet --background --chuid $USER --pidfile $PIDFILE --exec $DAEMON"
+    START_STOP_DAEMON_OPTS="--start --quiet --background --pidfile $PIDFILE --exec $DAEMON"
 
     start-stop-daemon $START_STOP_DAEMON_OPTS --test > /dev/null \
 	|| return 1

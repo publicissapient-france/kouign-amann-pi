@@ -13,15 +13,8 @@ kouign-amann-pi
     * Add Pi's IP to your ansible hosts
     * Have fun
 
-Look at
-(https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vertx)
+Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vertx)
 
-
-* 3 verticles:
-    * Un normal pour les écritures vers le backpack LCD (normalement assez rapides)
-    * Un worker de 3 threads pour les traitements des écritures en base, et les envois au central en timer
-    * un worker en thread unique qui gèrent les handlers des trucs bloquants et antagonistes (on wait )
-    
 # Install
 
 * Based on raspbian image: 2014-01-07-wheezy-raspbian <=> MD5(6d8e5a48ff7c6bdc0bc0983bc32f75b8)
@@ -32,29 +25,34 @@ Look at
     * Reboot ? Yes
 
 * Reconnect and:
-
+```
     sudo bash -l
     apt-get update
     apt-get upgrade
     echo 'alias ll="ls -aul"' >> /etc/profile
     echo 'blacklist pn533' >> /etc/modprobe.d/nfc-blacklist.conf
     echo 'blacklist nfc' >> /etc/modprobe.d/nfc-blacklist.conf
-
+    echo 'i2c-bcm2708' >> /etc/modules
+    echo 'i2c-dev' >> /etc/modules
+    apt-get install pcscd emacs -y
+```
 * Reboot, reconnect and:
-
+```
     sudo bash -l
     wget http://dl.bintray.com/vertx/downloads/vert.x-2.1M3.tar.gz -O vertx.tgz
     tar xvzf vertx.tgz
     ln -s vert.x-2.1M3 vertx_home
     mkdir vertx_mods
     mkdir vertx_mods_conf
-
+    chown pi:pi * -R
+```
 * Install file from this repository raspberry/vertx on the Pi, under /etc/init.d/vertx
 * Connect and:
+```
     sudo bash -l
     chmod u+x /etc/init.d/vertx
     update-rc.d vertx defaults add
-
+```
 # Deploy
 
 * gradle modzip
@@ -62,12 +60,13 @@ Look at
   configure its content
 * copy build/libs/pi-0.1.zip on the Pi under /home/pi
 * connect on the pi and:
-
+```
     sudo bash -l
     service vertx stop
     rm -rf /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
     unzip pi-0.1.zip -d /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
     service vertx start
+```
 
 workflow:
 
@@ -97,8 +96,6 @@ update-rc.d vertx defaults add
 
 
 dans /etc/modules ajouter =>
-i2c-bcm2708
-i2c-dev
 
 ajouter le user vertx dans le group i2c
 
