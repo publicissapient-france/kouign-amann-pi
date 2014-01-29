@@ -65,49 +65,15 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
     service vertx stop
     rm -rf /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
     unzip pi-0.1.zip -d /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
+    apt-get install openjdk-7-jdk
+    apt-get remove oracle-java7-jdk --purge
     service vertx start
 ```
+* This is not a mistake, at this stage of system configuration, only
+openjdk-7 can hook on the nfc reader, not the oraclejdk-7
 
-workflow:
-
-phase d'init des verticles, quand tout le monde a répondu présent on lance le message de mise en route => Attente ID
-
-Attente ID : flash + texte écran + attente NFC
-bip NFC => lecture et envoie message à un handler qui déclenche l'attente d'un vote, avec timeout, enregistré sur le même workerVerticle
-
-si timeout => send message Attente ID
-si reply (contenant la valeur du vote) => send to store + send to
-Attente ID
-
-# Wifi on the Pi
-
-reminder wpa_passphrase => etc/wpa_supplicant/wpa_supplicant.conf
-
-# vertx install
-
-apt-get rmove wolfram-engine --purge
-
-adduser vertx
-install vertx home dir under /opt, owned by vertx user
-add deploy directory, under which put zips
-add conf file under VERTX_HOME/conf
-put init.d service file in place and customize to launch our module
-update-rc.d vertx defaults add
+* If you want to connect to a wifi network, use wpa_passphrase to
+  generate a section to put into /etc/wpa_supplicant/wpa_supplicant.conf
 
 
-dans /etc/modules ajouter =>
 
-ajouter le user vertx dans le group i2c
-
-reboot
-
-apt-get install libpcsclite1 pcscd
-
-blacklist module => nfc, un autre qui en dépend
-
-sudo nano /etc/modprobe.d/blacklist-libnfc.conf
-
-Et ajouter les deux lignes dans le fichier.
-
-blacklist pn533
-blacklist nfc
