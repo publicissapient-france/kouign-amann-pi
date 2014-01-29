@@ -22,24 +22,25 @@ class VotingBoardButtons {
         this.i2cDevice = i2cDevice
 
         // GPIO # 27
-        buttons.put(1, gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Button1", PinState.LOW))
+        buttons[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Button1", PinState.LOW)
         // GPIO # 22
-        buttons.put(2, gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Button2", PinState.LOW))
+        buttons[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Button2", PinState.LOW)
         // GPIO # 23
-        buttons.put(3, gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Button3", PinState.LOW))
+        buttons[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Button3", PinState.LOW)
         // GPIO # 24
-        buttons.put(4, gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Button4", PinState.LOW))
+        buttons[4] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Button4", PinState.LOW)
         // GPIO # 25
-        buttons.put(5, gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "Button5", PinState.LOW))
-        illuminateAllButtons()
-        sleep 1000
-        switchOffAllButtonButOne(null)
+        buttons[5] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "Button5", PinState.LOW)
+        //lightOnAll()
+        //sleep 1000
+        //switchOffAllButtonButOne(null)
     }
 
-    def illuminateAllButtons() {
-        for (i in 1..5) {
-            buttons."button${i}".high()
-        }
+    def lightOnAll() {
+        /*for (i in 1..5) {
+            buttons["button${i}"]?.high()
+        }*/
+
     }
 
     /**
@@ -47,15 +48,16 @@ class VotingBoardButtons {
      * @param message
      */
     def switchOffAllButtonButOne(Message msg) {
+        /*
         for (i in 1..5) {
             if (msg || i != msg.body.note) {
-                buttons.note.low()
+                buttons[i].low()
             }
         }
         if (msg && msg.body.note) {
             sleep 1000
-            buttons.note.low()
-        }
+            buttons[i].low()
+        }*/
     }
 
 
@@ -111,9 +113,10 @@ class VotingBoardButtons {
         return result
     }
 
-    def shutdown() {
+    void stop() {
         switchOffAllButtonButOne(null)
         gpio.shutdown();
+
     }
 
 }

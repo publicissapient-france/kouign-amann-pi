@@ -32,7 +32,7 @@ class LedButtonsVerticle extends Verticle {
 
         logger.info "Start -> Initialize handler";
         [
-                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.illuminateAllButtons": this.&illuminateAllButtons,
+                "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.lightOnAll": this.&illuminateAllButtons,
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne": this.&switchOffAllButtonButOne,
         ].each {
             eventBusAddress, handler ->

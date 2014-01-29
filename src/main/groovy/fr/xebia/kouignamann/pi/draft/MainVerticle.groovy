@@ -19,11 +19,32 @@ class MainVerticle extends Verticle {
 
         votingBoard = new VotingBoard(container, vertx)
 
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", votingBoard.&waitCard)
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", votingBoard.&waitVote)
-        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", votingBoard.buttons.&switchOffAllButtonButOne)
+        log.info('START: VotingBoard ready')
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard", votingBoard.&waitCard) { asyncResult ->
+            if (asyncResult.succeeded) {
+            log.info('START: WaitCard handler ready: '+asyncResult.succeeded)
+            } else {
+                log.error('START: WaitCard handler failed', asyncResult.throwable)
+            }
+        }
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", votingBoard.&waitVote) { asyncResult ->
+            if (asyncResult.succeeded) {
+                log.info('START: waitVote handler ready: '+asyncResult.succeeded)
+            } else {
+                log.error('START: waitVote handler failed', asyncResult.throwable)
+            }
+        }
+        vertx.eventBus.registerHandler("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.switchOffAllButtonButOne", votingBoard.buttons.&switchOffAllButtonButOne) { asyncResult ->
+            if (asyncResult.succeeded) {
+                log.info('START: switchOffAllButtonButOne handler ready: '+asyncResult.succeeded)
+            } else {
+                log.error('START: switchOffAllButtonButOne handler failed', asyncResult.throwable)
+            }
+        }
 
-        log.debug('TODO: Deploy MQTT Verticle')
+        votingBoard.waitCard(null)
+
+        log.info('TODO: Deploy MQTT Verticle')
     }
 
     def stop() {

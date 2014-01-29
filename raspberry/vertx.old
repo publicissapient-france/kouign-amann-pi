@@ -1,84 +1,35 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:          skeleton
+# Provides:          vertx
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Vert.x starter for specific module kouign-amann
-# Description:       Vert.x starter for specific module kouign-amann
+# Short-Description: Starts vertx as service
+# Description:       This file should be used to construct scripts to be
+#                    placed in /etc/init.d.
 ### END INIT INFO
 
-# Author: Aurélien Maury <amaury@xebia.fr>
+# Author: Foo Bar <foobar@baz.org>
 #
+# Please remove the "Author" lines above and replace them
+# with your own name if you copy and modify this script.
+
 # Do NOT "set -e"
 
-##############
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
+export VERTX_HOME=/home/pi/vertx_home
+export VERTX_MODS=/home/pi/vertx_mods
 
-# Add default JVM options here. You can also use JAVA_OPTS and VERTX_OPTS to pass JVM options to this script.
-
-# VERTX_OPTS="-Dvertx.serialiseBlockingActions=true"
-
-# If you're deploying and undeploying a lot of verticles with dynamic languages it's recommended to enable GC'ing
-# of generated classes and prevent OOM due to a lot of gc
-# JVM_OPTS="-XX:+CMSClassUnloadingEnabled -XX:-UseGCOverheadLimit"
-JVM_OPTS=""
-
-JMX_OPTS=""
-# To enable JMX uncomment the following
-# JMX_OPTS="-Dcom.sun.management.jmxremote -Dvertx.management.jmx=true -Dhazelcast.jmx=true"
-APP_NAME="vertx"
-APP_BASE_NAME=`basename "$0"`
-
-# Use the maximum available, or set MAX_FD != -1 to use that value.
-MAX_FD="maximum"
-
-# Attempt to set VERTX_HOME
-export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
-export VERTX_HOME=/home/vertx/.gvm/vertx/current
-export VERTX_MODS=/home/vertx/mods
-
-MODULE=fr.xebia.kouignamann~pi~0.1
-MODULE_CONF=$VERTX_MODS/conf/kouign-amann.conf
-
-CLASSPATH=${CLASSPATH}:${VERTX_HOME}/conf:${VERTX_HOME}/lib/*:$VERTX_MODS
-
-# Increase the maximum file descriptors if we can.
-MAX_FD_LIMIT=`ulimit -H -n`
-if [ $? -eq 0 ] ; then
-    if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
-        MAX_FD="$MAX_FD_LIMIT"
-    fi
-    ulimit -n $MAX_FD
-    if [ $? -ne 0 ] ; then
-        warn "Could not set maximum file descriptor limit: $MAX_FD"
-    fi
-else
-    warn "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
-fi
-
-if [ "x" != "x$VERTX_MODS" ]; then
-  VERTX_OPTS="$VERTX_OPTS -Dvertx.mods=$VERTX_MODS"
-fi
-
-##############
-
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="Vert.x instance of kouign-amann-pi module"
-NAME=vertx
-USER=vertx
-DAEMON=$JAVA_HOME/bin/java
-DAEMON_ARGS="$JVM_OPTS $JAVA_OPTS $JMX_OPTS $VERTX_OPTS
-    -Djava.util.logging.config.file=${VERTX_JUL_CONFIG:-${VERTX_HOME}/conf/logging.properties}
-    -Dvertx.home=$VERTX_HOME
-    -Dvertx.clusterManagerFactory=org.vertx.java.spi.cluster.impl.hazelcast.HazelcastClusterManagerFactory
-    -classpath $CLASSPATH
-    org.vertx.java.platform.impl.cli.Starter runmod $MODULE -conf $MODULE_CONF"
-
+EXTRA_ARGS="--chuid vertx:vertx"
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:$VERTX_HOME/bin:$JAVA_HOME/bin
+DESC="Description of the service"
+NAME=Vert.x
+DAEMON=$VERTX_HOME/bin/vertx
+DAEMON_ARGS="runzip $VERTX_HOME/deploy/pi-0.1.zip -conf $VERTX_HOME/conf/kouign-amann.conf"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-
-export LANG=en_GB.UTF-8
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
@@ -99,19 +50,18 @@ export LANG=en_GB.UTF-8
 #
 do_start()
 {
-date > /tmp/beforevertx
 	# Return
 	#   0 if daemon has been started
 	#   1 if daemon was already running
 	#   2 if daemon could not be started
-START_STOP_DAEMON_OPTS="--start --quiet --background --chuid $USER --pidfile $PIDFILE --exec $DAEMON"
-
-	start-stop-daemon $START_STOP_DAEMON_OPTS --test > /dev/null \
+	start-stop-daemon $EXTRA_ARGS --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
-	start-stop-daemon $START_STOP_DAEMON_OPTS --make-pidfile -- $DAEMON_ARGS \
+	start-stop-daemon $EXTRA_ARGS --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+		$DAEMON_ARGS \
 		|| return 2
-
-#$DAEMON $DAEMON_ARGS &
+	# Add code here, if necessary, that waits for the process to be ready
+	# to handle requests from services started subsequently which depend
+	# on this one.  As a last resort, sleep for some time.
 }
 
 #
