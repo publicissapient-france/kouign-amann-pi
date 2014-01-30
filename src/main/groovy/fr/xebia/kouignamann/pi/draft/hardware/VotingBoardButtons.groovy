@@ -21,8 +21,8 @@ class VotingBoardButtons {
         this.gpio = gpio
         this.i2cDevice = i2cDevice
 
-        // GPIO # 27
-        buttons[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Button1", PinState.LOW)
+        // GPIO # 18
+        buttons[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Button1", PinState.LOW)
         // GPIO # 22
         buttons[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Button2", PinState.LOW)
         // GPIO # 23
