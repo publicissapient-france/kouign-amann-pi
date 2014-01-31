@@ -1,11 +1,11 @@
-package fr.xebia.kouignamann.pi.draft.hardware
+package fr.xebia.kouignamann.pi.hardware
 
 import com.pi4j.io.gpio.GpioController
 import com.pi4j.io.gpio.GpioPinDigitalOutput
 import com.pi4j.io.gpio.PinState
 import com.pi4j.io.gpio.RaspiPin
 import com.pi4j.io.i2c.I2CDevice
-import fr.xebia.kouignamann.pi.draft.hardware.plate.MCP23017
+import fr.xebia.kouignamann.pi.hardware.plate.MCP23017
 import org.vertx.java.core.logging.Logger
 
 /**

@@ -1,9 +1,5 @@
-package fr.xebia.kouignamann.pi.draft.hardware.mock
+package fr.xebia.kouignamann.pi.hardware.mock
 
-import com.pi4j.io.gpio.GpioController
-import com.pi4j.io.gpio.GpioPinDigitalOutput
-import com.pi4j.io.gpio.PinState
-import com.pi4j.io.gpio.RaspiPin
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.java.core.logging.Logger
 

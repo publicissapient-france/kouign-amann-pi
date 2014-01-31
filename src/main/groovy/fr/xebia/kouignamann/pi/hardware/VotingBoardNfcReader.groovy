@@ -1,4 +1,4 @@
-package fr.xebia.kouignamann.pi.draft.hardware
+package fr.xebia.kouignamann.pi.hardware
 
 import org.vertx.groovy.platform.Container
 import org.vertx.java.core.logging.Logger

@@ -1,4 +1,4 @@
-package fr.xebia.kouignamann.pi.draft.hardware
+package fr.xebia.kouignamann.pi.hardware
 
 import com.pi4j.io.gpio.GpioController
 import com.pi4j.io.gpio.GpioFactory
@@ -6,13 +6,11 @@ import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
 import fr.xebia.kouignamann.pi.util.WrapperEventBus
-import groovy.transform.TimedInterrupt
 import org.vertx.groovy.core.AsyncResult
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
 
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 /**

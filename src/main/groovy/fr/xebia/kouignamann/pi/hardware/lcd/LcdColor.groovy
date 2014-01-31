@@ -1,4 +1,4 @@
-package fr.xebia.kouignamann.pi.draft.hardware.lcd
+package fr.xebia.kouignamann.pi.hardware.lcd
 
 /**
  * Created by amaury on 23/01/2014.

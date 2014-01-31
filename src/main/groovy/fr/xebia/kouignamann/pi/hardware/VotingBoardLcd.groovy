@@ -1,14 +1,14 @@
-package fr.xebia.kouignamann.pi.draft.hardware
+package fr.xebia.kouignamann.pi.hardware
 
 import com.pi4j.io.i2c.I2CDevice
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdDisplayEntry
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdDisplayShift
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdOnOffFlag
-import fr.xebia.kouignamann.pi.draft.hardware.plate.MCP23017
+import fr.xebia.kouignamann.pi.hardware.lcd.LcdColor
+import fr.xebia.kouignamann.pi.hardware.lcd.LcdDisplayEntry
+import fr.xebia.kouignamann.pi.hardware.lcd.LcdDisplayShift
+import fr.xebia.kouignamann.pi.hardware.lcd.LcdOnOffFlag
+import fr.xebia.kouignamann.pi.hardware.plate.MCP23017
 import groovy.transform.CompileStatic
 
-import static fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdCommand.*
+import static fr.xebia.kouignamann.pi.hardware.lcd.LcdCommand.*
 
 /**
  * Created by amaury on 23/01/2014.

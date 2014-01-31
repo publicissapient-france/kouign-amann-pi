@@ -1,4 +1,4 @@
-package fr.xebia.kouignamann.pi.draft.hardware.plate
+package fr.xebia.kouignamann.pi.hardware.plate
 
 /**
  * Created by amaury on 23/01/2014.
