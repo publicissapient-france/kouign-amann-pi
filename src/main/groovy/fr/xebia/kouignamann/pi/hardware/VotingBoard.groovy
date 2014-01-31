@@ -202,9 +202,9 @@ class VotingBoard {
 
             log.info('pressed : ' + result)
 
-            result.each { value->
+            result.eachWithIndex { value, index ->
                 if (value) {
-                    note = value
+                    note = index + 1
                 }
             }
 
