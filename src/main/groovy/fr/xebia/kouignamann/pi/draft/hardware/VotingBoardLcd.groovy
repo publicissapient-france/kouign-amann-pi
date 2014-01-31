@@ -122,18 +122,6 @@ class VotingBoardLcd {
         writeCmd(SET_DDRAM_ADDR | (column + rowOffsets[row]))
     }
 
-/*
-    private void write(byte data) {
-        pollWait()
-        int bitmask = portB & 0x01   // Mask out PORTB LCD control bits
-        bitmask |= 0x80 // Set data bit
-
-        byte[] bytes = ShiftAndMap4(bitmask, data)
-        i2cDevice.write(MCP23017_GPIOB, bytes, 0, 4)
-        portB = bytes[3]
-    }
-*/
-
     private void writeCmd(int cmd) {
 
         pollWait()
@@ -152,12 +140,15 @@ class VotingBoardLcd {
         }
     }
 
-    public void display(String s) {
+    public void display(String messageToDisplay) {
 
         clearDisplay()
 
-        int sLen = s.length()
-        if (sLen < 1) return
+        int sLen = messageToDisplay.length()
+
+        if (sLen < 1) {
+            return
+        }
 
         int bytesLen = 4 * sLen
 
@@ -168,10 +159,12 @@ class VotingBoardLcd {
         bitmask |= 0x80 // Set data bit
 
         byte[] bytes = new byte[4 * sLen]
-        for (int i = 0; i < sLen; i++) {
-            byte[] data = ShiftAndMap4(bitmask, (byte) s.charAt(i))
-            for (int j = 0; j < 4; j++) {
-                bytes[(i * 4) + j] = data[j]
+
+        sLen.times { int index ->
+            byte[] data = ShiftAndMap4(bitmask, (byte) messageToDisplay.charAt(index))
+
+            4.times { int secondaryIndex ->
+                bytes[(index * 4) + secondaryIndex] = data[secondaryIndex]
             }
         }
 
@@ -181,6 +174,7 @@ class VotingBoardLcd {
     }
 
     protected void pollWait() {
+
         // The speed of LCD accesses is inherently limited by I2C through the
         // port expander.  A 'well behaved program' is expected to poll the
         // LCD to know that a prior instruction completed.  But the timing of
@@ -212,11 +206,14 @@ class VotingBoardLcd {
     }
 
     protected byte[] ShiftAndMap4(int bitmask, int value) {
+
         // The LCD data pins (D4-D7) connect to MCP pins 12-9 (PORTB4-1), in
         // that order.  Because this sequence is 'reversed,' a direct shift
         // won't work.  This table remaps 4-bit data values to MCP PORTB
         // outputs, incorporating both the reverse and shift.
+
         int hi = bitmask | SHIFT_REVERSE[value >> 4]
+
         int lo = bitmask | SHIFT_REVERSE[value & 0x0F]
 
         byte[] data = [(byte) (hi | 0x20), (byte) hi, (byte) (lo | 0x20), (byte) lo]

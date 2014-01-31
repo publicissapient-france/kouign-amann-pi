@@ -5,12 +5,15 @@ import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 import org.vertx.java.core.json.impl.Json
+import org.vertx.java.core.logging.Logger
 
 class MqttVerticle extends Verticle implements MqttCallback {
-    def logger
 
-    MqttAsyncClient client
-    MqttConnectOptions options
+    private Logger log
+
+    private MqttAsyncClient client
+
+    private MqttConnectOptions options
 
     /*Object waiter = new Object();
     boolean donext = false;
@@ -30,20 +33,26 @@ class MqttVerticle extends Verticle implements MqttCallback {
     */
 
     def start() {
-        logger = container.logger
+
+        log = container.logger
 
         configure(this.container.config['mqttClient'] as Map)
 
-        logger.info "Start -> Initialize handler";
+        log.info('Start -> Initialize handler')
+
         [
                 "fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote": this.&processVote,
-        ].each {
-            eventBusAddress, handler ->
-                vertx.eventBus.registerHandler(eventBusAddress, handler)
+        ].each { eventBusAddress, handler ->
+            vertx.eventBus.registerHandler(eventBusAddress, handler)
         }
 
-        logger.info "Start -> Done initialize handler";
+        log.info('Start -> Done initialize handler')
     }
+
+    def stop() {
+        log.info('Stop method not implemented yet.')
+    }
+
 
     def configure(Map config) throws MqttException {
         String uri = config['server-uri']
@@ -71,7 +80,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
     }
 
     def processVote(Message incomingMsg) {
-        logger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${incomingMsg}")
+        log.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${incomingMsg}")
         Map outgoingMessage = [
                 "nfcId": incomingMsg.body.nfcId,
                 "voteTime": incomingMsg.body.voteTime,
@@ -88,7 +97,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
         def topic = client.getTopic('fr.xebia.kouignamann.nuc.central.processSingleVote')
         //def token = topic.publish(message)
-        client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote',message)
+        client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
         // token.waitForCompletion()
         //client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
 
@@ -99,7 +108,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
     @Override
     void connectionLost(Throwable throwable) {
-        logger.info "connectionLost"
+        log.info "connectionLost"
         while (!client.isConnected()) {
             try {
                 client?.connect(options)
@@ -112,12 +121,12 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
     @Override
     void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        logger.info "messageArrived"
+        log.info "messageArrived"
     }
 
     @Override
     void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        logger.info "deliveryComplete"
+        log.info "deliveryComplete"
     }
 
     /*public void publish(String topicName, int qos, byte[] payload) throws Throwable {
@@ -130,7 +139,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
     IMqttActionListener conListener = new IMqttActionListener() {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     try{
-                    //logger.info ("Connected");
+                    //log.info ("Connected");
                     println "Connected"
                     state = CONNECTED;
                     carryOn();
@@ -142,7 +151,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     ex = exception;
                     state = ERROR;
-                    logger.error ("connect failed" + exception);
+                    log.error ("connect failed" + exception);
                     carryOn();
                 }
 

@@ -5,14 +5,14 @@ import com.pi4j.io.gpio.GpioFactory
 import com.pi4j.io.i2c.I2CBus
 import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
-import fr.xebia.kouignamann.pi.draft.hardware.lcd.LcdColor
 import fr.xebia.kouignamann.pi.util.WrapperEventBus
+import groovy.transform.TimedInterrupt
+import org.vertx.groovy.core.AsyncResult
 import org.vertx.groovy.core.eventbus.Message
-import groovy.transform.CompileStatic
 import org.vertx.groovy.core.Vertx
 import org.vertx.groovy.platform.Container
-import org.vertx.java.core.logging.Logger
 
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 /**
@@ -22,20 +22,25 @@ import java.util.concurrent.TimeoutException
  */
 class VotingBoard {
 
+    def log
+
+    private static final String PROMPT_BOOT = '...Démarrage...'
     private static final String PROMPT_CARD = 'Badgez SVP'
     private static final String PROMPT_VOTE = 'Votez SVP'
-    private static final Integer BUS_NUMBER = 1
-    private static final Integer BUS_ADDRESS = 0x20
+    private static final Integer I2C_BUS_NUMBER = 1
+    private static final Integer I2C_BUS_ADDRESS = 0x20
+
     private static final Integer BUTTON_PRESSED_DETECTION_TIME = 10
-    private static final Integer VOTE_WAIT_TIME = 1000 * 10
+    private static final Integer VOTE_WAIT_TIME = 1000 * 5
 
     private final I2CBus i2CBus
     private final I2CDevice i2CDevice
     private final GpioController gpio
+
     private final Container container
     private final Vertx vertx
+    private final String busPrefix
 
-    private static Logger log
 
     private VotingBoardLcd lcd
     private VotingBoardNfcReader nfcReader
@@ -47,15 +52,15 @@ class VotingBoard {
      * @param container
      * @param vertx
      */
-    VotingBoard(Container container, Vertx vertx) {
+    VotingBoard(Container container, Vertx vertx, String busPrefix) {
         log = container.logger
-
+        this.busPrefix = busPrefix
         this.container = container
         this.vertx = vertx
 
         log.info('START: Initializing i2c bus')
-        i2CBus = I2CFactory.getInstance(BUS_NUMBER)
-        i2CDevice = i2CBus.getDevice(BUS_ADDRESS)
+        i2CBus = I2CFactory.getInstance(I2C_BUS_NUMBER)
+        i2CDevice = i2CBus.getDevice(I2C_BUS_ADDRESS)
         log.info('START: Done initializing i2c bus')
 
         log.info('START: Initializing gpio factory')
@@ -65,13 +70,15 @@ class VotingBoard {
         initLcd()
         initNfcReader()
         initButtons()
-        initNfcReader()
     }
 
-    private void initButtons() {
-        log.info('START: Initializing led buttons')
-        buttons = new VotingBoardButtons(gpio, i2CDevice)
-        log.info('START: Done initializing led buttons')
+    private void initLcd() {
+        log.info('START: Initializing lcd plate')
+
+        lcd = new VotingBoardLcd(i2CDevice)
+        lcd.display(PROMPT_BOOT)
+
+        log.info('START: Done initializing lcd plate')
     }
 
     private void initNfcReader() {
@@ -82,25 +89,13 @@ class VotingBoard {
         log.info('START: Done initializing nfc reader')
     }
 
-    private void initLcd() {
-        log.info('START: Initializing lcd plate')
-
-        lcd = new VotingBoardLcd(i2CDevice)
-        lcd.display("Starting...")
-
-        log.info('START: Done initializing lcd plate')
+    private void initButtons() {
+        log.info('START: Initializing led buttons')
+        buttons = new VotingBoardButtons(gpio, i2CDevice, log)
+        log.info('START: Done initializing led buttons')
     }
 
-    private void initLedButtons() {
-        log.info "START: Initializing led buttons"
-
-
-        buttons = new VotingBoardButtons(gpio, i2CDevice)
-
-        log.info "START: Done initializing led buttons"
-    }
-
-    def stop() {
+    void stop() {
         log.info('STOP: Shutting down NfcReader')
         nfcReader?.stop()
 
@@ -117,17 +112,80 @@ class VotingBoard {
         i2CBus?.close()
     }
 
+
+    private def lightOnAllButtons() {
+        buttons.lightOnAll()
+    }
+
+    private def lightOffAllButtons() {
+        buttons.lightOffAll()
+    }
+
+    private def lightOnOneButton(int note) {
+        buttons.lightOnOneButton(note)
+    }
+
+    /**
+     * Entry point for event bus.
+     *
+     * @param message
+     */
+    def waitCard(Message message) {
+
+        // TODO: validate message format
+        lightOffAllButtons()
+
+        lcd.display(PROMPT_CARD)
+
+        String nfcId = nfcReader.waitForCardId()
+
+        log.info('Card seen => ' + nfcId)
+
+        long voteTime = new Date().getTime()
+
+        try {
+            def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
+            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 1000) { AsyncResult result ->
+
+                if (result.succeeded) {
+                    int note = result.result.body.note
+
+                    log.info("Process -> note : " + note)
+
+                    lightOnOneButton(note)
+
+                    Map outgoingMessage = [
+                            "nfcId": nfcId,
+                            "voteTime": voteTime,
+                            "note": note
+                    ]
+
+                    log.info("BUS => ${busPrefix}.processVote => ${outgoingMessage}")
+
+                    vertx.eventBus.send("${busPrefix}.processVote", outgoingMessage)
+                } else {
+                    log.error('didnt succeed: ' + result.cause.message, result.cause)
+                    log.info("Process -> TIMEOUT - Do nothing")
+                }
+
+                vertx.eventBus.send("${busPrefix}.waitCard", 'call')
+            }
+        } catch (TimeoutException e) {
+            log.info("PROCESS: waited too long for vote, going back to NFC")
+            vertx.eventBus.send("${busPrefix}.waitCard", 'call')
+        }
+    }
+
     /**
      * Entry point for event bus
      * @param message
      */
     def waitVote(Message message) {
-        // expecting for vote value
-        // reply => send value + nfcId to dataVerticle
-        // timeout or not => send to waitCard
+
         log.info('Wait vote')
-        buttons.lightOnAll()
-        stopFlashing()
+
+        lightOnAllButtons()
+
         lcd.display(PROMPT_VOTE)
 
         boolean voteSaved = false
@@ -135,13 +193,13 @@ class VotingBoard {
         int note = -1
 
         def maxLoops = VOTE_WAIT_TIME / BUTTON_PRESSED_DETECTION_TIME
+
         def loopCount = 0
 
-        log.info("PROCESS: max loops ${maxLoops}")
-
-        // Wait for button to be pressed
         while (!voteSaved && loopCount < maxLoops) {
+
             sleep BUTTON_PRESSED_DETECTION_TIME
+
             int[] result = buttons.readButtonsPressed()
 
             for (int i = 0; i < 5; i++) {
@@ -150,87 +208,16 @@ class VotingBoard {
                 }
             }
 
-            if (loopCount >= maxLoops) {
-                throw new TimeoutException()
-            }
-
             if (note > -1) {
                 lcd.display("Votre note: ${note}")
 
-                // TODO switch all buttons led
-                message.reply([note: note])
+                lightOnOneButton(note)
 
-                return note
+                message.reply([note: note])
+                return
             }
+
             loopCount++
         }
-
-
-    }
-
-    /**
-     * Entry point for event bus
-     * @param message
-     */
-    def waitCard(Message message) {
-        // display user message to engage vote
-        lcd.display(PROMPT_CARD)
-        startFlashing()
-
-        String nfcId = nfcReader.waitForCardId()
-        log.info('Card seen => '+nfcId)
-
-        long voteTime = new Date().getTime()
-        try {
-
-            def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
-            wrapperBus.sendWithTimeout("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitVote", 'go', 1000) { result ->
-                if (result.succeeded) {
-                    log.info("Process -> note : "+result.body.note)
-
-                    Map outgoingMessage = [
-                            "nfcId": nfcId,
-                            "voteTime": voteTime,
-                            "note": result.body.note
-                    ]
-                } else {
-                    log.info("Process -> TIMEOUT - Do nothing")
-                }
-
-            }
-        } catch (TimeoutException e) {
-            log.info("PROCESS: waited too long for vote, going back to NFC")
-        }
-
-        vertx.eventBus.send("fr.xebia.kouignamann.pi.${container.config.hardwareUid}.waitCard",'go')
-    }
-
-    static final Integer FLASH_PERIOD = 1000
-    int colorIdx = 0
-    long flashTimerId
-
-    void stopFlashing() {
-        log.info('PROCESS: Stop flashing')
-
-        if (flashTimerId) {
-            vertx.cancelTimer(flashTimerId)
-            lcd.setBacklight(0x05)
-            flashTimerId = 0
-        }
-    }
-
-    void startFlashing() {
-        log.info('PROCESS: Start flashing')
-        if (!flashTimerId) {
-            flashTimerId = vertx.setPeriodic(FLASH_PERIOD) { flashTimerId ->
-                lcd.setBacklight(LcdColor.COLORS[colorIdx++])
-
-                if (colorIdx >= LcdColor.COLORS.length) {
-                    // Reset
-                    colorIdx = 0
-                }
-            }
-        }
-
     }
 }

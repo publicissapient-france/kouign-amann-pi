@@ -37,12 +37,14 @@ class VotingBoardNfcReader {
 
         try {
             Card card = nfcTerminal.connect('*')
+
             ResponseAPDU cardResponse = card.basicChannel.transmit(new CommandAPDU(READ_UID_SEQ))
             card.disconnect(false)
+
             return byteArrayToNormalizedString(cardResponse)
         } catch (Exception e) {
-            log.error('Failed to read card', e)
             // TODO return to listening state
+            log.error('Failed to read card.', e)
         }
     }
 
