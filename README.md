@@ -39,9 +39,9 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
 * Reboot, reconnect and:
 ```
     sudo bash -l
-    wget http://dl.bintray.com/vertx/downloads/vert.x-2.1M3.tar.gz -O vertx.tgz
+    wget http://dl.bintray.com/vertx/downloads/vert.x-2.1M5.tar.gz -O vertx.tgz
     tar xvzf vertx.tgz
-    ln -s vert.x-2.1M3 vertx_home
+    ln -s vert.x-2.1M5 vertx_home
     mkdir vertx_mods
     mkdir vertx_mods_conf
     chown pi:pi * -R

@@ -6,7 +6,6 @@ import com.pi4j.io.gpio.PinState
 import com.pi4j.io.gpio.RaspiPin
 import com.pi4j.io.i2c.I2CDevice
 import fr.xebia.kouignamann.pi.draft.hardware.plate.MCP23017
-import org.vertx.groovy.core.eventbus.Message
 import org.vertx.java.core.logging.Logger
 
 /**
@@ -20,23 +19,21 @@ class VotingBoardButtons {
 
     final I2CDevice i2cDevice
 
-    Map<Integer, GpioPinDigitalOutput> buttons = [:]
+    final List<GpioPinDigitalOutput> buttons
 
     VotingBoardButtons(GpioController gpio, I2CDevice i2cDevice, Logger log) {
         this.log = log
         this.gpio = gpio
         this.i2cDevice = i2cDevice
 
-        // GPIO # 18
-        buttons[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Button1", PinState.LOW)
-        // GPIO # 22
-        buttons[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Button2", PinState.LOW)
-        // GPIO # 23
-        buttons[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Button3", PinState.LOW)
-        // GPIO # 24
-        buttons[4] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Button4", PinState.LOW)
-        // GPIO # 25
-        buttons[5] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "Button5", PinState.LOW)
+        // TODO: Change values to reflect Select, up, down, left, right, according to PCB schema
+        buttons = [
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, 'Button1', PinState.LOW), // GPIO # 18
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, 'Button2', PinState.LOW), // GPIO # 22
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, 'Button3', PinState.LOW), // GPIO # 23
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, 'Button4', PinState.LOW),// GPIO # 24
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, 'Button5', PinState.LOW) // GPIO # 25
+        ]
 
         lightOnAll()
 
@@ -80,13 +77,15 @@ class VotingBoardButtons {
         */
     }
 
-    private List<Integer> _button_pins = [0, 1, 2, 3, 4]
-
     List<Integer> readButtonsPressed() {
 
-        _button_pins.collect { pinByte ->
-            digitalRead(pinByte)
+        List<Integer> pressed = []
+
+        buttons.size().times { index ->
+            pressed << digitalRead(index)
         }
+
+        pressed
     }
 
     private Integer digitalRead(Integer pinByte) {

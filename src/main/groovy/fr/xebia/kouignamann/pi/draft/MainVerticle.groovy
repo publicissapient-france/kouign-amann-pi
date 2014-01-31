@@ -32,16 +32,16 @@ class MainVerticle extends Verticle {
         ].each { address, handler ->
             eventBus.registerHandler(address, handler) { AsyncResult asyncResult ->
                 if (asyncResult.succeeded) {
-                    log.info('START: Bus handler ready: ${address}')
+                    log.info("START: Bus handler ready: ${address}")
                 } else {
-                    log.error('START: Bus handler failed: ${address}', asyncResult.cause)
+                    log.error("START: Bus handler failed: ${address}", asyncResult.cause)
                 }
             }
         }
 
-        eventBus.send("${localBusPrefix}.waitCard", 'call')
+        container.deployVerticle('groovy:fr.xebia.kouignamann.pi.draft.MqttVerticle', container.config)
 
-        log.info('TODO: Deploy MQTT Verticle')
+        eventBus.send("${localBusPrefix}.waitCard", 'call')
     }
 
     def stop() {

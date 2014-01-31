@@ -24,7 +24,7 @@ class VotingBoard {
 
     def log
 
-    private static final String PROMPT_BOOT = '...Démarrage...'
+    private static final String PROMPT_BOOT = '...Demarrage...'
     private static final String PROMPT_CARD = 'Badgez SVP'
     private static final String PROMPT_VOTE = 'Votez SVP'
     private static final Integer I2C_BUS_NUMBER = 1
@@ -40,7 +40,6 @@ class VotingBoard {
     private final Container container
     private final Vertx vertx
     private final String busPrefix
-
 
     private VotingBoardLcd lcd
     private VotingBoardNfcReader nfcReader
@@ -145,10 +144,11 @@ class VotingBoard {
 
         try {
             def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
-            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 1000) { AsyncResult result ->
+
+            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 10000) { AsyncResult result ->
 
                 if (result.succeeded) {
-                    int note = result.result.body.note
+                    int note = result.result.body.toMap().note
 
                     log.info("Process -> note : " + note)
 
@@ -164,8 +164,8 @@ class VotingBoard {
 
                     vertx.eventBus.send("${busPrefix}.processVote", outgoingMessage)
                 } else {
-                    log.error('didnt succeed: ' + result.cause.message, result.cause)
                     log.info("Process -> TIMEOUT - Do nothing")
+                    log.error('didnt succeed: ' + result.cause.message, result.cause)
                 }
 
                 vertx.eventBus.send("${busPrefix}.waitCard", 'call')
@@ -200,20 +200,27 @@ class VotingBoard {
 
             sleep BUTTON_PRESSED_DETECTION_TIME
 
-            int[] result = buttons.readButtonsPressed()
+            List<Integer> result = buttons.readButtonsPressed()
 
-            for (int i = 0; i < 5; i++) {
-                if (result[i]) {
-                    note = i;
+            log.info('pressed : ' + result)
+
+            result.each { value->
+                if (value) {
+                    note = value
                 }
             }
+
+            log.info('note : ' + note)
 
             if (note > -1) {
                 lcd.display("Votre note: ${note}")
 
+                message.reply([note: note])
+
                 lightOnOneButton(note)
 
-                message.reply([note: note])
+                sleep(1000)
+
                 return
             }
 
