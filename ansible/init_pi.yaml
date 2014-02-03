@@ -2,9 +2,5 @@
   vars:
   user: pi
   sudo: yes
-  tasks:
-    #- name: apt update
-    #  apt: update_cache=yes
-    #- name: apt upgrade
-    #  apt: upgrade=full
-    - include: mosquitto_pi.yaml
+- include: mosquitto_pi.yaml
+    
