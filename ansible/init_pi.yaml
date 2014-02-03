@@ -1,9 +1,10 @@
-- hosts: 10.1.1.113
+- hosts: all
   vars:
   user: pi
   sudo: yes
   tasks:
-    - name: apt update
-      apt: update_cache=yes
-    - name: apt upgrade
-      apt: upgrade=full
+    #- name: apt update
+    #  apt: update_cache=yes
+    #- name: apt upgrade
+    #  apt: upgrade=full
+    - include: mosquitto_pi.yaml
