@@ -33,21 +33,7 @@ tasks:
     apt: pkg="mosquitto" state="present" update_cache=yes
 
   - name: edit mosquitto conf
-    lineinfile: dest=/etc/mosquitto/mosquitto.conf state=present create=true line="{{item}}"
-    with_items: 
-      - "retry_interval 10"
-      - "connection central"
-      - "address 127.0.0.1:1884" #TODO edit with NUC address
-      - "clientid raspiBridge" # TODO edit with pi UID
-      - "cleansession false"
-      - "keepalive_interval 60"
-      - "start_type automatic"
-      - "restart_timeout 30"
-      - "idle_timeout 60"
-      - "try_private true"
-      - "username pi" #TODO edit with real values
-      - "password pi"
-      - "topic bridge out 2"
+    template: src=mosquitto.conf.j2 dest=/etc/mosquitto/mosquitto.conf
     notify:
       - restart mosquitto
   - name: start mosquitto

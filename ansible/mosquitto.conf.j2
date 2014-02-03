@@ -1,0 +1,13 @@
+retry_interval 10
+connection central
+address {{ bridgeHost }}:{{ bridgePort }} #TODO edit with NUC address
+clientid {{ piUid }} # TODO edit with pi UID
+cleansession false
+keepalive_interval 60
+start_type automatic
+restart_timeout 30
+idle_timeout 60
+try_private true
+username {{ bridgeUser }} #TODO edit with real values
+password {{ bridgePassword }}
+topic voteToCentral out 2

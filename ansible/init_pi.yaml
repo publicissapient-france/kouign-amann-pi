@@ -1,5 +1,6 @@
 - hosts: all
-  vars:
+  vars_files:
+      - settings-default.yml
   user: pi
   sudo: yes
 - include: mosquitto_pi.yaml
