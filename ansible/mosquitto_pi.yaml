@@ -24,15 +24,12 @@
 #   password
 
 ---
-- name: install mosquitto repo
+- name: install mosquitto repo key
   apt_key: url=http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key state=present
-- name: install mosquitto repo 2
+- name: install mosquitto repo
   get_url : url="http://repo.mosquitto.org/debian/mosquitto-repo.list" dest="/etc/apt/sources.list.d/mosquitto-repo.list"
-- name: install mosquitto repo 3
-  apt: update_cache=yes
-
 - name: install mosquitto
-  apt: pkg="mosquitto" state="present"
+  apt: pkg="mosquitto" state="present" update_cache=yes
 
 #- name: stop mosquitto
 #  service: name=mosquitto
