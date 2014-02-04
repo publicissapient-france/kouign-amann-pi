@@ -210,7 +210,7 @@ class VotingBoard {
                 }
             }
 
-            log.info('note : ' + note)
+            //log.info('note : ' + note)
 
             if (note > -1) {
                 lcd.display("Votre note: ${note}")

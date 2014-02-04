@@ -4,10 +4,13 @@
   user: pi
   sudo: yes
 
-- include: mosquitto_pi.yaml
+  tasks:
+    - include: mosquitto_pi.yaml
+    #- name: apt update
+    #  apt: update_cache=yes
+    #- name: apt upgrade
+    #  apt: upgrade=full
 
-#tasks:
-#     - name: apt update
-#       apt: update_cache=yes
-#     - name: apt upgrade
-#       apt: upgrade=full
+  handlers:
+    - name : restart mosquitto
+      service: name="mosquitto" state="restarted" enabled="yes"
