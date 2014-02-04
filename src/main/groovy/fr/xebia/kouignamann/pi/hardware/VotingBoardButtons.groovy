@@ -19,7 +19,7 @@ class VotingBoardButtons {
 
     final I2CDevice i2cDevice
 
-    final List<GpioPinDigitalOutput> buttons
+    final Map<String, GpioPinDigitalOutput> buttons
 
     VotingBoardButtons(GpioController gpio, I2CDevice i2cDevice, Logger log) {
         this.log = log
@@ -28,11 +28,11 @@ class VotingBoardButtons {
 
         // TODO: Change values to reflect Select, up, down, left, right, according to PCB schema
         buttons = [
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, 'Button1', PinState.LOW), // GPIO # 18
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, 'Button2', PinState.LOW), // GPIO # 22
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, 'Button3', PinState.LOW), // GPIO # 23
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, 'Button4', PinState.LOW),// GPIO # 24
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, 'Button5', PinState.LOW) // GPIO # 25
+                'Button1': gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, 'Button1', PinState.LOW), // GPIO # 18
+                'Button2': gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, 'Button2', PinState.LOW), // GPIO # 22
+                'Button3': gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, 'Button3', PinState.LOW), // GPIO # 23
+                'Button4': gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, 'Button4', PinState.LOW),// GPIO # 24
+                'Button5': gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, 'Button5', PinState.LOW) // GPIO # 25
         ]
 
         lightOnAll()
@@ -44,37 +44,32 @@ class VotingBoardButtons {
 
     def lightOnAll() {
         log.info('lightOnAll')
-        /*for (i in 1..5) {
-            buttons["button${i}"]?.high()
-        }*/
+        for (i in 1..5) {
+            buttons["Button${i}"]?.high()
+        }
 
     }
 
     def lightOffAll() {
         log.info('lightOffAll')
-        /*for (i in 1..5) {
-            buttons["button${i}"]?.low()
-        }*/
+        for (i in 1..5) {
+            buttons["Button${i}"]?.low()
+        }
 
     }
 
-    /**
-     * Entry point for event bus
-     * @param message
-     */
-    def lightOnOneButton(int buttonNumber) {
-        log.info('lightOnOneButton: ' + buttonNumber)
-        /*
+    def lightOnOneButton(int note) {
+        log.info('lightOnOneButton: ' + note)
+
         for (i in 1..5) {
-            if (msg || i != msg.body.note) {
-                buttons[i].low()
+            if (i != note) {
+                buttons["Button${i}"].low()
             }
         }
-        if (msg && msg.body.note) {
-            sleep 1000
-            buttons[i].low()
-        }
-        */
+        sleep 1000
+        buttons["Button${note}"].low()
+
+
     }
 
     List<Integer> readButtonsPressed() {

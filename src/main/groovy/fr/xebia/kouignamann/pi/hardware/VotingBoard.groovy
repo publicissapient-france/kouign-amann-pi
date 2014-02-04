@@ -7,8 +7,8 @@ import com.pi4j.io.i2c.I2CDevice
 import com.pi4j.io.i2c.I2CFactory
 import fr.xebia.kouignamann.pi.util.WrapperEventBus
 import org.vertx.groovy.core.AsyncResult
-import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.core.Vertx
+import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Container
 
 import java.util.concurrent.TimeoutException
@@ -143,14 +143,12 @@ class VotingBoard {
         try {
             def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
 
-            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 10000) { AsyncResult result ->
+            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 5000) { AsyncResult result ->
 
                 if (result.succeeded) {
                     int note = result.result.body.toMap().note
 
                     log.info("Process -> note : " + note)
-
-                    lightOnOneButton(note)
 
                     Map outgoingMessage = [
                             "nfcId": nfcId,
@@ -161,23 +159,27 @@ class VotingBoard {
                     log.info("BUS => ${busPrefix}.processVote => ${outgoingMessage}")
 
                     vertx.eventBus.send("${busPrefix}.processVote", outgoingMessage)
+
                 } else {
                     log.info("Process -> TIMEOUT - Do nothing")
                     log.error('didnt succeed: ' + result.cause.message, result.cause)
                 }
-
                 vertx.eventBus.send("${busPrefix}.waitCard", 'call')
             }
-        } catch (TimeoutException e) {
+
+
+        }
+
+        catch (TimeoutException e) {
             log.info("PROCESS: waited too long for vote, going back to NFC")
             vertx.eventBus.send("${busPrefix}.waitCard", 'call')
         }
     }
 
-    /**
-     * Entry point for event bus
-     * @param message
-     */
+/**
+ * Entry point for event bus
+ * @param message
+ */
     def waitVote(Message message) {
 
         log.info('Wait vote')
@@ -200,7 +202,7 @@ class VotingBoard {
 
             List<Integer> result = buttons.readButtonsPressed()
 
-            log.info('pressed : ' + result)
+            //log.info('pressed : ' + result)
 
             result.eachWithIndex { value, index ->
                 if (value) {
@@ -217,12 +219,11 @@ class VotingBoard {
 
                 lightOnOneButton(note)
 
-                sleep(1000)
-
                 return
             }
 
             loopCount++
         }
     }
+
 }

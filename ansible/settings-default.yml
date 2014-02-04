@@ -1,5 +1,4 @@
 bridgeHost: '127.0.0.1'
 bridgePort: '1883'
-piUid: 'raspberry'
 bridgeUser: 'pi'
 bridgePassword: 'pi'
