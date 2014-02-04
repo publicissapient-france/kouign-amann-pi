@@ -1,4 +1,0 @@
-bridgeHost: '127.0.0.1'
-bridgePort: '1883'
-bridgeUser: 'pi'
-bridgePassword: 'pi'

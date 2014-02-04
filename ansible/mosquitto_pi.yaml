@@ -22,25 +22,23 @@
 #   try_private true
 #   username
 #   password
-
 ---
-tasks:
-  - name: install mosquitto repo key
-    apt_key: url=http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key state=present
-  - name: install mosquitto repo
-    get_url : url="http://repo.mosquitto.org/debian/mosquitto-repo.list" dest="/etc/apt/sources.list.d/mosquitto-repo.list"
-  - name: install mosquitto
-    apt: pkg="mosquitto" state="present" update_cache=yes
+- name: install mosquitto repo
+  apt_key: url=http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key state=present
+- name: install mosquitto repo
+  get_url : url="http://repo.mosquitto.org/debian/mosquitto-repo.list" dest="/etc/apt/sources.list.d/mosquitto-repo.list"
+- name: install mosquitto
+  apt: pkg="mosquitto" state="present" update_cache=yes
 
-  - name: edit mosquitto conf
-    template: src=mosquitto.conf.j2 dest=/etc/mosquitto/mosquitto.conf
-    notify:
-      - restart mosquitto
-  - name: start mosquitto
-    service: name="mosquitto" state="started" enabled="yes"
-handlers:
-  - restart mosquitto
-    service: name="mosquitto" state="restarted" enabled="yes"
+- name: edit mosquitto conf
+  template: src=mosquitto.conf.j2 dest=/etc/mosquitto/mosquitto.conf
+#    notify:
+#      - restart mosquitto
+- name: start mosquitto
+  service: name="mosquitto" state="started" enabled="yes"
+#handlers:
+#  - name : restart mosquitto
+#    service: name="mosquitto" state="restarted" enabled="yes"
 
 
 

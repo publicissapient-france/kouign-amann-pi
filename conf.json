@@ -1,5 +1,5 @@
 {
-    "hardwareUid": "Salle-1",
+    "hardwareUid": "rdc1",
     "testLcd": false,
     "testLedBackPack": false,
     "testLedButton": false,
@@ -8,12 +8,7 @@
     "mockRfid": true,
     "useMqtt": true,
     "mqttClient": {
-        //"server-uri" : "tcp://m10.cloudmqtt.com:10325",
-        //"client-id": "vertx-1",
-        //"user": "kouign-amann",
-        //"password": "kouign-amann"
-        //"server-uri" : "tcp://10.1.1.144:1883",
         "server-uri" : "tcp://127.0.0.1:1883",
-        "client-id": "vertx-11"
+        "client-id": "rdc1"
     }
 }
