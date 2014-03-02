@@ -5,12 +5,56 @@
   sudo: yes
 
   tasks:
-    - include: mosquitto_pi.yaml
-    #- name: apt update
-    #  apt: update_cache=yes
-    #- name: apt upgrade
-    #  apt: upgrade=full
+    #- include: mosquitto_pi.yaml
+    - name: apt update
+      apt: update_cache=yes
+    - name: apt upgrade
+      apt: upgrade=full
+    - name: add ll alias
+      lineinfile: dest=/etc/profile
+                  regexp='^alias ll'
+                  insertafter=EOF
+                  line='alias ll="ls -aul"'
+                  state=present
+    - name: add pn533 to nfc blacklist
+      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
+                  regexp='^blacklist pn533'
+                  insertafter=EOF
+                  line='blacklist pn533'
+                  state=present
+                  create=True
 
-  handlers:
-    - name : restart mosquitto
-      service: name="mosquitto" state="restarted" enabled="yes"
+    - name: add nfc to nfc blacklist
+      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
+                  regexp='^blacklist nfc'
+                  insertafter=EOF
+                  line='blacklist nfc'
+                  state=present
+
+    - name: add i2c-bcm2708 module
+      lineinfile: dest=/etc/modules
+                  regexp='^i2c-bcm2708'
+                  insertafter=EOF
+                  line='i2c-bcm2708'
+                  state=present
+
+    - name: add i2c-dev module
+      lineinfile: dest=/etc/modules
+                  regexp='^i2c-dev'
+                  insertafter=EOF
+                  line='i2c-dev'
+                  state=present
+
+    - name: install pcscd
+      apt: pkg=pcscd
+           force=yes
+           state=present
+
+    - name: install emacs
+      apt: pkg=emacs
+           force=yes
+           state=present
+
+  #handlers:
+    #- name : restart mosquitto
+     # service: name="mosquitto" state="restarted" enabled="yes"
