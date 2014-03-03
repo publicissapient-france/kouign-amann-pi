@@ -5,63 +5,63 @@
   sudo: yes
 
   tasks:
-#    - name: apt update
-#      apt: update_cache=yes
-#    - name: apt upgrade
-#      apt: upgrade=full
-#    - name: add ll alias
-#      lineinfile: dest=/etc/profile
-#                  regexp='^alias ll'
-#                  insertafter=EOF
-#                  line='alias ll="ls -aul"'
-#                  state=present
-#    - name: add pn533 to nfc blacklist
-#      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
-#                  regexp='^blacklist pn533'
-#                  insertafter=EOF
-#                  line='blacklist pn533'
-#                  state=present
-#                  create=True
-#
-#    - name: add nfc to nfc blacklist
-#      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
-#                  regexp='^blacklist nfc'
-#                  insertafter=EOF
-#                  line='blacklist nfc'
-#                  state=present
-#
-#    - name: add i2c-bcm2708 module
-#      lineinfile: dest=/etc/modules
-#                  regexp='^i2c-bcm2708'
-#                  insertafter=EOF
-#                  line='i2c-bcm2708'
-#                  state=present
-#
-#    - name: add i2c-dev module
-#      lineinfile: dest=/etc/modules
-#                  regexp='^i2c-dev'
-#                  insertafter=EOF
-#                  line='i2c-dev'
-#                  state=present
-#
-#    - name: install pcscd
-#      apt: pkg=pcscd
-#           force=yes
-#           state=present
-#
-#    - name: install emacs
-#      apt: pkg=emacs
-#           force=yes
-#           state=present
-#
-#    #- name: reboot pis
-#    #  command: /sbin/reboot -t now
-#
-#    - name: download vertx
-#      get_url: url=http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz
-#               sha256sum=9d8e2a1f5faac02a01b193cffa4b3a6a1dc13d13d6dd330afc1a05195c42190e
-#               dest=/home/pi/vertx.tar.gz
-#
+    - name: apt update
+      apt: update_cache=yes
+    - name: apt upgrade
+      apt: upgrade=full
+    - name: add ll alias
+      lineinfile: dest=/etc/profile
+                  regexp='^alias ll'
+                  insertafter=EOF
+                  line='alias ll="ls -aul"'
+                  state=present
+    - name: add pn533 to nfc blacklist
+      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
+                  regexp='^blacklist pn533'
+                  insertafter=EOF
+                  line='blacklist pn533'
+                  state=present
+                  create=True
+
+    - name: add nfc to nfc blacklist
+      lineinfile: dest=/etc/modprobe.d/nfc-blacklist.conf
+                  regexp='^blacklist nfc'
+                  insertafter=EOF
+                  line='blacklist nfc'
+                  state=present
+
+    - name: add i2c-bcm2708 module
+      lineinfile: dest=/etc/modules
+                  regexp='^i2c-bcm2708'
+                  insertafter=EOF
+                  line='i2c-bcm2708'
+                  state=present
+
+    - name: add i2c-dev module
+      lineinfile: dest=/etc/modules
+                  regexp='^i2c-dev'
+                  insertafter=EOF
+                  line='i2c-dev'
+                  state=present
+
+    - name: install pcscd
+      apt: pkg=pcscd
+           force=yes
+           state=present
+
+    - name: install emacs
+      apt: pkg=emacs
+           force=yes
+           state=present
+
+    - name: reboot pis
+      command: /sbin/reboot -t now
+
+    - name: download vertx
+      get_url: url=http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz
+               sha256sum=9d8e2a1f5faac02a01b193cffa4b3a6a1dc13d13d6dd330afc1a05195c42190e
+               dest=/home/pi/vertx.tar.gz
+
     - name: untar vertx
       command: /bin/tar xvzf vertx.tar.gz
 
@@ -81,9 +81,14 @@
     - name: chown to group pi and user pi
       file: group=pi owner=pi recurse=yes path=/home/pi/
 
-    - name: download vertx daemon to init.d
-      get_url: url=https://github.com/xebia-france/kouign-amann-pi/blob/master/raspberry/vertx
-               dest=/etc/init.d/vertx
+    - name: upload vertx daemon to init.d
+      copy: src=../raspberry/vertx dest=/etc/init.d/vertx
 
     - name: chmod vertx service to 744
       file: path=/etc/init.d/vertx mode=0744
+
+    - name: enable vertx on boot
+      service: name=vertx enabled=yes
+
+    - name: start vertx daemon
+      service: name=vertx state=started
