@@ -10,8 +10,6 @@ kouign-amann-pi
     * ssh on it and do: sudo raspi-config to expand filesystem
     * Reboot
     * Install a ssh public key in authorized_key
-    * Add Pi's IP to your ansible hosts
-    * Have fun
 
 Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vertx)
 
