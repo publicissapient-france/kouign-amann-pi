@@ -88,7 +88,3 @@
 
     - name: execution rights to vertx daemon
       command: chmod u+x /etc/init.d/vertx
-
-  #handlers:
-    #- name : restart mosquitto
-     # service: name="mosquitto" state="restarted" enabled="yes"
