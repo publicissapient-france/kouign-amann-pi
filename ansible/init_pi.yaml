@@ -55,6 +55,36 @@
            force=yes
            state=present
 
+    #- name: reboot pis
+    #  command: /sbin/reboot -t now
+
+    - name: download vertx
+      get_url: url=http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz
+               sha256sum=9d8e2a1f5faac02a01b193cffa4b3a6a1dc13d13d6dd330afc1a05195c42190e
+               dest=/home/pi/vertx.tar.gz
+
+    - name: untar vertx
+      command: /bin/tar xvzf vertx.tar.gz
+
+    #- name: symbolic link to vertx install
+    #  command: ln -s vert.x-2.1RC1 vertx_home
+
+    #- name: make dir vertx_mods
+    #  command: mkdir vertx_mods
+
+    #- name: make dir vertx_mods_conf
+    #  command: mkdir vertx_mods_conf
+
+    #- name: chown
+    #  command: chown pi:pi * -R
+
+    #- name: vertx daemon
+    #  get_url: url=https://github.com/xebia-france/kouign-amann-pi/blob/master/raspberry/vertx
+    #           dest=/etc/init.d/vertx
+
+    #- name: execution rights to vertx daemon
+    #  command: chmod u+x /etc/init.d/vertx
+
   #handlers:
     #- name : restart mosquitto
      # service: name="mosquitto" state="restarted" enabled="yes"
