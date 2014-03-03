@@ -66,24 +66,28 @@
     - name: untar vertx
       command: /bin/tar xvzf vertx.tar.gz
 
-    #- name: symbolic link to vertx install
-    #  command: ln -s vert.x-2.1RC1 vertx_home
+    - name: symbolic link to vertx install
+      file: path=/home/pi/vertx_home
+            src=/home/pi/vert.x-2.1RC1
+            state=link
 
-    #- name: make dir vertx_mods
-    #  command: mkdir vertx_mods
+    - name: make dir vertx_mods
+      file: path=/home/pi/vertx_mods
+            state=directory
 
-    #- name: make dir vertx_mods_conf
-    #  command: mkdir vertx_mods_conf
+    - name: make dir vertx_mods_conf
+      file: path=/home/pi/vertx_mods_conf
+            state=directory
 
-    #- name: chown
-    #  command: chown pi:pi * -R
+    - name: chown
+      command: chown pi:pi * -R
 
-    #- name: vertx daemon
-    #  get_url: url=https://github.com/xebia-france/kouign-amann-pi/blob/master/raspberry/vertx
-    #           dest=/etc/init.d/vertx
+    - name: vertx daemon
+      get_url: url=https://github.com/xebia-france/kouign-amann-pi/blob/master/raspberry/vertx
+               dest=/etc/init.d/vertx
 
-    #- name: execution rights to vertx daemon
-    #  command: chmod u+x /etc/init.d/vertx
+    - name: execution rights to vertx daemon
+      command: chmod u+x /etc/init.d/vertx
 
   #handlers:
     #- name : restart mosquitto
