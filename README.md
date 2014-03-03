@@ -2,7 +2,7 @@ kouign-amann-pi
 ===============
 
 * Based on Raspbian Wheezy image 2013-12-20, available from [here](http://www.raspberrypi.org/downloads)
-* New Radpberry install should follow:
+* New Raspberry install should follow:
     * Install image on SD card
     * First boot on ethernet
     * To find out the Pi's IP address: nmap -sS -p 22 192.168.1.0/24 |
@@ -26,13 +26,19 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
 
 # Set up the environment with Ansible
 
-* In /etc/ansible, at the beginning of the file, add all the ips of the aimed pis
+* In /etc/ansible, at the beginning of the file, add the following line :
+```
+[kouign-amann]
+```
+
+* Then add all the IPs of the pis, just below the first line written before
 * Then run the command :
 ```
 ansible-playbook ansible/init_pi.yaml
 ```
 
 # Set up the environment manually
+
 * Reconnect and:
 ```
     sudo bash -l
