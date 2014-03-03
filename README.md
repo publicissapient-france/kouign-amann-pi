@@ -15,7 +15,7 @@ kouign-amann-pi
 
 Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/roles/vertx)
 
-# Install
+# Install the base system
 
 * Based on raspbian image: 2014-01-07-wheezy-raspbian <=> MD5(6d8e5a48ff7c6bdc0bc0983bc32f75b8)
 * On first boot, ssh as pi user and do:
@@ -24,6 +24,15 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
     * Finish
     * Reboot ? Yes
 
+# Set up the environment with Ansible
+
+* In /etc/ansible, at the beginning of the file, add all the ips of the aimed pis
+* Then run the command :
+```
+ansible-playbook ansible/init_pi.yaml
+```
+
+# Set up the environment manually
 * Reconnect and:
 ```
     sudo bash -l
