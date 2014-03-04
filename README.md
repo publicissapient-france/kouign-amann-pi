@@ -1,7 +1,7 @@
 kouign-amann-pi
 ===============
 
-* Based on Raspbian Wheezy image 2013-12-20, available from [here](http://www.raspberrypi.org/downloads)
+* Based on Raspbian Wheezy image 2013-12-20, available from [here](http://ftp.jaist.ac.jp/pub/raspberrypi/raspbian/images/raspbian-2013-12-24/)
 * New Raspberry install should follow:
     * Install image on SD card
     * First boot on ethernet
