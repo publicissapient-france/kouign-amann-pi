@@ -88,5 +88,10 @@
     - name: start vertx daemon
       service: name=vertx state=started
 
-    - name: reboot pis
-      command: /sbin/reboot -t now
+    - name: install openjdk7
+      apt: pkg=openjdk-7-jdk
+           force=yes
+           state=present
+
+#    - name: reboot pis
+#      command: /sbin/reboot -t now
