@@ -11,7 +11,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
     private Logger log
 
-    private MqttAsyncClient client
+    private MqttClient client
 
     private MqttConnectOptions options
 
@@ -35,9 +35,9 @@ class MqttVerticle extends Verticle implements MqttCallback {
     def start() {
 
         log = container.logger
+        log.info(this.container.config['mqttClient'])
 
         configure(this.container.config['mqttClient'] as Map)
-
         log.info('Start -> Initialize handler')
 
         [
@@ -60,7 +60,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
         String persistenceDir = config['persistence-dir'] ?: System.getProperty('java.io.tmpdir')
         def persistence = new MqttDefaultFilePersistence(persistenceDir)
-        client = new MqttAsyncClient(uri, clientId, persistence)
+        client = new MqttClient(uri, clientId, persistence)
 
         client.setCallback(this)
 
@@ -91,24 +91,29 @@ class MqttVerticle extends Verticle implements MqttCallback {
         def message = new MqttMessage(Json.encode(outgoingMessage).getBytes())
         message.setQos(2)
 
+        log.info("Connect")
         if (!client.isConnected()) {
             client?.connect(options)
         }
 
+        log.info("Get topic")
         def topic = client.getTopic('fr.xebia.kouignamann.nuc.central.processSingleVote')
         //def token = topic.publish(message)
+        log.info("Publish")
         client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
         // token.waitForCompletion()
         //client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
 
         //if (client) {
-        // client.disconnect()
+        log.info("Disconnect")
+        client.disconnect()
         //}
     }
 
     @Override
     void connectionLost(Throwable throwable) {
         log.info "connectionLost"
+        /* TODO Works fine with mosquitto, not with cloudMqtt
         while (!client.isConnected()) {
             try {
                 client?.connect(options)
@@ -116,7 +121,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
             } catch (Exception e) {
                 e.printStackTrace()
             }
-        }
+        }*/
     }
 
     @Override

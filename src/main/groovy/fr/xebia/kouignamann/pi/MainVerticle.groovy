@@ -38,7 +38,7 @@ class MainVerticle extends Verticle {
             }
         }
 
-        container.deployVerticle('groovy:fr.xebia.kouignamann.pi.MqttVerticle', container.config)
+        container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.MqttVerticle', container.config)
 
         eventBus.send("${localBusPrefix}.waitCard", 'call')
     }
