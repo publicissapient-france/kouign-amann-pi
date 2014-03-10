@@ -5,8 +5,7 @@ kouign-amann-pi
 * New Raspberry install should follow:
     * Install image on SD card
     * First boot on ethernet
-    * To find out the Pi's IP address: nmap -sS -p 22 192.168.1.0/24 |
-      grep Rasp -B 4
+    * To find out the Pi's IP address: nmap -sS -p 22 192.168.1.0/24 | grep Rasp -B 4
     * ssh on it and do: sudo raspi-config to expand filesystem
     * Reboot
     * Install a ssh public key in authorized_key
@@ -52,9 +51,9 @@ ansible-playbook ansible/init_pi.yaml
 * Reboot, reconnect and:
 ```
     sudo bash -l
-    wget http://dl.bintray.com/vertx/downloads/vert.x-2.1M5.tar.gz -O vertx.tgz
+    wget http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz -O vertx.tgz
     tar xvzf vertx.tgz
-    ln -s vert.x-2.1M5 vertx_home
+    ln -s vert.x-2.1RC1 vertx_home
     mkdir vertx_mods
     mkdir vertx_mods_conf
     chown pi:pi * -R
@@ -66,6 +65,25 @@ ansible-playbook ansible/init_pi.yaml
     chmod u+x /etc/init.d/vertx
     update-rc.d vertx defaults add
 ```
+
+* wpa_passphrase ssid mdp >> /etc/wpa_supplicant/wpa_supplicant.conf
+
+* /etc/network/interfaces
+```
+    auto lo
+
+    iface lo inet loopback
+    iface eth0 inet dhcp
+    auto eth0
+    allow-hotplug eth0
+
+    auto wlan0
+    allow-hotplug wlan0
+    iface wlan0 inet manual
+    wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+    iface default inet dhcp
+```
+
 # Deploy
 
 * gradle modzip
