@@ -57,6 +57,9 @@ ansible-playbook ansible/init_pi.yaml
     mkdir vertx_mods
     mkdir vertx_mods_conf
     chown pi:pi * -R
+    apt-get install openjdk-7-jdk
+    apt-get remove oracle-java7-jdk --purge
+    service vertx start
 ```
 * Install file from this repository raspberry/vertx on the Pi, under /etc/init.d/vertx
 * Connect and:
@@ -83,28 +86,15 @@ ansible-playbook ansible/init_pi.yaml
     wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
     iface default inet dhcp
 ```
+* scp raspberry/deploy.sh pi@<ip>:
 
 # Deploy
 
 * gradle modzip
-* copy conf.json on the Pi under /home/pi/vertx_mods_conf and
-  configure its content
-* copy build/libs/pi-0.1.zip on the Pi under /home/pi
-* connect on the pi and:
-```
-    sudo bash -l
-    service vertx stop
-    rm -rf /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
-    unzip pi-0.1.zip -d /home/pi/vertx_mods/fr.xebia.kouignamann~pi~0.1
-    apt-get install openjdk-7-jdk
-    apt-get remove oracle-java7-jdk --purge
-    service vertx start
-```
-* This is not a mistake, at this stage of system configuration, only
-openjdk-7 can hook on the nfc reader, not the oraclejdk-7
+* scp conf.json pi@<ip>:/home/pi/vertx_mods_conf/kouign-amann.conf
+* scp build/libs/pi-1.0.zip pi@<ip>:
+* ssh pi@<ip> "sudo sh deploy.sh"
 
-* If you want to connect to a wifi network, use wpa_passphrase to
-  generate a section to put into /etc/wpa_supplicant/wpa_supplicant.conf
 
 
 
