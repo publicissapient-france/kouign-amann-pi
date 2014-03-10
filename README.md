@@ -36,6 +36,9 @@ ansible-playbook ansible/init_pi.yaml
 
 # Set up the environment manually
 
+
+
+* follow proc at http://mosquitto.org/2013/01/mosquitto-debian-repository/
 * Reconnect and:
 ```
     sudo bash -l
@@ -46,7 +49,7 @@ ansible-playbook ansible/init_pi.yaml
     echo 'blacklist nfc' >> /etc/modprobe.d/nfc-blacklist.conf
     echo 'i2c-bcm2708' >> /etc/modules
     echo 'i2c-dev' >> /etc/modules
-    apt-get install pcscd emacs -y
+    apt-get install pcscd emacs mosquitto mosquitto-clients -y
 ```
 * Reboot, reconnect and:
 ```
@@ -87,6 +90,13 @@ ansible-playbook ansible/init_pi.yaml
     iface default inet dhcp
 ```
 * scp raspberry/deploy.sh pi@<ip>:
+* scp raspberry/send_ip.sh pi@<ip>:
+* dans /etc/profile faire un export NUKE_SERVER=<IP>
+* crontab -e : toutes les minutes lancer send_ip.sh
+* TODO: changer mdp user pi
+* TODO: ajouter clé publique du nuc dans authorized_keys
+
+
 
 # Deploy
 
@@ -98,3 +108,8 @@ ansible-playbook ansible/init_pi.yaml
 
 
 
+ifconfig | grep inet | tr -s ' ' | cut -d ' ' -f 3 | grep -v
+"127.0.0.1"
+
+echo $(cat vertx_mods_conf/kouign-amann.conf | grep hardwareUid | cut
+-d ":" -f2) $(ifconfig | grep inet | tr -s ' ' | cut -d ' ' -f 3 | grep -v "127.0.0.1")  | mosquitto_pub -t admin -h 10.1.1.67 -l

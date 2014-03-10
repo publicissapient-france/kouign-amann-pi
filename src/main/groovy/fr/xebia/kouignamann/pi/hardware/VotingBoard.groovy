@@ -163,6 +163,7 @@ class VotingBoard {
                 } else {
                     log.info("Process -> TIMEOUT - Do nothing")
                     log.error('didnt succeed: ' + result.cause.message, result.cause)
+                    log.info('fini le message error')
                 }
                 vertx.eventBus.send("${busPrefix}.waitCard", 'call')
             }
