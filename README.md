@@ -37,14 +37,12 @@ ansible-playbook ansible/init_pi.yaml
 # Set up the environment manually
 
 * scp -r scripts pi@rpi:
-* ssh into rpi and : ```sudo sh scripts/sysconf.sh```
-
-* Install file from this repository raspberry/vertx on the Pi, under /etc/init.d/vertx
 * Connect and:
 ```
-    sudo bash -l
-    chmod u+x /etc/init.d/vertx
-    update-rc.d vertx defaults add
+    sudo sh scripts/sysconf.sh
+    sudo mv scripts/vertx /etc/init.d/vertx
+    sudo chmod u+x /etc/init.d/vertx
+    sudo update-rc.d vertx defaults add
 ```
 
 * wpa_passphrase ssid mdp >> /etc/wpa_supplicant/wpa_supplicant.conf
@@ -64,8 +62,6 @@ ansible-playbook ansible/init_pi.yaml
     wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
     iface default inet dhcp
 ```
-* scp raspberry/deploy.sh pi@<ip>:
-* scp raspberry/send_ip.sh pi@<ip>:
 * dans /etc/profile faire un export NUKE_SERVER=<IP>
 * crontab -e : toutes les minutes lancer send_ip.sh
 * TODO: changer mdp user pi
