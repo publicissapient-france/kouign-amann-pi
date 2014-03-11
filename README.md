@@ -36,34 +36,9 @@ ansible-playbook ansible/init_pi.yaml
 
 # Set up the environment manually
 
+* scp -r scripts pi@rpi:
+* ssh into rpi and : ```sudo sh scripts/sysconf.sh```
 
-
-* follow proc at http://mosquitto.org/2013/01/mosquitto-debian-repository/
-* Reconnect and:
-```
-    sudo bash -l
-    apt-get update
-    apt-get upgrade
-    echo 'alias ll="ls -aul"' >> /etc/profile
-    echo 'blacklist pn533' >> /etc/modprobe.d/nfc-blacklist.conf
-    echo 'blacklist nfc' >> /etc/modprobe.d/nfc-blacklist.conf
-    echo 'i2c-bcm2708' >> /etc/modules
-    echo 'i2c-dev' >> /etc/modules
-    apt-get install pcscd emacs mosquitto mosquitto-clients -y
-```
-* Reboot, reconnect and:
-```
-    sudo bash -l
-    wget http://dl.bintray.com/vertx/downloads/vert.x-2.1RC1.tar.gz -O vertx.tgz
-    tar xvzf vertx.tgz
-    ln -s vert.x-2.1RC1 vertx_home
-    mkdir vertx_mods
-    mkdir vertx_mods_conf
-    chown pi:pi * -R
-    apt-get install openjdk-7-jdk
-    apt-get remove oracle-java7-jdk --purge
-    service vertx start
-```
 * Install file from this repository raspberry/vertx on the Pi, under /etc/init.d/vertx
 * Connect and:
 ```
