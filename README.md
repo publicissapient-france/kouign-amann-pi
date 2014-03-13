@@ -36,7 +36,7 @@ ansible-playbook ansible/init_pi.yaml
 
 # Set up the environment manually
 
-* scp -r scripts pi@rpi:
+* Copy the script directory to the raspberry : ```scp -r scripts pi@rpi:```
 * Connect and:
 ```
     sudo sh scripts/sysconf.sh
