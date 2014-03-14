@@ -38,7 +38,7 @@ ansible-playbook ansible/init_pi.yaml
 # Set up the environment manually
 
 * Change password for user pi
-* Add every public key you need in ```.ssh/authorized_keys``
+* Add every public key you need in ```.ssh/authorized_keys```
 * Copy the script directory to the raspberry :
 ```
     scp -r scripts pi@rpi:
