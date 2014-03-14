@@ -80,5 +80,5 @@ ansible-playbook ansible/init_pi.yaml
     gradle modzip
     scp conf.json pi@rpi:/home/pi/vertx_mods_conf/kouign-amann.conf
     scp build/libs/pi-1.0.zip pi@rpi:
-    ssh pi@rpi "sudo sh deploy.sh"
+    ssh pi@rpi "sudo sh scripts/apply_version.sh"
 ```
