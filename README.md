@@ -23,6 +23,7 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
 
 # Set up the environment with Ansible
 
+## WARN: Ansible deploy is not up-to-date, do it manually (remove when updated)
 * In /etc/ansible, at the beginning of the file, add the following line :
 ```
 [kouign-amann]
