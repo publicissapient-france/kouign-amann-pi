@@ -36,17 +36,20 @@ ansible-playbook ansible/init_pi.yaml
 
 # Set up the environment manually
 
-* Copy the script directory to the raspberry : ```scp -r scripts pi@rpi:```
+* Change password for user pi
+* Add every public key you need in ```.ssh/authorized_keys``
+* Copy the script directory to the raspberry :
+```
+    scp -r scripts pi@rpi:
+```
 * Connect and:
 ```
     sudo sh scripts/sysconf.sh
-    sudo mv scripts/vertx /etc/init.d/vertx
-    sudo chmod u+x /etc/init.d/vertx
-    sudo update-rc.d vertx defaults add
 ```
-
-* wpa_passphrase ssid mdp >> /etc/wpa_supplicant/wpa_supplicant.conf
-
+* To get the wifi up and running:
+```
+    wpa_passphrase ssid mdp >> /etc/wpa_supplicant/wpa_supplicant.conf
+```
 * /etc/network/interfaces
 ```
     auto lo
@@ -62,25 +65,20 @@ ansible-playbook ansible/init_pi.yaml
     wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
     iface default inet dhcp
 ```
-* dans /etc/profile faire un export NUKE_SERVER=<IP>
-* crontab -e : toutes les minutes lancer send_ip.sh
-* TODO: changer mdp user pi
-* TODO: ajouter clé publique du nuc dans authorized_keys
-
-
+* Add to /etc/profile:
+```
+    export NUKE_SERVER=<SERVER_IP>
+```
+* Add network interface listing to cron:
+```
+    crontab -e
+    * * * * * sh /home/pi/scripts/send_ip.sh
+```
 
 # Deploy
-
-* gradle modzip
-* scp conf.json pi@<ip>:/home/pi/vertx_mods_conf/kouign-amann.conf
-* scp build/libs/pi-1.0.zip pi@<ip>:
-* ssh pi@<ip> "sudo sh deploy.sh"
-
-
-
-
-ifconfig | grep inet | tr -s ' ' | cut -d ' ' -f 3 | grep -v
-"127.0.0.1"
-
-echo $(cat vertx_mods_conf/kouign-amann.conf | grep hardwareUid | cut
--d ":" -f2) $(ifconfig | grep inet | tr -s ' ' | cut -d ' ' -f 3 | grep -v "127.0.0.1")  | mosquitto_pub -t admin -h 10.1.1.67 -l
+```
+    gradle modzip
+    scp conf.json pi@rpi:/home/pi/vertx_mods_conf/kouign-amann.conf
+    scp build/libs/pi-1.0.zip pi@rpi:
+    ssh pi@rpi "sudo sh deploy.sh"
+``

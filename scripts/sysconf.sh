@@ -1,9 +1,5 @@
 #!/bin/sh
 
-apt-get update
-
-apt-get upgrade -y
-
 echo 'alias ll="ls -aul"' >> /etc/profile
 echo 'blacklist pn533' >> /etc/modprobe.d/nfc-blacklist.conf
 echo 'blacklist nfc' >> /etc/modprobe.d/nfc-blacklist.conf
@@ -17,6 +13,9 @@ cd /etc/apt/sources.list.d/
 wget http://repo.mosquitto.org/debian/mosquitto-stable.list
 cd -
 
+apt-get update
+
+apt-get upgrade -y
 apt-get install pcscd emacs mosquitto mosquitto-clients -y
 
 cd /home/pi
@@ -28,3 +27,12 @@ mkdir vertx_mods_conf
 chown pi:pi * -R
 apt-get install openjdk-7-jdk -y
 apt-get remove oracle-java7-jdk --purge -y
+
+cp scripts/vertx /etc/init.d
+chmod u+x /etc/init.d/vertx
+update-rc.d vertx defaults add
+
+mv /etc/mosquitto/mosquitto.conf /etc/mosquitto/mosquitto.conf.bak
+cp scripts/mosquitto.conf /etc/mosquitto/mosquitto.conf
+
+echo "Mind about setting values in /etc/mosquitto/mosquitto.conf"

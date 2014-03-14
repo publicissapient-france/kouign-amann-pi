@@ -1,19 +1,7 @@
 {
-    "hardwareUid": "Salle-1",
-    "testLcd": false,
-    "testLedBackPack": false,
-    "testLedButton": false,
-    "mockLcd": true,
-    "mockButtonsLight": true,
-    "mockRfid": true,
-    "useMqtt": true,
+    "hardwareUid": "Salle1",
     "mqttClient": {
-        "server-uri" : "tcp://m10.cloudmqtt.com:10325",
-        "client-id": "test",
-        "user": "kouign-amann",
-        "password": "kouign-amann"
-        //"server-uri" : "tcp://10.1.1.144:1883",
-        //"server-uri" : "tcp://127.0.0.1:1883",
-        //"client-id": "vertx-11"
+        "server-uri" : "tcp://localhost:1883",
+        "client-id": "local"
     }
 }

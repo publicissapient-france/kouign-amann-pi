@@ -39,7 +39,7 @@ export VERTX_MODS=/home/pi/vertx_mods
 export VERTX_MODS_CONF=/home/pi/vertx_mods_conf
 export LANG=en_GB.UTF-8
 
-MODULE=fr.xebia.kouignamann~pi~0.1
+MODULE=fr.xebia.kouignamann~pi~1.0
 MODULE_CONF=$VERTX_MODS_CONF/kouign-amann.conf
 
 CLASSPATH=${CLASSPATH}:${VERTX_HOME}/conf:${VERTX_HOME}/lib/*:$VERTX_MODS

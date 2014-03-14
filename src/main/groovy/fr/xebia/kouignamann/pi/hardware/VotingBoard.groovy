@@ -136,43 +136,39 @@ class VotingBoard {
 
         String nfcId = nfcReader.waitForCardId()
 
-        log.info('Card seen => ' + nfcId)
 
-        long voteTime = new Date().getTime()
+        if (nfcId) {
+            log.info('Card seen => ' + nfcId)
+            try {
+                def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
 
-        try {
-            def wrapperBus = new WrapperEventBus(vertx.eventBus.javaEventBus())
+                wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 3000) { AsyncResult result ->
 
-            wrapperBus.sendWithTimeout("${busPrefix}.waitVote", 'call', 5000) { AsyncResult result ->
+                    if (result.succeeded) {
+                        int note = result.result.body.toMap().note
 
-                if (result.succeeded) {
-                    int note = result.result.body.toMap().note
+                        log.info("Process -> Note: " + note)
 
-                    log.info("Process -> note : " + note)
+                        Map outgoingMessage = [
+                                "nfcId": nfcId,
+                                "voteTime": new Date().time,
+                                "note": note
+                        ]
 
-                    Map outgoingMessage = [
-                            "nfcId": nfcId,
-                            "voteTime": voteTime,
-                            "note": note
-                    ]
+                        log.info("BUS => ${busPrefix}.processVote => ${outgoingMessage}")
+                        vertx.eventBus.send("${busPrefix}.processVote", outgoingMessage)
+                    } else {
+                        log.error('Process -> TIMEOUT - Do nothing', result.cause)
+                    }
 
-                    log.info("BUS => ${busPrefix}.processVote => ${outgoingMessage}")
-
-                    vertx.eventBus.send("${busPrefix}.processVote", outgoingMessage)
-
-                } else {
-                    log.info("Process -> TIMEOUT - Do nothing")
-                    log.error('didnt succeed: ' + result.cause.message, result.cause)
-                    log.info('fini le message error')
+                    vertx.eventBus.send("${busPrefix}.waitCard", 'call')
                 }
+            } catch (TimeoutException e) {
+                log.info("PROCESS: waited too long for vote, going back to NFC")
                 vertx.eventBus.send("${busPrefix}.waitCard", 'call')
             }
-
-
-        }
-
-        catch (TimeoutException e) {
-            log.info("PROCESS: waited too long for vote, going back to NFC")
+        } else {
+            log.info('Card seen is null')
             vertx.eventBus.send("${busPrefix}.waitCard", 'call')
         }
     }
@@ -183,7 +179,7 @@ class VotingBoard {
  */
     def waitVote(Message message) {
 
-        log.info('Wait vote')
+        log.info('Process -> Wait vote')
 
         lightOnAllButtons()
 
@@ -211,15 +207,11 @@ class VotingBoard {
                 }
             }
 
-            //log.info('note : ' + note)
-
             if (note > -1) {
                 lcd.display("Votre note: ${note}")
 
                 message.reply([note: note])
-
                 lightOnOneButton(note)
-
                 return
             }
 

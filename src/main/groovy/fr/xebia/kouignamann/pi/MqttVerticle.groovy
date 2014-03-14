@@ -15,29 +15,14 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
     private MqttConnectOptions options
 
-    /*Object waiter = new Object();
-    boolean donext = false;
-    Throwable ex = null;
-
-
-    public int state = BEGIN;
-
-    static final int BEGIN = 0;
-    public static final int CONNECTED = 1;
-    static final int PUBLISHED = 2;
-    static final int SUBSCRIBED = 3;
-    static final int DISCONNECTED = 4;
-    static final int FINISH = 5;
-    static final int ERROR = 6;
-    static final int DISCONNECT = 7;
-    */
-
     def start() {
 
         log = container.logger
+
         log.info(this.container.config['mqttClient'])
 
         configure(this.container.config['mqttClient'] as Map)
+
         log.info('Start -> Initialize handler')
 
         [
@@ -52,7 +37,6 @@ class MqttVerticle extends Verticle implements MqttCallback {
     def stop() {
         log.info('Stop method not implemented yet.')
     }
-
 
     def configure(Map config) throws MqttException {
         String uri = config['server-uri']
@@ -71,11 +55,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
         }
         options.setCleanSession(true)
 
-        //options.setKeepAliveInterval(30)
-        //options.setConnectionTimeout(0)
-
         client.connect(options)
-
         client.disconnect()
     }
 
@@ -96,77 +76,24 @@ class MqttVerticle extends Verticle implements MqttCallback {
             client?.connect(options)
         }
 
-        log.info("Get topic")
-        def topic = client.getTopic('fr.xebia.kouignamann.nuc.central.processSingleVote')
-        //def token = topic.publish(message)
         log.info("Publish")
         client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
-        // token.waitForCompletion()
-        //client.publish('fr.xebia.kouignamann.nuc.central.processSingleVote', message)
-
-        //if (client) {
         log.info("Disconnect")
         client.disconnect()
-        //}
     }
 
     @Override
     void connectionLost(Throwable throwable) {
-        log.info "connectionLost"
-        /* TODO Works fine with mosquitto, not with cloudMqtt
-        while (!client.isConnected()) {
-            try {
-                client?.connect(options)
-                sleep 1000
-            } catch (Exception e) {
-                e.printStackTrace()
-            }
-        }*/
+        log.info('connectionLost')
     }
 
     @Override
-    void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        log.info "messageArrived"
+    void messageArrived(String s, MqttMessage mqttMessage) {
+        log.info('messageArrived')
     }
 
     @Override
     void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        log.info "deliveryComplete"
+        log.info('deliveryComplete')
     }
-
-    /*public void publish(String topicName, int qos, byte[] payload) throws Throwable {
-        client.connect(options, "Connect sample context", conListener)
-        client.publish(topicName, message, "Pub sample context", pubListener)
-        client.disconnect("Disconnect sample context", discListener)
-    }*/
-
-    /*
-    IMqttActionListener conListener = new IMqttActionListener() {
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    try{
-                    //log.info ("Connected");
-                    println "Connected"
-                    state = CONNECTED;
-                    carryOn();
-                    } catch (Exception e){
-                        e.printStackTrace()
-                    }
-                }
-
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    ex = exception;
-                    state = ERROR;
-                    log.error ("connect failed" + exception);
-                    carryOn();
-                }
-
-                public void carryOn() {
-                    synchronized (waiter) {
-                        donext = true;
-                        waiter.notifyAll();
-                    }
-                }
-            };
-     */
-
 }
