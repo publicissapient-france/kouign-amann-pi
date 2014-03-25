@@ -29,8 +29,8 @@ apt-get install openjdk-7-jdk -y
 apt-get remove oracle-java7-jdk --purge -y
 
 # CCID driver
-sudo apt-get remove libccid
-sudo apt-get install libacsccid1
+sudo apt-get install libacsccid1 -y
+sudo apt-get remove libccid -y
 
 cp scripts/vertx /etc/init.d
 chmod u+x /etc/init.d/vertx
