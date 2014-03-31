@@ -1,0 +1,7 @@
+---
+
+- name: restart kouign-amann
+  service:
+    name=kouign-amann
+    state=restarted
+    enabled=yes

@@ -1,0 +1,37 @@
+---
+- name: download vertx
+  get_url:
+    url=http://dl.bintray.com/vertx/downloads/vert.x-2.1RC2.tar.gz
+    dest=/home/pi/vertx.tar.gz
+    sha256sum=817bab03788965399689d171489971faf73983e7c1ac10dd211a20984e5a7b88
+
+- name: untar vertx
+  command:
+    /bin/tar xvzf /home/pi/vertx.tar.gz -C /home/pi/vertx_home
+
+- name: make vertx_mods directory
+  file:
+    path={{ vertx_mods }}
+    state=directory
+
+- name: make vertx_conf directory
+  file:
+    path={{ vertx_conf }}
+    state=directory
+
+- name: add kouign-amann module configuration
+  template:
+    src=vertx-kouign-amann.json.j2
+    dest={{ vertx_conf }}/vertx-kouign-amann.json
+  notify:
+    - restart kouign-amann
+
+- name: add kouign-amann service
+  template:
+    src=kouign-amann.j2
+    dest=/etc/init.d/kouign-amann
+    owner=root
+    group=root
+    mode=0744
+  notify:
+    - restart kouign-amann

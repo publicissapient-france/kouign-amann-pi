@@ -3,19 +3,17 @@ log_type warning
 log_type notice
 log_type information
 log_type debug
-log_dest file /tmp/mosquitto.log
+log_dest file /var/log/mosquitto/mosquitto.log
 
 retry_interval 10
 
 connection central
-address {{ bridgeHost }}:{{ bridgePort }}
-clientid {{ piUid }}
+address {{ mqtt_parent_host }}:{{ mqtt_parent_port }}
+clientid {{ pi_uid }}
 cleansession false
 keepalive_interval 60
 start_type automatic
 restart_timeout 30
 idle_timeout 60
 try_private false
-username {{ bridgeUser }}
-password {{ bridgePassword }}
-topic fr.xebia.kouignamann.nuc.central.processSingleVote out 2
+topic {{ kouign_amann_pub }} out 2

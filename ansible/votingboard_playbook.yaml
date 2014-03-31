@@ -1,0 +1,9 @@
+- hosts: votingboards
+  user: pi
+  sudo: yes
+
+#    - init-pi
+  roles:
+    - common-pi
+    - mqtt-relay
+#    - kouign-amann

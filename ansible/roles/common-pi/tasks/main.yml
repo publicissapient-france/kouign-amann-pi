@@ -1,0 +1,75 @@
+---
+
+- name: add ll alias
+  lineinfile:
+    dest=/etc/profile
+    regexp='^alias ll'
+    insertafter=EOF
+    line='alias ll="ls -aul"'
+    state=present
+
+- name: blacklist kernel module pn533
+  lineinfile:
+    dest=/etc/modprobe.d/nfc-blacklist.conf
+    regexp='^blacklist pn533'
+    insertafter=EOF
+    line='blacklist pn533'
+    state=present
+    create=yes
+
+- name: blacklist kernel module nfc
+  lineinfile:
+    dest=/etc/modprobe.d/nfc-blacklist.conf
+    regexp='^blacklist nfc'
+    insertafter=EOF
+    line='blacklist nfc'
+    state=present
+    create=yes
+
+- name: enable kernel module i2c-bcm2708
+  lineinfile:
+    dest=/etc/modules
+    regexp='^i2c-bcm2708'
+    insertafter=EOF
+    line='i2c-bcm2708'
+    state=present
+
+- name: enable kernel module i2c-dev
+  lineinfile:
+    dest=/etc/modules
+    regexp='^i2c-dev'
+    insertafter=EOF
+    line='i2c-dev'
+    state=present
+
+- name: install pcscd
+  apt:
+    pkg=pcscd
+    state=present
+
+- name: install emacs
+  apt:
+    pkg=emacs
+    state=present
+
+- name: install openjdk7
+  apt:
+    pkg=openjdk-7-jdk
+    state=present
+
+- name: remove oraclejdk7
+  apt:
+    pkg=oracle-java7-jdk
+    state=absent
+    purge=yes
+
+- name: install libacsccid1
+  apt:
+    pkg=libacsccid1
+    state=present
+
+- name: remove libccid
+  apt:
+    pkg=libccid
+    state=absent
+    purge=yes

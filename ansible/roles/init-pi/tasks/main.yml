@@ -1,0 +1,9 @@
+---
+
+- name: apt initial update
+  command:
+    /usr/bin/apt-get update
+
+- name: install python-apt
+  command:
+    /usr/bin/apt-get install python-apt -y

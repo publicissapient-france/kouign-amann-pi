@@ -1,0 +1,11 @@
+---
+
+mqtt_parent_host: 192.168.42.2
+mqtt_parent_port: 1883
+
+vertx_home: /home/pi/vertx_home
+vertx_mods: /home/pi/vertx_mods
+vertx_conf: /home/pi/vertx_conf
+
+kouign_amann_pub: fr.xebia.kouignamann.nuc.central.processSingleVote
+

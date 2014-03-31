@@ -1,0 +1,28 @@
+---
+
+- name: install mosquitto apt repository key
+  apt_key:
+    url=http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+    state=present
+
+- name: install mosquitto apt repository
+  get_url :
+    url="http://repo.mosquitto.org/debian/mosquitto-repo.list"
+    dest="/etc/apt/sources.list.d/mosquitto-repo.list"
+
+- name: install mosquitto
+  apt:
+    update_cache=yes
+    pkg="mosquitto"
+    state="present"
+
+- name: install mosquitto configuration
+  template:
+    src=mosquitto.conf.j2
+    dest=/etc/mosquitto/mosquitto.conf
+    backup=yes
+  notify:
+    - restart mosquitto
+
+
+
