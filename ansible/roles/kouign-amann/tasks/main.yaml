@@ -7,7 +7,13 @@
 
 - name: untar vertx
   command:
-    /bin/tar xvzf /home/pi/vertx.tar.gz -C /home/pi/vertx_home
+    /bin/tar xvzf /home/pi/vertx.tar.gz -C /home/pi
+
+- name: link vertx installation directory
+  file:
+    src=/home/pi/vert.x-2.1RC2
+    dest={{ vertx_home }}
+    state=link
 
 - name: make vertx_mods directory
   file:
@@ -19,14 +25,14 @@
     path={{ vertx_conf }}
     state=directory
 
-- name: add kouign-amann module configuration
+- name: kouign-amann vertx module configuration
   template:
     src=vertx-kouign-amann.json.j2
     dest={{ vertx_conf }}/vertx-kouign-amann.json
   notify:
     - restart kouign-amann
 
-- name: add kouign-amann service
+- name: set kouign-amann service
   template:
     src=kouign-amann.j2
     dest=/etc/init.d/kouign-amann
@@ -34,4 +40,4 @@
     group=root
     mode=0744
   notify:
-    - restart kouign-amann
+    - update kouign-amann mod

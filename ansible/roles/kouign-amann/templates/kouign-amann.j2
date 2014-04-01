@@ -11,9 +11,6 @@
 
 # Author: Aurélien Maury <amaury@xebia.fr>
 #
-# Do NOT "set -e"
-
-##############
 
 # Add default JVM options here. You can also use JAVA_OPTS and VERTX_OPTS to pass JVM options to this script.
 
@@ -39,7 +36,7 @@ export VERTX_MODS={{ vertx_mods }}
 export VERTX_MODS_CONF={{ vertx_conf }}
 export LANG=en_GB.UTF-8
 
-MODULE=fr.xebia.kouignamann~pi~1.0
+MODULE={{ kouign_amann_mod_name }}
 MODULE_CONF=$VERTX_MODS_CONF/vertx-kouign-amann.json
 
 CLASSPATH=${CLASSPATH}:${VERTX_HOME}/conf:${VERTX_HOME}/lib/*:$VERTX_MODS
@@ -203,4 +200,5 @@ case "$1" in
 	exit 3
 	;;
 esac
+
 :

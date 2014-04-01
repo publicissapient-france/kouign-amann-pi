@@ -1,5 +1,21 @@
 ---
 
+- name: update kouign-amann mod
+  get_url:
+    url={{ kouign_amann_dist_url }}
+    dest=/home/pi/kouign_aman_mod.zip
+    sha256sum={{ kouign_amann_dist_sha256 }}
+  notify:
+    - install kouign-amann mod
+
+- name: install kouign-amann mod
+  shell:
+    /bin/rm -rf {{ vertx_mods }}/fr.xebia.kouignamann*
+    && /bin/mkdir {{ vertx_mods }}/{{ kouign_amann_mod_name }}
+    && /usr/bin/unzip /home/pi/kouign_aman_mod.zip -d {{ vertx_mods }}/{{ kouign_amann_mod_name }}
+  notify:
+    - restart kouign-amann
+
 - name: restart kouign-amann
   service:
     name=kouign-amann
