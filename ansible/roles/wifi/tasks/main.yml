@@ -1,0 +1,6 @@
+---
+
+- name: wpa_supplicant configuration
+  template:
+      src=wpa_supplicant.conf.j2
+      dest=/etc/wpa_supplicant/wpa_supplicant.conf

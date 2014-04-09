@@ -25,12 +25,24 @@
     path={{ vertx_conf }}
     state=directory
 
+- name: download kouign-amann mod
+  get_url:
+    url={{ kouign_amann_dist_url }}
+    dest=/home/pi/kouign_amann_mod.zip
+    sha256sum={{ kouign_amann_dist_sha256 }}
+
+- name: install kouign-amann mod
+  shell:
+    /bin/rm -rf {{ vertx_mods }}/fr.xebia.kouignamann*
+    && /bin/mkdir {{ vertx_mods }}/{{ kouign_amann_mod_name }}
+    && /usr/bin/unzip /home/pi/kouign_amann_mod.zip -d {{ vertx_mods }}/{{ kouign_amann_mod_name }}
+  notify:
+    - restart kouign-amann
+
 - name: kouign-amann vertx module configuration
   template:
     src=vertx-kouign-amann.json.j2
     dest={{ vertx_conf }}/vertx-kouign-amann.json
-  notify:
-    - restart kouign-amann
 
 - name: set kouign-amann service
   template:
@@ -40,4 +52,4 @@
     group=root
     mode=0744
   notify:
-    - update kouign-amann mod
+    - restart kouign-amann

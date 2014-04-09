@@ -10,7 +10,7 @@ retry_interval 10
 connection central
 address {{ mqtt_parent_host }}:{{ mqtt_parent_port }}
 clientid {{ pi_uid }}
-cleansession false
+cleansession true
 keepalive_interval 60
 start_type automatic
 restart_timeout 30
