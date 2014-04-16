@@ -53,7 +53,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
             options.setPassword(config.password as char[])
             options.setUserName(config.user)
         }
-        options.setCleanSession(true)
+        options.setCleanSession(false)
 
         client.connect(options)
         client.disconnect()
@@ -69,6 +69,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
         ]
 
         def message = new MqttMessage(Json.encode(outgoingMessage).getBytes())
+        message.setRetained(true);
         message.setQos(2)
 
         log.info("Connect")
