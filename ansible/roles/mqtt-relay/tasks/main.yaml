@@ -12,8 +12,12 @@
 
 - name: install mosquitto
   apt:
-    update_cache=yes
     pkg="mosquitto"
+    state="present"
+
+- name: install mosquitto clients
+  apt:
+    pkg="mosquitto-clients"
     state="present"
 
 - name: install mosquitto configuration
@@ -24,5 +28,31 @@
   notify:
     - restart mosquitto
 
+- name: install of central in etc profile
+  lineinfile:
+    dest=/etc/profile
+    regexp='^export NUKE_SERVER=.*$'
+    insertafter=EOF
+    line='export NUKE_SERVER={{ mqtt_parent_host }}'
+    state=present
 
+- name: install send ip script
+  template:
+    src=send_ip.sh.j2
+    dest=/home/pi/send_ip.sh
+    mode=0755
+
+- name: directory for mosqitto db
+  file:
+    path: /home/pi/mosquitto
+    state: directory
+    owner: mosquitto
+    group: pi
+    mode: 0755
+
+- name: add cron
+  cron:
+    name="emit_ip"
+    minute="*"
+    job="/home/pi/send_ip.sh"
 

@@ -70,6 +70,7 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
         def message = new MqttMessage(Json.encode(outgoingMessage).getBytes())
         message.setQos(2)
+        message.setRetained(true)
 
         log.info("Connect")
         if (!client.isConnected()) {
