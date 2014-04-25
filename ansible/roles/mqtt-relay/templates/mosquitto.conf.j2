@@ -7,10 +7,17 @@ log_dest file /var/log/mosquitto/mosquitto.log
 
 retry_interval 10
 
+persistence true
+persistence_file mosquitto.db
+persistence_location /home/pi/mosquitto/
+autosave_interval 60
+
 connection central
 address {{ mqtt_parent_host }}:{{ mqtt_parent_port }}
+username devoxxfr
+password devoxx
 clientid {{ pi_uid }}
-cleansession true
+cleansession false
 keepalive_interval 60
 start_type automatic
 restart_timeout 30

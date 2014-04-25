@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. /etc/profile
+
+echo $(date) - $(cat /home/pi/vertx_conf/vertx-kouign-amann.json | grep hardwareUid | cut -d ":" -f2) $(ifconfig | grep inet | tr -s ' ' | cut -d ' ' -f 3 | grep -v "127.0.0.1")  | mosquitto_pub -t admin -u devoxxfr -P devoxx -h $NUKE_SERVER -l

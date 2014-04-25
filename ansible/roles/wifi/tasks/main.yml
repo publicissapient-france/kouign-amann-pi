@@ -4,3 +4,17 @@
   template:
       src=wpa_supplicant.conf.j2
       dest=/etc/wpa_supplicant/wpa_supplicant.conf
+
+- name: reconnection script
+  template:
+      src=wifi_check.sh.j2
+      dest=/home/pi/wifi_check.sh
+      owner=root
+      mode=0755
+
+- name: add cron to reconnect
+  cron:
+    name=check_wifi
+    minute=*
+    job=/home/pi/wifi_check.sh
+    state=absent
