@@ -43,10 +43,16 @@ class MainVerticle extends Verticle {
         eventBus.send("${localBusPrefix}.waitCard", 'call')
 
         // Reprise sur incident
-        container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.ParseLogVerticle', container.config)
-        vertx.createHttpServer().requestHandler { req ->
-            eventBus.send("${localBusPrefix}.parseLog", 'call')
-        }.listen(8080)
+        container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.ParseLogVerticle', container.config) { AsyncResult ar ->
+            if (ar.succeeded) {
+                log.info('parselog deployed, opening http 8080')
+                vertx.createHttpServer().requestHandler { req ->
+                    eventBus.send("${localBusPrefix}.parseLog", 'call')
+                }.listen(8080)
+            } else {
+                log.info('parselog not deployed')
+            }
+        }
     }
 
     def stop() {
