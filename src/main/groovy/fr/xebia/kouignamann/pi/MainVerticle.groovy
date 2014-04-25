@@ -41,6 +41,12 @@ class MainVerticle extends Verticle {
         container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.MqttVerticle', container.config)
 
         eventBus.send("${localBusPrefix}.waitCard", 'call')
+
+        // Reprise sur incident
+        container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.ParseLogVerticle', container.config)
+        vertx.createHttpServer().requestHandler { req ->
+            eventBus.send("${localBusPrefix}.parseLog", 'call')
+        }.listen(8080)
     }
 
     def stop() {
