@@ -1,0 +1,11 @@
+#!/bin/sh
+
+ping -c 1 {{ mqtt_parent_host }}
+if [ $? != 0 ]; then
+    echo "$(date) - RESTARTING WIFI" >> /home/pi/check_wifi.log
+    ifdown wlan0 >> /home/pi/check_wifi.log
+    sleep 5
+    ifup wlan0 >> /home/pi/check_wifi.log
+else
+    echo "$(date) - not restarting" >> /home/pi/check_wifi.log
+fi

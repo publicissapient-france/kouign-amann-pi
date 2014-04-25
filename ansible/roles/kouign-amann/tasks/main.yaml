@@ -44,6 +44,13 @@
     src=vertx-kouign-amann.json.j2
     dest={{ vertx_conf }}/vertx-kouign-amann.json
 
+- name: vertx logging
+  template:
+    src=logging.properties.j2
+    dest={{ vertx_home }}/conf/logging.properties
+  notify:
+    - restart kouign-amann
+
 - name: set kouign-amann service
   template:
     src=kouign-amann.j2
