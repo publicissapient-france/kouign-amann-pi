@@ -19,41 +19,63 @@ class MainVerticle extends Verticle {
 
         log.info('--START--')
 
-        votingBoard = new VotingBoard(container, vertx, localBusPrefix)
-
-        log.info('START: VotingBoard ready')
-
         EventBus eventBus = vertx.eventBus
 
-        [
-                "${localBusPrefix}.waitCard": votingBoard.&waitCard,
-                "${localBusPrefix}.waitVote": votingBoard.&waitVote
-        ].each { address, handler ->
-            eventBus.registerHandler(address, handler) { AsyncResult asyncResult ->
-                if (asyncResult.succeeded) {
-                    log.info("START: Bus handler ready: ${address}")
+        // HTTP
+        if (container.config.modeAdmin) {
+
+            // Reprise sur incident
+            container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.ParseLogVerticle', container.config) { parseLogResult ->
+                if (parseLogResult.succeeded) {
+                    log.info "The verticle has been deployed, deployment ID is ${parseLogResult.result}"
                 } else {
-                    log.error("START: Bus handler failed: ${address}", asyncResult.cause)
+                    parseLogResult.cause.printStackTrace()
+                }
+            }
+
+            log.info("Main : HTTP Server")
+
+            def server = vertx.createHttpServer()
+            server.requestHandler { request ->
+                log.info "A request has arrived on the server!"
+                eventBus.send("${localBusPrefix}.parseLog", 'call')
+                log.info("Bus -> ${localBusPrefix}.parseLog")
+            }
+            server.listen(8080) { AsyncResult asyncResult ->
+                if (asyncResult.succeeded) {
+                    log.info("START: HTTPServer ready")
+                } else {
+                    log.error("START: HTTPServer failed", asyncResult.cause)
                 }
             }
         }
 
+        if (container.config.modeRun) {
+            votingBoard = new VotingBoard(container, vertx, localBusPrefix)
+
+            log.info('START: VotingBoard ready')
+
+            [
+                    "${localBusPrefix}.waitCard": votingBoard.&waitCard,
+                    "${localBusPrefix}.waitVote": votingBoard.&waitVote
+            ].each { address, handler ->
+                eventBus.registerHandler(address, handler) { AsyncResult asyncResult ->
+                    if (asyncResult.succeeded) {
+                        log.info("START: Bus handler ready: ${address}")
+                    } else {
+                        log.error("START: Bus handler failed: ${address}", asyncResult.cause)
+                    }
+                }
+            }
+
+            eventBus.send("${localBusPrefix}.waitCard", 'call')
+        }
+
         container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.MqttVerticle', container.config)
 
-        eventBus.send("${localBusPrefix}.waitCard", 'call')
-
-        // Reprise sur incident
-        container.deployWorkerVerticle('groovy:fr.xebia.kouignamann.pi.ParseLogVerticle', container.config) { AsyncResult ar ->
-            if (ar.succeeded) {
-                log.info('parselog deployed, opening http 8080')
-                vertx.createHttpServer().requestHandler { req ->
-                    eventBus.send("${localBusPrefix}.parseLog", 'call')
-                }.listen(8080)
-            } else {
-                log.info('parselog not deployed')
-            }
-        }
+        log.info("START: Initialisation done")
     }
+
 
     def stop() {
         log.info('STOP: Shutting VotingBoard down')

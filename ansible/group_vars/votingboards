@@ -7,8 +7,8 @@ vertx_home: /home/pi/vertx_home
 vertx_mods: /home/pi/vertx_mods
 vertx_conf: /home/pi/vertx_conf
 
-kouign_amann_dist_url: http://10.1.1.242:9091/pi-1.0.zip
-kouign_amann_dist_sha256: dc6f01033106663ae292f1ee9465a847620bef99fec1ffed5ea679f161bca088
+kouign_amann_dist_url: http://10.1.1.22:9091/pi-1.0.zip
+kouign_amann_dist_sha256: c7eb5420c9636ed981b98f5990def48d331789aa76823fb54ee3d3f7ab784126
 kouign_amann_pub: fr.xebia.kouignamann.nuc.central.processSingleVote
 kouign_amann_mod_name: fr.xebia.kouignamann~pi~1.0
 
