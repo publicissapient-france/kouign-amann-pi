@@ -4,6 +4,10 @@ kouign-amann-pi
 * Based on Raspbian Wheezy image 2014-01-07
 * New Raspberry install should follow:
     * Install image on SD card
+        * insert card + detect dev device via 'mount'
+        * sudo diskutil umount /dev/disk2s1
+        * sudo dd if=~/Downloads/2014-01-07-wheezy-raspbian.img of=/dev/rdisk2 bs=1m
+        * eject
     * First boot on ethernet
     * To find out the Pi's IP address: nmap -sS -p 22 192.168.1.0/24 | grep Rasp -B 4
     * ssh on it and do: sudo raspi-config to expand filesystem
@@ -21,7 +25,33 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
     * Finish
     * Reboot ? Yes
 
+---
+curl -s get.gvmtool.net | bash
+gvm install vertx
+
+gradle modZip ==> build la distrib
+shasum -a 256 build/libs/pi-1.0.zip ==> mettre de coté la valeur
+./run.sh ==> dans un terminal séparé
+
+mettre l'ip du pi à installer dans le fichier votingboard_hosts
+configurer votre .ssh/config avec un truc comme ça :
+
+Host 10.150.102.223   <-- les ip de mes Pi
+User pi
+IdentityFile /Users/amaury/.ssh/id_rsa.ansibox
+
 # Set up the environment with Ansible
+
+ansible-playbook -i votingboard_hosts votingboard_init_playbook.yaml
+
+dans le fichier kouign-amann-pi/ansible/group_vars/votingboards remplir :
+
+   kouign_amann_dist_url
+   kouign_amann_dist_sha256
+
+ansible-playbook -i votingboard_hosts votingboard_playbook.yaml
+
+
 
 ## WARN: Ansible deploy is not up-to-date, do it manually (remove when updated)
 * In /etc/ansible, at the beginning of the file, add the following line :
