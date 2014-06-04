@@ -29,11 +29,11 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
 curl -s get.gvmtool.net | bash
 gvm install vertx
 
-gradle modZip ==> 
+gradle modZip ==> build la distrib
 shasum -a 256 build/libs/pi-1.0.zip ==> mettre de coté la valeur
 ./run.sh ==> dans un terminal séparé
 
-mettre l'ip du pi à installer dans le fichier votingboards_hosts
+mettre l'ip du pi à installer dans le fichier votingboard_hosts
 configurer votre .ssh/config avec un truc comme ça :
 
 Host 10.150.102.223   <-- les ip de mes Pi
@@ -41,6 +41,11 @@ User pi
 IdentityFile /Users/amaury/.ssh/id_rsa.ansibox
 
 # Set up the environment with Ansible
+
+ansible-playbook -i votingboard_hosts votingboard_init_playbook.yaml
+
+
+
 
 ## WARN: Ansible deploy is not up-to-date, do it manually (remove when updated)
 * In /etc/ansible, at the beginning of the file, add the following line :
