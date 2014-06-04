@@ -25,6 +25,21 @@ Look at (https://github.com/pinterb/bootstrap/tree/master/provisioning/ansible/r
     * Finish
     * Reboot ? Yes
 
+---
+curl -s get.gvmtool.net | bash
+gvm install vertx
+
+gradle modZip ==> 
+shasum -a 256 build/libs/pi-1.0.zip ==> mettre de coté la valeur
+./run.sh ==> dans un terminal séparé
+
+mettre l'ip du pi à installer dans le fichier votingboards_hosts
+configurer votre .ssh/config avec un truc comme ça :
+
+Host 10.150.102.223   <-- les ip de mes Pi
+User pi
+IdentityFile /Users/amaury/.ssh/id_rsa.ansibox
+
 # Set up the environment with Ansible
 
 ## WARN: Ansible deploy is not up-to-date, do it manually (remove when updated)
