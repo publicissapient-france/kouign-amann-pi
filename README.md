@@ -43,7 +43,7 @@ IdentityFile /Users/amaury/.ssh/id_rsa.ansibox
 # Set up the environment with Ansible
 
 ansible-playbook -i votingboard_hosts votingboard_init_playbook.yaml
-
+ansible-playbook -i votingboard_hosts votingboard_playbook.yaml
 
 
 
