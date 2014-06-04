@@ -1,0 +1,11 @@
+- hosts: votingboards
+  user: pi
+  sudo: yes
+
+  roles:
+    - wifi
+
+  vars:
+    wlan:
+      - ssid: xebia-public-1-2ghz
+        psk:
