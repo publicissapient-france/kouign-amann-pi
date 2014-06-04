@@ -43,6 +43,12 @@ IdentityFile /Users/amaury/.ssh/id_rsa.ansibox
 # Set up the environment with Ansible
 
 ansible-playbook -i votingboard_hosts votingboard_init_playbook.yaml
+
+dans le fichier kouign-amann-pi/ansible/group_vars/votingboards remplir :
+
+   kouign_amann_dist_url
+   kouign_amann_dist_sha256
+
 ansible-playbook -i votingboard_hosts votingboard_playbook.yaml
 
 
