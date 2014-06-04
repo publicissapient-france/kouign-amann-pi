@@ -12,15 +12,13 @@ persistence_file mosquitto.db
 persistence_location /home/pi/mosquitto/
 autosave_interval 60
 
-connection central
+connection {{ pi_uid }}ToCentral
+try_private false
 address {{ mqtt_parent_host }}:{{ mqtt_parent_port }}
+start_type automatic
 username devoxxfr
 password devoxx
 clientid {{ pi_uid }}
 cleansession false
-keepalive_interval 60
-start_type automatic
-restart_timeout 30
-idle_timeout 60
-try_private false
 topic {{ kouign_amann_pub }} out 2
+notifications true

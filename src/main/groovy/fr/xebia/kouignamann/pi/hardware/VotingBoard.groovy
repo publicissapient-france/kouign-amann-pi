@@ -65,7 +65,10 @@ class VotingBoard {
         log.info('START: Done initializing gpio factory')
 
         initLcd()
-        initNfcReader()
+        if (container.config.useNfc) {
+            initNfcReader()
+        }
+
         initButtons()
     }
 
@@ -129,12 +132,16 @@ class VotingBoard {
      */
     def waitCard(Message message) {
 
-        // TODO: validate message format
         lightOffAllButtons()
 
         lcd.display(PROMPT_CARD)
 
-        String nfcId = nfcReader.waitForCardId()
+        String nfcId
+        if (container.config.useNfc) {
+            nfcId = nfcReader.waitForCardId()
+        } else {
+            nfcId = UUID.randomUUID().toString()
+        }
 
 
         if (nfcId) {

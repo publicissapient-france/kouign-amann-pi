@@ -1,7 +1,7 @@
 ---
 
-mqtt_parent_host: m10.cloudmqtt.com
-mqtt_parent_port: 10325
+mqtt_parent_host: m20.cloudmqtt.com
+mqtt_parent_port: 16886
 
 vertx_home: /home/pi/vertx_home
 vertx_mods: /home/pi/vertx_mods
