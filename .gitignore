@@ -7,4 +7,3 @@ build
 *.iml
 mods
 ansible/votingboard_wpa_playbook.yaml
-votingboard_wpa_playbook.yaml
