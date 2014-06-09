@@ -11,3 +11,4 @@
     wlan:
       - ssid: archipel
         psk: 8b123e4ab62fb5f6fafb39f74655803087c180871fe58f1b56282ff2d5397901
+        priority: 255
