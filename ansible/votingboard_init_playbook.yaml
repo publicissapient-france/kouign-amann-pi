@@ -1,6 +1,0 @@
-- hosts: votingboards
-  user: pi
-  sudo: yes
-
-  roles:
-    - init-pi
