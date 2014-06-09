@@ -1,5 +1,13 @@
 ---
 
+- name: eth0 and wlan0 at boot
+  template:
+    src=network_interfaces.j2
+    dest=/etc/network/interfaces
+    owner=root
+    group=root
+    mode=0600
+
 - name: wpa_supplicant configuration
   template:
       src=wpa_supplicant.conf.j2
