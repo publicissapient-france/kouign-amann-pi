@@ -1,0 +1,19 @@
+---
+
+- name: restart dhcpd
+  service:
+    name=isc-dhcp-server
+    state=restarted
+    enabled=yes
+
+- name: restart hostapd
+  service:
+    name=hostapd
+    state=restarted
+    enabled=yes
+
+- name: restart networking
+  service:
+    name=networking
+    state=restarted
+    enabled=yes
