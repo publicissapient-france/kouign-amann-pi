@@ -3,9 +3,7 @@
   sudo: yes
 
   roles:
-    - init-pi
-    - common-pi
-    - wifi
+    - wifi-device
 
   vars:
     wlan:

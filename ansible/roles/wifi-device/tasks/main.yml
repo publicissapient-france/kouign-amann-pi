@@ -7,18 +7,21 @@
     owner=root
     group=root
     mode=0600
+  tags: init
 
 - name: wpa_supplicant configuration
   template:
-      src=wpa_supplicant.conf.j2
-      dest=/etc/wpa_supplicant/wpa_supplicant.conf
+    src=wpa_supplicant.conf.j2
+    dest=/etc/wpa_supplicant/wpa_supplicant.conf
+  tags: init
 
 - name: reconnection script
   template:
-      src=wifi_check.sh.j2
-      dest=/home/pi/wifi_check.sh
-      owner=root
-      mode=0755
+    src=wifi_check.sh.j2
+    dest=/home/pi/wifi_check.sh
+    owner=root
+    mode=0755
+  tags: init
 
 - name: add cron to reconnect
   cron:
@@ -26,3 +29,4 @@
     minute=*
     job=/home/pi/wifi_check.sh
     state=absent
+  tags: init

@@ -2,34 +2,40 @@
 - name: download vertx
   get_url:
     url=http://dl.bintray.com/vertx/downloads/vert.x-2.1RC2.tar.gz
-    dest=/home/pi/vertx.tar.gz
+    dest=/home/pi
     sha256sum=817bab03788965399689d171489971faf73983e7c1ac10dd211a20984e5a7b88
+  tags: init
 
 - name: untar vertx
   command:
-    /bin/tar xvzf /home/pi/vertx.tar.gz -C /home/pi
+    /bin/tar xvzf /home/pi/vert.x-2.1RC2.tar.gz -C /home/pi
+  tags: init
 
 - name: link vertx installation directory
   file:
     src=/home/pi/vert.x-2.1RC2
     dest={{ vertx_home }}
     state=link
+  tags: init
 
 - name: make vertx_mods directory
   file:
     path={{ vertx_mods }}
     state=directory
+  tags: init
 
 - name: make vertx_conf directory
   file:
     path={{ vertx_conf }}
     state=directory
+  tags: init
 
 - name: download kouign-amann mod
   get_url:
     url={{ kouign_amann_dist_url }}
     dest=/home/pi/kouign_amann_mod.zip
     sha256sum={{ kouign_amann_dist_sha256 }}
+  tags: deploy
 
 - name: install kouign-amann mod
   shell:
@@ -38,11 +44,13 @@
     && /usr/bin/unzip /home/pi/kouign_amann_mod.zip -d {{ vertx_mods }}/{{ kouign_amann_mod_name }}
   notify:
     - restart kouign-amann
+  tags: deploy
 
 - name: kouign-amann vertx module configuration
   template:
     src=vertx-kouign-amann.json.j2
     dest={{ vertx_conf }}/vertx-kouign-amann.json
+  tags: deploy-conf
 
 - name: vertx logging
   template:
@@ -50,6 +58,7 @@
     dest={{ vertx_home }}/conf/logging.properties
   notify:
     - restart kouign-amann
+  tags: deploy-conf
 
 - name: set kouign-amann service
   template:
@@ -60,3 +69,4 @@
     mode=0744
   notify:
     - restart kouign-amann
+  tags: deploy-conf
