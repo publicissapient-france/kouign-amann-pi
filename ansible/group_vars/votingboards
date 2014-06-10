@@ -1,14 +1,14 @@
 ---
 
-mqtt_parent_host: m20.cloudmqtt.com
-mqtt_parent_port: 16886
+mqtt_parent_host: m10.cloudmqtt.com
+mqtt_parent_port: 10325
 
 vertx_home: /home/pi/vertx_home
 vertx_mods: /home/pi/vertx_mods
 vertx_conf: /home/pi/vertx_conf
 
-kouign_amann_dist_url: http://192.168.2.1:9091/pi-1.0.zip
-kouign_amann_dist_sha256: d9a2be2c6497f019da6024e632d11a45921fe18475a5458c344fa1ca64ddfd76
+kouign_amann_dist_url: http://192.168.42.14:9091/pi-1.0.zip
+kouign_amann_dist_sha256: 44bb9816959a09791f4937994e22fc70f4367d209f0186e598121925641a2daa
 kouign_amann_pub: fr.xebia.kouignamann.nuc.central.processSingleVote
 kouign_amann_mod_name: fr.xebia.kouignamann~pi~1.0
 
