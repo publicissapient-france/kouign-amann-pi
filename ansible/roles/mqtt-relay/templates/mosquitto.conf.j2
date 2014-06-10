@@ -7,11 +7,6 @@ log_dest file /var/log/mosquitto/mosquitto.log
 
 retry_interval 10
 
-persistence true
-persistence_file mosquitto.db
-persistence_location /home/pi/mosquitto/
-autosave_interval 60
-
 connection {{ pi_uid }}ToCentral
 try_private false
 address {{ mqtt_parent_host }}:{{ mqtt_parent_port }}
