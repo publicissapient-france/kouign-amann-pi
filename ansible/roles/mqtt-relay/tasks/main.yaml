@@ -50,6 +50,14 @@
     group: pi
     mode: 0755
 
+- name: directory for mosqitto logs
+  file:
+    path: /var/log/mosquitto
+    state: directory
+    owner: mosquitto
+    group: pi
+    mode: 0755
+
 - name: add cron
   cron:
     name="emit_ip"
