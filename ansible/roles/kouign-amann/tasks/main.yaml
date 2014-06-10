@@ -35,6 +35,7 @@
     url={{ kouign_amann_dist_url }}
     dest=/home/pi/kouign_amann_mod.zip
     sha256sum={{ kouign_amann_dist_sha256 }}
+    force=yes
   tags: deploy
 
 - name: install kouign-amann mod
