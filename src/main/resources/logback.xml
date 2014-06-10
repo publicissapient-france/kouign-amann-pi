@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="PAPERTRAIL"
+              class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>logs.papertrailapp.com</syslogHost>
+        <port>51773</port>
+        <facility>USER</facility>
+        <suffixPattern>%thread: %-5level %logger{36} - %msg%n</suffixPattern>
+    </appender>
+
+    <appender name="VOTES" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+        <File>/home/pi/votes.log</File>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"/>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>50000KB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="PAPERTRAIL" />
+        <appender-ref ref="VOTES" />
+    </root>
+
+</configuration>
