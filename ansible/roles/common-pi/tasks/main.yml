@@ -1,4 +1,24 @@
 ---
+- name: apt initial update
+  command:
+    /usr/bin/apt-get update
+  tags: init
+
+- name: install python-apt
+  command:
+    /usr/bin/apt-get install python-apt -y
+  tags: init
+
+- name: ntp
+  apt:
+    pkg={{item}}
+    state=present
+  with_items:
+    - ntp
+    - ntpdate
+  notify:
+    - restart ntp
+  tags: init
 
 - name: add ll alias
   lineinfile:
@@ -7,6 +27,7 @@
     insertafter=EOF
     line='alias ll="ls -aul"'
     state=present
+  tags: init
 
 - name: blacklist kernel module pn533
   lineinfile:
@@ -16,6 +37,7 @@
     line='blacklist pn533'
     state=present
     create=yes
+  tags: init
 
 - name: blacklist kernel module nfc
   lineinfile:
@@ -25,6 +47,7 @@
     line='blacklist nfc'
     state=present
     create=yes
+  tags: init
 
 - name: enable kernel module i2c-bcm2708
   lineinfile:
@@ -33,6 +56,7 @@
     insertafter=EOF
     line='i2c-bcm2708'
     state=present
+  tags: init
 
 - name: enable kernel module i2c-dev
   lineinfile:
@@ -41,43 +65,27 @@
     insertafter=EOF
     line='i2c-dev'
     state=present
+  tags: init
 
-- name: install pcscd
+- name: install useful packages
   apt:
-    pkg=pcscd
+    pkg={{ item }}
     state=present
+  with_items:
+    - pcscd
+    - libacsccid1
+    - emacs
+    - openjdk-7-jdk
+    - tmux
+  tags: init
 
-- name: install emacs
+- name: remove useless packages
   apt:
-    pkg=emacs
-    state=present
-
-- name: install openjdk7
-  apt:
-    pkg=openjdk-7-jdk
-    state=present
-
-- name: remove oraclejdk7
-  apt:
-    pkg=oracle-java7-jdk
+    pkg={{ item }}
     state=absent
     purge=yes
-
-- name: install libacsccid1
-  apt:
-    pkg=libacsccid1
-    state=present
-
-- name: remove libccid
-  apt:
-    pkg=libccid
-    state=absent
-    purge=yes
-
-- name: eth0 and wlan0 at boot
-  template:
-    src=network_interfaces.j2
-    dest=/etc/network/interfaces
-    owner=root
-    group=root
-    mode=0600
+  with_items:
+    - oracle-java7-jdk
+    - wolfram-engine
+    - libccid
+  tags: init

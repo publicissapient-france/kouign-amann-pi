@@ -22,12 +22,10 @@ class VotingBoard {
 
     def log
 
-    private static final String PROMPT_BOOT = '...Demarrage...'
-    private static final String PROMPT_CARD = 'Badgez SVP'
-    //private static final String PROMPT_VOTE = 'Votez SVP'
-    private static final String PROMPT_VOTE = 'Please vote'
-    //private static final String PROMPT_NOTE = 'Votre note'
     private static final String PROMPT_NOTE = 'Your vote'
+    private static final String PROMPT_BOOT = '...Booting...'
+    private static final String PROMPT_CARD = 'Scan PLZ'
+    private static final String PROMPT_VOTE = 'Vote PLZ'
     private static final Integer I2C_BUS_NUMBER = 1
     private static final Integer I2C_BUS_ADDRESS = 0x20
 
@@ -160,9 +158,9 @@ class VotingBoard {
                         log.info("Process -> Note: " + note)
 
                         Map outgoingMessage = [
-                                "nfcId": nfcId,
+                                "nfcId"   : nfcId,
                                 "voteTime": new Date().time,
-                                "note": note
+                                "note"    : note
                         ]
 
                         log.info("BUS => ${busPrefix}.processVote => ${outgoingMessage}")
