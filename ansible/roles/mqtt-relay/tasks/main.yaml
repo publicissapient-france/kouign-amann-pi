@@ -56,3 +56,8 @@
     minute="*"
     job="/home/pi/send_ip.sh"
 
+- name: mosquitto started
+  service:
+    name=mosquitto
+    state=started
+    enabled=yes
