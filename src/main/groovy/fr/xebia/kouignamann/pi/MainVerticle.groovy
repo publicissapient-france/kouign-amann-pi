@@ -1,6 +1,7 @@
 package fr.xebia.kouignamann.pi
 
 import fr.xebia.kouignamann.pi.hardware.VotingBoard
+import org.slf4j.LoggerFactory
 import org.vertx.groovy.core.AsyncResult
 import org.vertx.groovy.core.eventbus.EventBus
 import org.vertx.groovy.platform.Verticle
@@ -9,6 +10,7 @@ import org.vertx.java.core.logging.Logger
 class MainVerticle extends Verticle {
 
     Logger log
+    def richLogger = LoggerFactory.getLogger(MainVerticle.class);
 
     VotingBoard votingBoard
 
@@ -18,6 +20,7 @@ class MainVerticle extends Verticle {
         String localBusPrefix = 'fr.xebia.kouignamann.pi.' + container.config.hardwareUid
 
         log.info('--START--')
+        richLogger.info('--START--')
 
         EventBus eventBus = vertx.eventBus
 

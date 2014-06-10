@@ -7,5 +7,5 @@
 
   vars:
     wlan:
-      - ssid: xebia-public-1-2ghz
-        psk:
+      - ssid: PLO
+        psk: PLO

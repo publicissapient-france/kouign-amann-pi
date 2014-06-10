@@ -2,6 +2,7 @@ package fr.xebia.kouignamann.pi
 
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence
+import org.slf4j.LoggerFactory
 import org.vertx.groovy.core.eventbus.Message
 import org.vertx.groovy.platform.Verticle
 import org.vertx.java.core.json.impl.Json
@@ -10,6 +11,8 @@ import org.vertx.java.core.logging.Logger
 class MqttVerticle extends Verticle implements MqttCallback {
 
     private Logger log
+    def richLogger = LoggerFactory.getLogger("VotesLogger");
+
 
     private MqttClient client
 
@@ -61,6 +64,11 @@ class MqttVerticle extends Verticle implements MqttCallback {
 
     def processVote(Message incomingMsg) {
         log.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote ${incomingMsg}")
+        richLogger.info("Bus <- fr.xebia.kouignamann.pi.${container.config.hardwareUid}.processVote [" +
+                "nfcId: ${incomingMsg.body.nfcId}, " +
+                "voteTime: ${incomingMsg.body.voteTime}," +
+                "note: ${incomingMsg.body.note}" +
+                "]")
         Map outgoingMessage = [
                 "nfcId": incomingMsg.body.nfcId,
                 "voteTime": incomingMsg.body.voteTime,

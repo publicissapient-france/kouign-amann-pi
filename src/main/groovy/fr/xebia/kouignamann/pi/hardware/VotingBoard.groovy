@@ -24,7 +24,10 @@ class VotingBoard {
 
     private static final String PROMPT_BOOT = '...Demarrage...'
     private static final String PROMPT_CARD = 'Badgez SVP'
-    private static final String PROMPT_VOTE = 'Votez SVP'
+    //private static final String PROMPT_VOTE = 'Votez SVP'
+    private static final String PROMPT_VOTE = 'Please vote'
+    //private static final String PROMPT_NOTE = 'Votre note'
+    private static final String PROMPT_NOTE = 'Your vote'
     private static final Integer I2C_BUS_NUMBER = 1
     private static final Integer I2C_BUS_ADDRESS = 0x20
 
@@ -215,7 +218,7 @@ class VotingBoard {
             }
 
             if (note > -1) {
-                lcd.display("Votre note: ${note}")
+                lcd.display("${PROMPT_NOTE}: ${note}")
 
                 message.reply([note: note])
                 lightOnOneButton(note)

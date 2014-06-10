@@ -72,6 +72,10 @@ dependencies {
     compile 'com.pi4j:pi4j-core:0.0.5'
     compile 'org.eclipse.paho:mqtt-client:0.4.0'
     compile 'com.sleepycat:je:5.0.73'
+
+    compile 'ch.qos.logback:logback-core:1.1.2'
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'ch.qos.logback:logback-classic:1.1.2'
 }
 
 test {
